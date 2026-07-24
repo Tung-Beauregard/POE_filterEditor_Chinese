@@ -192,6 +192,37 @@ input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--gold
 .cond .tr{padding:0 8px 7px;font-size:11px;color:var(--gold-dim);line-height:1.7}
 .addcond{width:100%;padding:7px;border:1px dashed var(--rule-lit);color:var(--muted);font-size:11.5px}
 .addcond:hover{border-color:var(--gold-dim);color:var(--gold-hi)}
+.groupchips{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 10px}
+.groupchip{padding:3px 7px;border:1px solid var(--rule-lit);background:#00000038;color:var(--text);font-size:11px}
+.groupchip small{color:var(--faint);margin-left:4px;font-family:var(--mono)}
+.groupactions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.groupactions .btn{width:100%}
+.gitems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 0 14px}
+.gitem{display:flex;align-items:flex-start;gap:9px;padding:9px;border:1px solid var(--rule);background:#00000035;cursor:pointer}
+.gitem:hover{border-color:var(--gold-dim);background:#c8aa6e0c}
+.gitem input{margin-top:3px;accent-color:var(--gold)}
+.gitem b{display:block;color:var(--text);font-weight:500}
+.gitem small{display:block;color:var(--faint);font-family:var(--mono);font-size:9.5px;word-break:break-word}
+.tierrows{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.tierrow{display:grid;grid-template-columns:104px repeat(3,minmax(84px,1fr)) 34px;gap:8px;align-items:end;padding:10px;border:1px solid var(--rule);background:#00000035}
+.tierrow label{display:block;color:var(--muted);font-size:10.5px}
+.tierrow input[type=number]{margin-top:4px}
+.tiercolor{height:34px;width:100%;margin-top:4px;padding:2px;border:1px solid var(--rule-lit);background:#0b0906;cursor:pointer}
+.tierremove{height:34px;border:1px solid var(--rule-lit);color:var(--hide);font-size:14px}
+.tierremove:hover{border-color:var(--hide);background:#b0574a18}
+.presetgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:10px 0 14px}
+.presetcard{padding:8px;border:1px solid var(--rule);background:#00000038;text-align:left}
+.presetcard:hover{border-color:var(--gold-dim)}
+.presetcard.on{border-color:var(--gold);box-shadow:inset 0 0 0 1px #c8aa6e55;background:#c8aa6e0e}
+.presetcard .gl{display:block;text-align:center;max-width:none;margin-bottom:5px;padding:3px 5px}
+.presetcard small{display:block;color:var(--faint);font-family:var(--mono);font-size:9px;text-align:center}
+.presetitems{max-height:330px;overflow:auto;border:1px solid var(--rule);margin-top:8px}
+.presetitem{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 9px;border-bottom:1px solid #ffffff08;cursor:pointer}
+.presetitem:hover{background:#ffffff07}
+.presetitem input{accent-color:var(--gold)}
+.presetitem b{font-weight:500}
+.presetitem small{color:var(--faint);font-size:9.5px;font-family:var(--mono)}
+.presetitem em{font-style:normal;color:var(--gold-dim);font-size:10px;white-space:nowrap}
 .warn{font-size:11px;color:var(--warn);margin-top:5px}
 .hintline{font-size:11px;color:var(--faint);margin-top:6px;line-height:1.7}
 .lintlist{margin:0;padding:0;list-style:none}
@@ -220,7 +251,7 @@ h1{font-family:var(--display);font-size:28px;font-weight:400;color:var(--gold-hi
 .toast.on{opacity:1}
 .modal{position:fixed;inset:0;background:#000000c4;display:none;align-items:center;justify-content:center;z-index:80;padding:24px}
 .modal.on{display:flex}
-.modalbox{background:var(--panel2);border:1px solid var(--rule-lit);max-width:680px;width:100%;max-height:80vh;display:flex;flex-direction:column}
+.modalbox{background:var(--panel2);border:1px solid var(--rule-lit);max-width:780px;width:100%;max-height:86vh;display:flex;flex-direction:column}
 .modalbox h2{margin:0;padding:14px 18px;font-family:var(--display);font-size:16px;font-weight:400;color:var(--gold-hi);
   border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center}
 .modalbody{overflow-y:auto;padding:14px 18px}
@@ -239,6 +270,10 @@ h1{font-family:var(--display);font-size:28px;font-weight:400;color:var(--gold-hi
   .rail{display:none}
   .bench{position:fixed;inset:54px 0 0;z-index:20;border-left:none;display:none}
   .bench.open{display:flex}
+  .gitems{grid-template-columns:1fr}
+  .tierrow{grid-template-columns:1fr 1fr}
+  .tierremove{grid-column:2}
+  .presetgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -248,7 +283,11 @@ h1{font-family:var(--display);font-size:28px;font-weight:400;color:var(--gold-hi
   <h1>Filter Forge</h1>
   <p>流亡黯道 1 的掉落過濾器編輯器。英文與簡體過濾器都會換上台服官方繁中譯名，套用統一的分類架構，並即時預覽地上的物品標籤。</p>
   <div class="dropzone" id="dz">
-    <button class="btn primary" id="gatePick">開啟 .filter 檔</button>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+      <button class="btn primary" id="gateNew">新建 Filter</button>
+      <button class="btn" id="gatePick">開啟 .filter 檔</button>
+      <a class="btn" href="README_防呆與操作說明.md" target="_blank" rel="noopener" style="text-decoration:none">操作與防呆說明</a>
+    </div>
     <span class="k">或把檔案拖進這個框，可一次開多個</span>
   </div>
 </div>
@@ -261,8 +300,12 @@ h1{font-family:var(--display);font-size:28px;font-weight:400;color:var(--gold-hi
       <button class="btn" id="nameMode" title="切換區塊名稱來源">官方譯名</button>
       <button class="btn" id="undoBtn" title="復原 Ctrl+Z" disabled>復原</button>
       <button class="btn" id="redoBtn" title="重做 Ctrl+Shift+Z" disabled>重做</button>
+      <button class="btn" id="stylePresets">樣式階級</button>
+      <button class="btn" id="safetyBtn">防呆</button>
       <button class="btn" id="lintBtn">檢查<span class="n" id="lintN"></span></button>
+      <button class="btn" id="newDoc">新建</button>
       <button class="btn" id="pick">開啟</button>
+      <a class="btn" href="README_防呆與操作說明.md" target="_blank" rel="noopener" style="text-decoration:none">說明</a>
       <button class="btn" id="save">匯出</button>
       <button class="btn primary" id="saveTW">匯出繁體版</button>
     </div>
@@ -5217,6 +5260,125 @@ function getSound(b){
   return null;
 }
 function touch(b){ b.dirty=true; b._t=null; b._cat=null; if(state.doc) state.doc.dirty=true; }
+function cloneData(x){ return JSON.parse(JSON.stringify(x)); }
+function nextBlockId(){
+  let id;
+  do id='b_edit_'+(++state.blockUid);
+  while(state.doc&&state.doc.blocks.some(b=>b.id===id));
+  return id;
+}
+function cloneBlock(b){
+  const x=cloneData(b);
+  x.id=nextBlockId(); x.headRaw=null; x.dirty=true; x._t=null; x._cat=null;
+  for(const r of x.rules){
+    if(r.unknown) continue;
+    r.raw=null; r.dirty=true;
+  }
+  return x;
+}
+function insertBlockBefore(ref,b){
+  const d=state.doc;
+  const ni=d.nodes.indexOf(ref),bi=d.blocks.indexOf(ref);
+  d.nodes.splice(ni<0?d.nodes.length:ni,0,b);
+  d.blocks.splice(bi<0?d.blocks.length:bi,0,b);
+  const sec=d.sections.find(s=>s.id===b.section); if(sec) sec.count++;
+  d.dirty=true;
+}
+function removeBlock(b){
+  const d=state.doc;
+  const ni=d.nodes.indexOf(b),bi=d.blocks.indexOf(b);
+  if(ni>=0) d.nodes.splice(ni,1);
+  if(bi>=0) d.blocks.splice(bi,1);
+  const sec=d.sections.find(s=>s.id===b.section); if(sec&&sec.count>0) sec.count--;
+  d.dirty=true;
+}
+function classKey(b){
+  return ruleValues(b,'Class').slice().sort((a,z)=>a.localeCompare(z)).join('\u001f');
+}
+function stackKey(b){
+  const r=findRule(b,'StackSize');
+  return r?(r.op+' '+r.values.map(v=>v.v).join('\u001f')):'';
+}
+function isActionRule(r){
+  return !r.unknown&&/^(Set|Play|Minimap|Custom|Disable|Enable)/i.test(r.key);
+}
+function selectorKey(b){
+  return b.rules.filter(r=>!r.unknown&&!isActionRule(r)&&!/^(BaseType|StackSize)$/i.test(r.key))
+    .map(r=>[r.key.toLowerCase(),r.op,r.values.map(v=>v.v).slice().sort().join('\u001f')].join('\u001e'))
+    .sort().join('\u001d');
+}
+function baseTypeKey(b){
+  return ruleValues(b,'BaseType').slice().sort((a,z)=>a.localeCompare(z)).join('\u001f');
+}
+function positiveBaseRule(b){
+  const r=findRule(b,'BaseType');
+  return r&&r.values.length&&!['!','!='].includes(r.op)?r:null;
+}
+function compatibleGroupTargets(source){
+  return state.doc.blocks.filter(b=>b!==source&&b.type===source.type&&positiveBaseRule(b)&&
+    classKey(b)===classKey(source)&&selectorKey(b)===selectorKey(source)&&stackKey(b)===stackKey(source));
+}
+function hexColor(c,fallback){
+  if(!c) return fallback;
+  return '#'+[c.r,c.g,c.b].map(n=>Number(n).toString(16).padStart(2,'0')).join('');
+}
+function setHexColor(b,key,hex){
+  const m=String(hex).match(/^#?([0-9a-f]{6})$/i); if(!m) return;
+  putRule(b,key,[0,2,4].map(i=>parseInt(m[1].slice(i,i+2),16)));
+}
+function isUnconditionalShow(b){
+  return b.type==='Show'&&!b.rules.some(r=>!r.unknown&&!isActionRule(r)&&r.key.toLowerCase()!=='continue');
+}
+function safetyCandidate(){
+  return state.doc?.blocks.slice().reverse().find(isUnconditionalShow)||null;
+}
+function safetyIsSpecial(b){
+  return !!(b&&(getColor(b,'SetTextColor')||getColor(b,'SetBackgroundColor')||getColor(b,'SetBorderColor'))&&
+    (getMinimap(b)||getBeam(b)||getSound(b)));
+}
+function safetyState(){
+  const b=safetyCandidate(),last=state.doc?.blocks[state.doc.blocks.length-1]||null;
+  return {b,ok:!!b&&b===last&&safetyIsSpecial(b),atEnd:!!b&&b===last,special:safetyIsSpecial(b)};
+}
+function applySafetyStyle(b){
+  putRule(b,'SetFontSize',[45]);
+  putRule(b,'SetTextColor',[255,255,255,255]);
+  putRule(b,'SetBorderColor',[255,0,255,255]);
+  putRule(b,'SetBackgroundColor',[100,0,100,255]);
+  if(!getSound(b)) putRule(b,'PlayAlertSound',[6,300]);
+  putRule(b,'PlayEffect',['Pink']);
+  putRule(b,'MinimapIcon',[0,'Pink','Star']);
+  b.type='Show'; touch(b);
+}
+function moveBlockToEnd(b){
+  const d=state.doc,ni=d.nodes.indexOf(b),bi=d.blocks.indexOf(b);
+  if(ni>=0) d.nodes.splice(ni,1);
+  if(bi>=0) d.blocks.splice(bi,1);
+  d.nodes.push(b); d.blocks.push(b); d.dirty=true;
+}
+function addSafetyLayer(){
+  const d=state.doc;
+  const sid='s_safety_'+(++state.blockUid);
+  const sec={kind:'section',id:sid,num:'9.99',title:'Filter Forge 防呆層',depth:2,count:1};
+  const b={kind:'block',id:nextBlockId(),type:'Show',indent:'',headComment:'Filter Forge 防呆層 - 未分類／未命中物品',
+    headRaw:null,rules:[],section:sid,dirty:true};
+  d.nodes.push({kind:'raw',text:''},
+    {kind:'raw',text:'# 9.99 Filter Forge 防呆層'},
+    {kind:'raw',text:'# 未命中前方任何規則的物品會以紫紅色、粉紅光柱與星形圖示顯示'},
+    {kind:'raw',text:'# 看到此樣式代表 Filter 需要補充分類或更新版本'},b);
+  d.blocks.push(b); d.sections.push(sec); d.dirty=true;
+  applySafetyStyle(b);
+  return b;
+}
+function ensureSafetyLayer(){
+  let s=safetyState(),changed=false;
+  if(!s.b){ s.b=addSafetyLayer(); changed=true; }
+  else{
+    if(!s.special){ applySafetyStyle(s.b); changed=true; }
+    if(!s.atEnd){ moveBlockToEnd(s.b); changed=true; }
+  }
+  return {b:s.b,changed};
+}
 
 /* 名稱：官方譯名優先，找不到才用作者註解 */
 function nameSource(b){
@@ -5332,28 +5494,93 @@ function lintGroups(){
       g.n++; if(g.blocks.length<12) g.blocks.push(b);
     }
   }
-  return [...map.values()].sort((a,b)=>(a.lv===b.lv?b.n-a.n:(a.lv==='e'?-1:1)));
+  const out=[...map.values()].sort((a,b)=>(a.lv===b.lv?b.n-a.n:(a.lv==='e'?-1:1)));
+  const safe=safetyState();
+  if(!safe.ok) out.unshift({lv:'e',msg:!safe.b?'缺少最後的未分類物品防呆層':'未分類物品防呆層不在最後或缺少特殊色／提示',n:1,blocks:safe.b?[safe.b]:[]});
+  return out;
+}
+
+/* 八階樣式打樣；可用目前區塊覆蓋並保存在瀏覽器 */
+const DEFAULT_STYLE_TIERS=[
+  {id:'t1',name:'T1 神話',desc:'最稀有／最高價',fg:{r:255,g:255,b:255,a:255},bg:{r:185,g:20,b:20,a:245},bd:{r:255,g:255,b:255,a:255},font:45,mm:{size:0,color:'Red',shape:'Star'},beam:{color:'Red',temp:false}},
+  {id:'t2',name:'T2 極高價',desc:'必撿高價',fg:{r:255,g:245,b:210,a:255},bg:{r:156,g:57,b:12,a:240},bd:{r:255,g:190,b:60,a:255},font:43,mm:{size:0,color:'Orange',shape:'Diamond'},beam:{color:'Orange',temp:false}},
+  {id:'t3',name:'T3 高價',desc:'高價主力',fg:{r:255,g:255,b:120,a:255},bg:{r:92,g:28,b:105,a:235},bd:{r:255,g:95,b:225,a:255},font:41,mm:{size:1,color:'Purple',shape:'Circle'},beam:{color:'Purple',temp:true}},
+  {id:'t4',name:'T4 中高價',desc:'值得特別提示',fg:{r:180,g:235,b:255,a:255},bg:{r:20,g:61,b:110,a:235},bd:{r:55,g:175,b:255,a:255},font:39,mm:{size:1,color:'Blue',shape:'Circle'},beam:{color:'Blue',temp:true}},
+  {id:'t5',name:'T5 中價',desc:'穩定有價',fg:{r:205,g:255,b:190,a:255},bg:{r:24,g:83,b:47,a:225},bd:{r:80,g:210,b:105,a:255},font:37,mm:{size:2,color:'Green',shape:'Triangle'},beam:null},
+  {id:'t6',name:'T6 常用',desc:'常撿實用',fg:{r:255,g:255,b:255,a:255},bg:{r:45,g:45,b:45,a:220},bd:{r:180,g:180,b:180,a:255},font:35,mm:null,beam:null},
+  {id:'t7',name:'T7 低價',desc:'視需求撿取',fg:{r:190,g:190,b:190,a:255},bg:{r:20,g:20,b:20,a:205},bd:{r:90,g:90,b:90,a:255},font:32,mm:null,beam:null},
+  {id:'t8',name:'T8 極低價',desc:'弱化顯示',fg:{r:120,g:120,b:120,a:220},bg:{r:10,g:10,b:10,a:185},bd:null,font:28,mm:null,beam:null}
+];
+function loadStyleTiers(){
+  try{
+    const v=JSON.parse(localStorage.getItem('filterForgeStyleTiers')||'null');
+    if(Array.isArray(v)&&v.length===8) return v;
+  }catch(e){}
+  return cloneData(DEFAULT_STYLE_TIERS);
+}
+function saveStyleTiers(){
+  try{ localStorage.setItem('filterForgeStyleTiers',JSON.stringify(state.styleTiers)); }catch(e){}
+}
+function applyStyleTier(b,t){
+  [['SetTextColor',t.fg],['SetBackgroundColor',t.bg],['SetBorderColor',t.bd]].forEach(([k,c])=>{
+    if(!c) dropRule(b,k); else putRule(b,k,c.a>=255?[c.r,c.g,c.b]:[c.r,c.g,c.b,c.a]);
+  });
+  putRule(b,'SetFontSize',[t.font]);
+  if(t.mm) putRule(b,'MinimapIcon',[t.mm.size,t.mm.color,t.mm.shape]); else dropRule(b,'MinimapIcon');
+  if(t.beam) putRule(b,'PlayEffect',t.beam.temp?[t.beam.color,'Temp']:[t.beam.color]); else dropRule(b,'PlayEffect');
+  b.type='Show'; touch(b);
+}
+function captureStyleTier(b,t){
+  const mm=getMinimap(b),beam=getBeam(b);
+  return {...t,fg:getColor(b,'SetTextColor'),bg:getColor(b,'SetBackgroundColor'),bd:getColor(b,'SetBorderColor'),
+    font:getNum(b,'SetFontSize')||32,mm:mm?{...mm}:null,beam:beam?{...beam}:null};
 }
 
 /* ======================================================================
    6. 狀態
    ================================================================== */
 const state={docs:[],doc:null,sel:null,section:null,cat:null,query:'',tab:'props',open:new Set(),
-  shown:0,tw:true,nameMode:'official',view:'taxonomy',vis:'all',custom:{},userCats:[],undo:[],redo:[],lastSnap:0};
+  shown:0,tw:true,nameMode:'official',view:'taxonomy',vis:'all',custom:{},userCats:[],undo:[],redo:[],lastSnap:0,
+  blockUid:0,styleTiers:loadStyleTiers(),presetTier:'t3'};
 const $=s=>document.querySelector(s);
 
 function snap(blocks,label){
   const now=Date.now();
   if(now-state.lastSnap<700&&state.undo.length&&label==='edit') return;
   state.lastSnap=now;
-  state.undo.push({label,items:blocks.map(b=>({b,type:b.type,headComment:b.headComment,rules:JSON.parse(JSON.stringify(b.rules))}))});
+  state.undo.push({kind:'blocks',label,items:blocks.map(b=>({id:b.id,type:b.type,headComment:b.headComment,rules:cloneData(b.rules)}))});
+  if(state.undo.length>80) state.undo.shift();
+  state.redo=[]; syncUndo();
+}
+function captureDoc(d){
+  return {nodes:cloneData(d.nodes),sections:cloneData(d.sections),dirty:d.dirty,sel:state.sel};
+}
+function restoreDoc(d,s){
+  d.nodes=cloneData(s.nodes);
+  d.blocks=d.nodes.filter(n=>n.kind==='block');
+  d.sections=cloneData(s.sections);
+  d.dirty=s.dirty;
+  state.sel=s.sel&&d.blocks.some(b=>b.id===s.sel)?s.sel:(d.blocks[0]?.id||null);
+}
+function snapDoc(label){
+  state.undo.push({kind:'doc',label,doc:state.doc,state:captureDoc(state.doc)});
   if(state.undo.length>80) state.undo.shift();
   state.redo=[]; syncUndo();
 }
 function applySnap(entry){
-  const inv={label:entry.label,items:entry.items.map(it=>({b:it.b,type:it.b.type,headComment:it.b.headComment,
-    rules:JSON.parse(JSON.stringify(it.b.rules))}))};
-  for(const it of entry.items){ it.b.type=it.type; it.b.headComment=it.headComment; it.b.rules=it.rules; it.b._t=null; it.b._cat=null; }
+  if(entry.kind==='doc'){
+    const inv={kind:'doc',label:entry.label,doc:entry.doc,state:captureDoc(entry.doc)};
+    restoreDoc(entry.doc,entry.state);
+    return inv;
+  }
+  const inv={kind:'blocks',label:entry.label,items:entry.items.map(it=>{
+    const b=state.doc.blocks.find(x=>x.id===it.id);
+    return {id:it.id,type:b?.type,headComment:b?.headComment,rules:cloneData(b?.rules||[])};
+  })};
+  for(const it of entry.items){
+    const b=state.doc.blocks.find(x=>x.id===it.id); if(!b) continue;
+    b.type=it.type; b.headComment=it.headComment; b.rules=it.rules; b._t=null; b._cat=null;
+  }
   return inv;
 }
 function doUndo(){ if(!state.undo.length) return; state.redo.push(applySnap(state.undo.pop())); syncUndo(); renderAll(); toast('已復原'); }
@@ -5566,6 +5793,9 @@ function renderInspector(){
     : state.doc.blocks.filter(x=>x.section===b.section);
   const issues=lint(b);
   const ns=nameSource(b);
+  const bt=positiveBaseRule(b);
+  const isCurrency=classify(b)==='1';
+  const stackRule=findRule(b,'StackSize');
 
   el.innerHTML=`
   ${issues.length?`<div class="sec"><h3>檢查<span>${issues.length} 項</span></h3>
@@ -5583,6 +5813,17 @@ function renderInspector(){
       <input class="inp" id="hc" value="${esc(T(b.headComment||''))}">
     </div>
   </div>
+
+  ${bt?`<div class="sec">
+    <h3>物品群組<span>${bt.values.length} 項${stackRule?' · StackSize '+esc(stackRule.op||'=')+' '+esc(stackRule.values.map(v=>v.v).join(' ')):''}</span></h3>
+    <div class="groupchips">${bt.values.slice(0,12).map(v=>`<span class="groupchip">${esc(tr(v.v)||v.v)}${tr(v.v)?`<small>${esc(v.v)}</small>`:''}</span>`).join('')}
+      ${bt.values.length>12?`<span class="groupchip">…還有 ${bt.values.length-12} 項</span>`:''}</div>
+    <div class="groupactions">
+      <button class="btn primary" id="manageGroup">拆分／移動物品</button>
+      ${isCurrency&&!stackRule?'<button class="btn" id="stackTiers">依掉落數量分色</button>':'<button class="btn" disabled title="只適用於沒有 StackSize 條件的通貨群組">依掉落數量分色</button>'}
+    </div>
+    <div class="hintline">拆分會複製目前規則與配色；移動只會列出 SHOW／HIDE、Class、其他條件和堆疊條件都相同的安全目標群組。</div>
+  </div>`:''}
 
   <div class="sec">
     <h3>顏色<span>點色塊開調色盤</span></h3>
@@ -5658,8 +5899,11 @@ function refreshSelected(){
 }
 function syncLint(){
   if(!state.doc) return;
-  const n=lintAll().reduce((a,x)=>a+x.issues.length,0);
+  const safe=safetyState();
+  const n=lintAll().reduce((a,x)=>a+x.issues.length,0)+(safe.ok?0:1);
   $('#lintN').textContent=n?n:'';
+  $('#safetyBtn').textContent=safe.ok?'防呆 ✓':'防呆 !';
+  $('#safetyBtn').classList.toggle('primary',!safe.ok);
 }
 
 /* ======================================================================
@@ -5709,6 +5953,8 @@ $('#files').addEventListener('click',e=>{ const t=e.target.closest('.ftab'); if(
 
 $('#inspector').addEventListener('click',e=>{
   const b=curBlock(); if(!b) return;
+  if(e.target.closest('#manageGroup')){ openGroupManager(b); return; }
+  if(e.target.closest('#stackTiers')){ openStackTierManager(b); return; }
   const sh=e.target.closest('#showhide button');
   if(sh){ if(b.type!==sh.dataset.t){ snap([b],'showhide'); b.type=sh.dataset.t; touch(b); } renderInspector(); refreshSelected(); return; }
   const cx=e.target.closest('.ci .x');
@@ -5822,6 +6068,8 @@ $('#nameMode').addEventListener('click',()=>{
 });
 $('#undoBtn').addEventListener('click',doUndo);
 $('#redoBtn').addEventListener('click',doRedo);
+$('#stylePresets').addEventListener('click',openStylePresetManager);
+$('#safetyBtn').addEventListener('click',openSafetyManager);
 $('#lintBtn').addEventListener('click',()=>{
   const gs=lintGroups();
   const total=gs.reduce((a,g)=>a+g.n,0);
@@ -5864,6 +6112,289 @@ function confirmBox(title,html,onYes){
   $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
   $('#cbYes').onclick=()=>{ $('#modal').classList.remove('on'); onYes(); };
 }
+
+/* 物品群組：從 BaseType 群組拆分，或在相容群組間移動 */
+function groupCheckedValues(){
+  return [...$('#modalBody').querySelectorAll('.gitem input:checked')]
+    .map(x=>x.dataset.i).map(i=>positiveBaseRule(curBlock())?.values[+i]?.v).filter(Boolean);
+}
+function finishGroupEdit(message){
+  $('#modal').classList.remove('on');
+  renderAll();
+  const row=document.querySelector(`.row[data-id="${state.sel}"]`);
+  if(row) row.scrollIntoView({block:'center'});
+  toast(message);
+}
+function openGroupManager(source){
+  const br=positiveBaseRule(source); if(!br) return;
+  const targets=compatibleGroupTargets(source);
+  $('#modalTitle').textContent='物品群組 · '+(officialName(source)||authorName(source)||'未命名');
+  $('#modalBody').innerHTML=`
+    <p style="margin:0;color:var(--muted)">勾選要處理的物品。拆分會建立一個保留目前條件、配色、音效與圖示的新群組；移動會改用目標群組的樣式。</p>
+    <div style="display:flex;gap:6px;margin-top:10px">
+      <button class="chip" id="groupAll">全選</button><button class="chip" id="groupNone">取消全選</button>
+    </div>
+    <div class="gitems">${br.values.map((v,i)=>`<label class="gitem">
+      <input type="checkbox" data-i="${i}">
+      <span><b>${esc(tr(v.v)||v.v)}</b>${tr(v.v)?`<small>${esc(v.v)}</small>`:''}</span>
+    </label>`).join('')}</div>
+    <div class="field"><label>拆分後的新群組註解（可留空，名稱仍會取自物品）</label>
+      <input class="inp" id="splitName" placeholder="例如 高價碎片／凡人的無知"></div>
+    <div class="field"><label>移動到其他群組</label>
+      <select class="inp" id="moveTarget" ${targets.length?'':'disabled'}>
+        ${targets.length?targets.map(t=>`<option value="${esc(t.id)}">${esc(officialName(t)||authorName(t)||'未命名群組')} · ${ruleValues(t,'BaseType').length} 項</option>`).join(''):'<option>沒有條件相同的其他群組</option>'}
+      </select>
+      <div class="hintline">${targets.length?`找到 ${targets.length} 個安全目標。移動後，物品會使用目標群組的顏色。`:'目前沒有可安全移入的群組；你仍可先「拆成新群組」，改好顏色後再使用。'}</div>
+    </div>`;
+  $('#modalFoot').innerHTML=`<button class="btn" id="cbNo">取消</button>
+    <button class="btn" id="groupSplit" ${br.values.length<2?'disabled':''}>拆成新群組</button>
+    <button class="btn primary" id="groupMove" ${targets.length?'':'disabled'}>移到選定群組</button>`;
+  $('#modal').classList.add('on');
+  $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
+  $('#groupAll').onclick=()=>$('#modalBody').querySelectorAll('.gitem input').forEach(x=>x.checked=true);
+  $('#groupNone').onclick=()=>$('#modalBody').querySelectorAll('.gitem input').forEach(x=>x.checked=false);
+  $('#groupSplit').onclick=()=>{
+    const picked=groupCheckedValues();
+    if(!picked.length){ toast('請先勾選要拆分的物品'); return; }
+    if(picked.length>=br.values.length){ toast('拆分時原群組至少要保留一項'); return; }
+    snapDoc('split-group');
+    const next=cloneBlock(source);
+    putRule(next,'BaseType',picked,br.op);
+    putRule(source,'BaseType',br.values.map(v=>v.v).filter(v=>!picked.includes(v)),br.op);
+    const customName=$('#splitName').value.trim();
+    if(customName) next.headComment=customName;
+    insertBlockBefore(source,next);
+    state.sel=next.id;
+    finishGroupEdit(`已拆出新群組，共 ${picked.length} 項`);
+  };
+  if(targets.length) $('#groupMove').onclick=()=>{
+    const picked=groupCheckedValues();
+    if(!picked.length){ toast('請先勾選要移動的物品'); return; }
+    const target=state.doc.blocks.find(b=>b.id===$('#moveTarget').value);
+    if(!target){ toast('找不到目標群組'); return; }
+    const trule=positiveBaseRule(target); if(!trule) return;
+    snapDoc('move-group');
+    const merged=trule.values.map(v=>v.v);
+    for(const v of picked) if(!merged.includes(v)) merged.push(v);
+    putRule(target,'BaseType',merged,trule.op);
+    const left=br.values.map(v=>v.v).filter(v=>!picked.includes(v));
+    if(left.length){
+      putRule(source,'BaseType',left,br.op);
+      state.sel=source.id;
+    }else{
+      removeBlock(source);
+      state.sel=target.id;
+    }
+    finishGroupEdit(`已移動 ${picked.length} 項到「${officialName(target)||authorName(target)||'目標群組'}」`);
+  };
+}
+
+/* 通貨堆疊分色：較高門檻必須排在一般規則之前 */
+function tierRowHTML(n,fg,bg,bd){
+  return `<div class="tierrow">
+    <label>最少掉落數量<input class="inp tiernum" type="number" min="2" max="50000" step="1" value="${n}"></label>
+    <label>文字色<input class="tiercolor tierfg" type="color" value="${fg}"></label>
+    <label>背景色<input class="tiercolor tierbg" type="color" value="${bg}"></label>
+    <label>邊框色<input class="tiercolor tierbd" type="color" value="${bd}"></label>
+    <button class="tierremove" title="移除此門檻">✕</button>
+  </div>`;
+}
+function existingTier(base,n){
+  return state.doc.blocks.find(b=>b!==base&&b.type===base.type&&b.section===base.section&&
+    baseTypeKey(b)===baseTypeKey(base)&&selectorKey(b)===selectorKey(base)&&
+    (()=>{ const r=findRule(b,'StackSize'); return r&&['','>=','>','=',
+      '=='].includes(r.op)&&parseInt(r.values[0]?.v,10)===n; })());
+}
+function openStackTierManager(base){
+  if(!positiveBaseRule(base)||findRule(base,'StackSize')||classify(base)!=='1') return;
+  const fg=hexColor(getColor(base,'SetTextColor'),'#ffffff');
+  const bg=hexColor(getColor(base,'SetBackgroundColor'),'#000000');
+  const bd=hexColor(getColor(base,'SetBorderColor'),'#c8aa6e');
+  $('#modalTitle').textContent='依掉落數量分色 · '+(officialName(base)||authorName(base)||'通貨');
+  $('#modalBody').innerHTML=`
+    <p style="margin:0;color:var(--muted)">每個門檻會建立一條 <b style="color:var(--gold-hi)">StackSize &gt;= 數量</b> 規則，並自動排在目前的一般數量規則之前。門檻請由程式排序，不需要自己調整先後。</p>
+    <div class="tierrows" id="tierRows">${tierRowHTML(10,fg,bg,bd)}</div>
+    <button class="addcond" id="tierAdd">＋ 新增一個數量門檻</button>
+    <div class="hintline">例：20+ 用金色、10+ 用紅色；未達 10 個時沿用目前群組的原配色。同一門檻已存在時會更新配色並移到正確位置。</div>`;
+  $('#modalFoot').innerHTML='<button class="btn" id="cbNo">取消</button><button class="btn primary" id="tierApply">建立／更新數量分色</button>';
+  $('#modal').classList.add('on');
+  $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
+  $('#tierAdd').onclick=()=>{
+    const nums=[...$('#tierRows').querySelectorAll('.tiernum')].map(x=>+x.value).filter(Number.isFinite);
+    const n=nums.length?Math.max(...nums)+10:10;
+    $('#tierRows').insertAdjacentHTML('beforeend',tierRowHTML(n,fg,bg,bd));
+  };
+  $('#modalBody').onclick=e=>{
+    const x=e.target.closest('.tierremove');
+    if(x) x.closest('.tierrow').remove();
+  };
+  $('#tierApply').onclick=()=>{
+    const rows=[...$('#tierRows').querySelectorAll('.tierrow')].map(row=>({
+      n:parseInt(row.querySelector('.tiernum').value,10),
+      fg:row.querySelector('.tierfg').value,bg:row.querySelector('.tierbg').value,bd:row.querySelector('.tierbd').value
+    })).filter(x=>Number.isFinite(x.n)&&x.n>=2);
+    if(!rows.length){ toast('至少需要一個 2 以上的數量門檻'); return; }
+    const seen=new Set(),unique=[];
+    for(const row of rows.sort((a,z)=>z.n-a.n)) if(!seen.has(row.n)){ seen.add(row.n); unique.push(row); }
+    snapDoc('stack-tiers');
+    for(const row of unique){
+      let tier=existingTier(base,row.n);
+      if(tier) removeBlock(tier);
+      else{
+        tier=cloneBlock(base);
+        tier.headComment=((base.headComment||'').trim()||officialName(base)||'通貨')+` · ${row.n}+ 個`;
+      }
+      putRule(tier,'StackSize',[row.n],'>=');
+      setHexColor(tier,'SetTextColor',row.fg);
+      setHexColor(tier,'SetBackgroundColor',row.bg);
+      setHexColor(tier,'SetBorderColor',row.bd);
+      insertBlockBefore(base,tier);
+    }
+    state.sel=base.id;
+    $('#modal').classList.remove('on');
+    renderAll();
+    toast(`已建立／更新 ${unique.length} 個數量門檻`);
+  };
+}
+
+/* 樣式階級：勾選物品後抽出原群組，依相容條件合併並套用同一外觀 */
+function assignablePresetItems(){
+  const map=new Map();
+  for(const b of state.doc.blocks){
+    const r=positiveBaseRule(b);
+    if(!r||findRule(b,'StackSize')) continue;
+    for(const v of r.values){
+      let x=map.get(v.v);
+      if(!x){ x={v:v.v,blocks:[],cat:catName(classify(b))}; map.set(v.v,x); }
+      x.blocks.push(b);
+    }
+  }
+  return [...map.values()].sort((a,z)=>(a.cat.localeCompare(z.cat,'zh-Hant')||
+    String(tr(a.v)||a.v).localeCompare(String(tr(z.v)||z.v),'zh-Hant')));
+}
+function styleTierPreview(t){
+  return `color:${css(t.fg,DEF_FG)};background:${css(t.bg,DEF_BG)};border-color:${css(t.bd,'transparent')}`;
+}
+function renderPresetItemList(items,query){
+  const q=String(query||'').trim().toLowerCase();
+  const shown=items.filter(x=>!q||[x.v,tr(x.v)||'',x.cat].join(' ').toLowerCase().includes(q));
+  $('#presetItems').innerHTML=shown.length?shown.map(x=>`<label class="presetitem">
+    <input type="checkbox" data-item="${esc(x.v)}">
+    <span><b>${esc(tr(x.v)||x.v)}</b>${tr(x.v)?` <small>${esc(x.v)}</small>`:''}</span>
+    <em>${esc(x.cat)}</em>
+  </label>`).join(''):'<div class="empty" style="padding:28px">找不到符合的物品</div>';
+  return shown.length;
+}
+function presetSelectedValues(){
+  return [...$('#presetItems').querySelectorAll('input:checked')].map(x=>x.dataset.item);
+}
+function applyPresetItems(values,tier){
+  const wanted=new Set(values),groups=new Map();
+  for(const b of state.doc.blocks.slice()){
+    const r=positiveBaseRule(b); if(!r||findRule(b,'StackSize')) continue;
+    const picked=r.values.map(v=>v.v).filter(v=>wanted.has(v));
+    if(!picked.length) continue;
+    const key=[b.section,classKey(b),selectorKey(b)].join('\u001c');
+    let g=groups.get(key);
+    if(!g){ g={ref:b,sources:[],values:[]}; groups.set(key,g); }
+    g.sources.push({b,picked});
+    for(const v of picked) if(!g.values.includes(v)) g.values.push(v);
+  }
+  if(!groups.size) return 0;
+  snapDoc('style-preset');
+  let first=null;
+  for(const g of groups.values()){
+    const next=cloneBlock(g.ref);
+    next.headComment=`${tier.name} · ${g.values.length} 項`;
+    putRule(next,'BaseType',g.values,positiveBaseRule(g.ref).op);
+    applyStyleTier(next,tier);
+    insertBlockBefore(g.ref,next);
+    if(!first) first=next;
+    for(const s of g.sources){
+      const sr=positiveBaseRule(s.b); if(!sr) continue;
+      const left=sr.values.map(v=>v.v).filter(v=>!s.picked.includes(v));
+      if(left.length) putRule(s.b,'BaseType',left,sr.op); else removeBlock(s.b);
+    }
+  }
+  state.sel=first?.id||state.sel;
+  return groups.size;
+}
+function openStylePresetManager(){
+  if(!state.doc) return;
+  const items=assignablePresetItems();
+  const cur=()=>state.styleTiers.find(t=>t.id===state.presetTier)||state.styleTiers[2];
+  $('#modalTitle').textContent='樣式階級 · 勾選物品快速歸類';
+  $('#modalBody').innerHTML=`
+    <p style="margin:0;color:var(--muted)">先選一個階級，再勾選物品。套用後，物品會從原群組抽出並改用這個階級；不同 Class 或附加條件的物品會分成多條安全規則，但外觀保持一致。</p>
+    <div class="presetgrid">${state.styleTiers.map(t=>`<button class="presetcard ${t.id===state.presetTier?'on':''}" data-tier="${t.id}">
+      <span class="gl" style="${styleTierPreview(t)}">${esc(t.name)}</span><small>${esc(t.desc)} · ${t.font}px</small>
+    </button>`).join('')}</div>
+    <div style="display:flex;gap:7px">
+      <input class="inp" id="presetSearch" type="search" placeholder="搜尋物品、英文名稱或分類">
+      <button class="chip" id="presetAll" style="flex:0 0 auto">勾選搜尋結果</button>
+      <button class="chip" id="presetNone" style="flex:0 0 auto">全部取消</button>
+    </div>
+    <div class="presetitems" id="presetItems"></div>
+    <div class="hintline">目前共 ${items.length} 種可歸類物品；具有 StackSize 的數量分色規則會保留，不會被這裡拆掉。</div>`;
+  $('#modalFoot').innerHTML='<button class="btn" id="cbNo">取消</button><button class="btn" id="presetCapture">用目前區塊覆蓋此階樣式</button><button class="btn primary" id="presetApply">套用到勾選物品</button>';
+  $('#modal').classList.add('on');
+  renderPresetItemList(items,'');
+  $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
+  $('#presetSearch').oninput=e=>renderPresetItemList(items,e.target.value);
+  $('#presetAll').onclick=()=>$('#presetItems').querySelectorAll('input').forEach(x=>x.checked=true);
+  $('#presetNone').onclick=()=>$('#presetItems').querySelectorAll('input').forEach(x=>x.checked=false);
+  $('#modalBody').onclick=e=>{
+    const card=e.target.closest('.presetcard'); if(!card) return;
+    state.presetTier=card.dataset.tier;
+    $('#modalBody').querySelectorAll('.presetcard').forEach(x=>x.classList.toggle('on',x===card));
+  };
+  $('#presetCapture').onclick=()=>{
+    const b=curBlock(); if(!b){ toast('請先在主畫面選一個已調好樣式的區塊'); return; }
+    const i=state.styleTiers.findIndex(t=>t.id===state.presetTier);
+    state.styleTiers[i]=captureStyleTier(b,state.styleTiers[i]);
+    saveStyleTiers();
+    $('#modal').classList.remove('on');
+    toast(`已把目前區塊存成「${state.styleTiers[i].name}」樣式`);
+  };
+  $('#presetApply').onclick=()=>{
+    const values=presetSelectedValues();
+    if(!values.length){ toast('請先勾選要歸類的物品'); return; }
+    const t=cur(),n=applyPresetItems(values,t);
+    if(!n){ toast('找不到可套用的物品規則'); return; }
+    $('#modal').classList.remove('on');
+    renderAll();
+    toast(`已把 ${values.length} 種物品套用為「${t.name}」`);
+  };
+}
+
+function openSafetyManager(){
+  if(!state.doc) return;
+  const s=safetyState();
+  $('#modalTitle').textContent='未分類物品防呆層';
+  $('#modalBody').innerHTML=s.ok
+    ? `<p style="margin:0 0 12px;color:#a9cf90">✓ 已找到有效的防呆層，而且位於 Filter 最後。</p>
+       <div class="stagefloor" style="height:150px;border:1px solid var(--rule)"><div class="beam" style="background:linear-gradient(to top,${NAMED.Pink||'#ff00ff'},transparent)"></div>
+       <span class="gl previewlabel" style="${labelStyle(s.b,24)}">${esc(officialName(s.b)||authorName(s.b)||'未分類／新物品')}</span></div>
+       <div class="hintline">遊戲中若出現這個醒目樣式，代表物品沒有命中前方分類，應回到編輯器把它加入正確階級。</div>`
+    : `<p style="margin:0 0 10px;color:#e2a89e">目前防呆層不完整：${!s.b?'找不到無條件 Show 兜底規則。':(!s.atEnd?'兜底規則不在 Filter 最後。':'兜底規則沒有特殊色、光柱、圖示或提示音。')}</p>
+       <p style="margin:0;color:var(--muted)">修復後，所有未命中規則的物品會使用紫紅背景、白字、粉紅光柱、星形小地圖圖示與內建提示音。匯出時也會自動檢查並補上。</p>`;
+  $('#modalFoot').innerHTML=s.ok
+    ? '<button class="btn" id="cbNo">關閉</button><button class="btn" id="safetyRestyle">改用 Filter Forge 防呆樣式</button>'
+    : '<button class="btn" id="cbNo">取消</button><button class="btn primary" id="safetyFix">立即修復</button>';
+  $('#modal').classList.add('on');
+  $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
+  const fix=()=>{
+    snapDoc('safety-layer');
+    const r=ensureSafetyLayer();
+    applySafetyStyle(r.b);
+    if(r.b!==state.doc.blocks[state.doc.blocks.length-1]) moveBlockToEnd(r.b);
+    state.sel=r.b.id;
+    $('#modal').classList.remove('on'); renderAll(); toast('防呆層已放到 Filter 最後');
+  };
+  if($('#safetyFix')) $('#safetyFix').onclick=fix;
+  if($('#safetyRestyle')) $('#safetyRestyle').onclick=fix;
+}
+
 $('#addcat').addEventListener('click',()=>{
   $('#modalTitle').textContent='自訂分類';
   $('#modalBody').innerHTML=`
@@ -5893,6 +6424,109 @@ $('#addcat').addEventListener('click',()=>{
 });
 
 /* 檔案 */
+function blankFilterText(){
+  return `# Filter Forge 新建空白 Filter
+# 使用「樣式階級」或開啟其他 Filter 後開始建立規則
+
+# 9.99 Filter Forge 防呆層
+# 未命中任何前方規則的物品會以特殊色顯示
+Show # Filter Forge 防呆層 - 未分類／未命中物品
+    SetFontSize 45
+    SetTextColor 255 255 255 255
+    SetBorderColor 255 0 255 255
+    SetBackgroundColor 100 0 100 255
+    PlayAlertSound 6 300
+    PlayEffect Pink
+    MinimapIcon 0 Pink Star
+`;
+}
+function starterTierLines(t){
+  const lines=[];
+  const cv=c=>c?[c.r,c.g,c.b].concat(c.a<255?[c.a]:[]).join(' '):null;
+  if(t.fg) lines.push('    SetTextColor '+cv(t.fg));
+  if(t.bg) lines.push('    SetBackgroundColor '+cv(t.bg));
+  if(t.bd) lines.push('    SetBorderColor '+cv(t.bd));
+  lines.push('    SetFontSize '+t.font);
+  if(t.mm) lines.push(`    MinimapIcon ${t.mm.size} ${t.mm.color} ${t.mm.shape}`);
+  if(t.beam) lines.push(`    PlayEffect ${t.beam.color}${t.beam.temp?' Temp':''}`);
+  return lines.join('\n');
+}
+function starterBlocks(title,num,values,tier,extra){
+  const chunks=[]; for(let i=0;i<values.length;i+=36) chunks.push(values.slice(i,i+36));
+  return chunks.map((part,i)=>`Show # Filter Forge - ${title} - 待分級 ${i+1}/${chunks.length}
+${extra?extra+'\n':''}    BaseType == ${part.map(v=>'"'+String(v).replace(/"/g,'')+'"').join(' ')}
+${starterTierLines(tier)}
+`).join('\n');
+}
+function buildFullStarterFilter(){
+  const by={}; for(const [name,code] of Object.entries(NAMECAT)) (by[code]||(by[code]=[])).push(name);
+  const tier=id=>state.styleTiers.find(t=>t.id===id);
+  const groups=[
+    {code:'1',num:'1',title:'通貨／精髓／化石',tier:'t5'},
+    {code:'2',num:'2',title:'輿圖',tier:'t6'},
+    {code:'3',num:'3',title:'輿圖碎片／聖甲蟲',tier:'t5'},
+    {code:'4',num:'4',title:'聯盟／特殊物品',tier:'t6'},
+    {code:'5',num:'5',title:'命運卡',tier:'t6'},
+    {code:'6',num:'6',title:'技能與輔助寶石',tier:'t7'},
+    {code:'7',num:'7',title:'傳奇與裝備底材',tier:'t6',extra:'    Rarity = Unique'},
+    {code:'8',num:'8',title:'其他已知物品',tier:'t6'}
+  ];
+  const out=[`# Filter Forge 完整新建 Filter
+# 由編輯器內建的 ${Object.keys(NAMES).length} 筆物品資料產生，不直接複製任何第三方 Filter
+# 初始群組只是安全打樣，請使用「樣式階級」依當季價格重新分類
+`];
+  for(const g of groups){
+    out.push(`# ${g.num} ${g.title}`);
+    out.push(starterBlocks(g.title,g.num,by[g.code]||[],tier(g.tier),g.extra||''));
+  }
+  out.push(`# 9 廣義分類防漏
+Show # Filter Forge - 未列名傳奇
+    Rarity = Unique
+${starterTierLines(tier('t4'))}
+
+Show # Filter Forge - 輿圖
+    Class "Maps"
+${starterTierLines(tier('t6'))}
+
+Show # Filter Forge - 稀有裝備
+    Rarity = Rare
+${starterTierLines(tier('t7'))}
+
+Show # Filter Forge - 普通／魔法裝備
+    Class "Amulets" "Belts" "Body Armours" "Boots" "Bows" "Claws" "Daggers" "Gloves" "Helmets" "One Hand Axes" "One Hand Maces" "One Hand Swords" "Quivers" "Rings" "Rune Daggers" "Sceptres" "Shields" "Staves" "Thrusting One Hand Swords" "Two Hand Axes" "Two Hand Maces" "Two Hand Swords" "Wands" "Warstaves"
+    Rarity <= Magic
+${starterTierLines(tier('t8'))}
+
+${blankFilterText().split('\n').slice(3).join('\n')}`);
+  return out.join('\n');
+}
+function openNewFilter(){
+  $('#modalTitle').textContent='新建 Filter';
+  $('#modalBody').innerHTML=`
+    <p style="margin:0;color:var(--muted)">這裡只建立 Filter Forge 自己產生的 Filter，不會直接套用任何第三方 Filter 的規則與樣式。</p>
+    <div class="presetgrid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+      <button class="presetcard" data-newfilter="full" style="padding:12px">
+        <span class="gl" style="color:#fff;background:#641933;border-color:#ff4f7d">Filter Forge 完整新建</span>
+        <small>${Object.keys(NAMES).length} 筆內建物品 · 原創安全分組 · 建議</small>
+      </button>
+      <button class="presetcard" data-newfilter="blank" style="padding:12px">
+        <span class="gl" style="color:#fff;background:#640064;border-color:#ff00ff">空白 Filter</span>
+        <small>只含最後防呆層</small>
+      </button>
+    </div>
+    <div class="hintline">完整新建會加入通貨、精髓、化石、碎片、聖甲蟲、聯盟物品、命運卡、寶石與傳奇／裝備底材，再以廣義規則和最後防呆層接住遺漏物品。</div>`;
+  $('#modalFoot').innerHTML='<button class="btn" id="cbNo">取消</button>';
+  $('#modal').classList.add('on');
+  $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
+  $('#modalBody').onclick=e=>{
+    const card=e.target.closest('[data-newfilter]'); if(!card) return;
+    const id=card.dataset.newfilter;
+    $('#modal').classList.remove('on');
+    if(id==='full') addDoc(buildFullStarterFilter(),'FilterForge_完整新建.filter');
+    else addDoc(blankFilterText(),'FilterForge_空白.filter');
+    toast(id==='full'?'已建立 Filter Forge 完整 Filter':'已建立空白 Filter');
+  };
+}
 function addDoc(text,name){
   const d=parseDoc(text,name);
   state.docs.push(d); selectDoc(d);
@@ -5908,8 +6542,10 @@ function loadFiles(list){
   [...list].forEach(f=>{ const rd=new FileReader(); rd.onload=()=>addDoc(rd.result,f.name); rd.readAsText(f,'utf-8'); });
 }
 $('#fileinput').addEventListener('change',e=>{ loadFiles(e.target.files); e.target.value=''; });
+$('#newDoc').addEventListener('click',openNewFilter);
 $('#pick').addEventListener('click',()=>$('#fileinput').click());
 $('#gatePick').addEventListener('click',()=>$('#fileinput').click());
+$('#gateNew').addEventListener('click',openNewFilter);
 const dz=$('#dz');
 ['dragenter','dragover'].forEach(t=>document.addEventListener(t,e=>{ e.preventDefault(); if(dz) dz.classList.add('hot'); }));
 ['dragleave','drop'].forEach(t=>document.addEventListener(t,e=>{ e.preventDefault(); if(dz) dz.classList.remove('hot'); }));
@@ -5917,6 +6553,12 @@ document.addEventListener('drop',e=>{ if(e.dataTransfer.files.length) loadFiles(
 
 function download(toTW){
   const d=state.doc; if(!d) return;
+  if(!safetyState().ok){
+    snapDoc('safety-layer');
+    ensureSafetyLayer();
+    renderAll();
+    toast('已自動補上未分類物品防呆層');
+  }
   const blob=new Blob([serializeDoc(d,toTW)],{type:'text/plain;charset=utf-8'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
