@@ -1,6 +1,9 @@
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Filter Forge · PoE1 過濾器編輯器</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0a0806">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Alegreya:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -37,12 +40,16 @@ button{cursor:pointer;background:none;border:none}
 .brand b{font-family:var(--display);font-size:16px;color:var(--gold-hi);font-weight:400;letter-spacing:.06em}
 .brand span{font-family:var(--mono);font-size:9px;color:var(--faint);letter-spacing:.16em}
 .files{display:flex;gap:2px;align-items:center;overflow-x:auto;flex:1 1 auto;min-width:0;height:100%}
-.ftab{flex:0 0 auto;max-width:210px;height:100%;padding:0 12px;display:flex;align-items:center;gap:7px;
+.ftab{flex:0 0 auto;max-width:230px;height:100%;padding:0 5px 0 10px;display:flex;align-items:center;gap:3px;
   border-bottom:2px solid transparent;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ftab:hover{color:var(--text);background:#ffffff06}
 .ftab.on{color:var(--gold-hi);border-bottom-color:var(--gold);background:#ffffff08}
 .ftab i{font-style:normal;font-family:var(--mono);font-size:9.5px;color:var(--faint)}
 .ftab.dirty i::after{content:' ●';color:var(--gold)}
+.ftabpick{min-width:0;flex:1 1 auto;height:100%;display:flex;align-items:center;gap:7px;color:inherit;text-align:left;overflow:hidden}
+.ftabpick .fn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ftabclose{flex:0 0 auto;width:25px;height:25px;color:var(--faint);font-size:15px;line-height:1;border:1px solid transparent}
+.ftabclose:hover{color:#e2a89e;border-color:#b0574a55;background:#b0574a14}
 .tools{display:flex;gap:6px;flex:0 0 auto;align-items:center}
 .btn{padding:6px 11px;border:1px solid var(--rule-lit);color:var(--text);font-size:12px;letter-spacing:.03em;background:#ffffff05;transition:.14s;white-space:nowrap}
 .btn:hover{border-color:var(--gold-dim);color:var(--gold-hi);background:#c8aa6e14}
@@ -216,6 +223,16 @@ input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--gold
 .presetcard.on{border-color:var(--gold);box-shadow:inset 0 0 0 1px #c8aa6e55;background:#c8aa6e0e}
 .presetcard .gl{display:block;text-align:center;max-width:none;margin-bottom:5px;padding:3px 5px}
 .presetcard small{display:block;color:var(--faint);font-family:var(--mono);font-size:9px;text-align:center}
+.presetedit{border:1px solid var(--rule-lit);background:#0000002e;padding:12px;margin:0 0 14px}
+.presetedit h4{margin:0 0 10px;color:var(--gold-hi);font-family:var(--display);font-weight:400}
+.preseteditgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.preseteditgrid .field{margin:0}
+.preseteditgrid .wide{grid-column:span 2}
+.presetedit .options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.presetedit .options > div{border:1px solid var(--rule);padding:8px;background:#00000030}
+.presetedit .options strong{display:block;color:var(--muted);font-size:10.5px;margin-bottom:6px;font-weight:500}
+.presetedit input[type=color]{width:100%;height:34px;border:1px solid var(--rule-lit);background:#0b0906;padding:2px}
+.presetedit input[type=checkbox]{accent-color:var(--gold)}
 .presetitems{max-height:330px;overflow:auto;border:1px solid var(--rule);margin-top:8px}
 .presetitem{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 9px;border-bottom:1px solid #ffffff08;cursor:pointer}
 .presetitem:hover{background:#ffffff07}
@@ -274,6 +291,7 @@ h1{font-family:var(--display);font-size:28px;font-weight:400;color:var(--gold-hi
   .tierrow{grid-template-columns:1fr 1fr}
   .tierremove{grid-column:2}
   .presetgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .preseteditgrid,.presetedit .options{grid-template-columns:1fr 1fr}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -281,7 +299,7 @@ h1{font-family:var(--display);font-size:28px;font-weight:400;color:var(--gold-hi
 <div id="gate">
   <div class="gatemark"><div class="b"></div><div class="l">無效石</div></div>
   <h1>Filter Forge</h1>
-  <p>流亡黯道 1 的掉落過濾器編輯器。英文與簡體過濾器都會換上台服官方繁中譯名，套用統一的分類架構，並即時預覽地上的物品標籤。</p>
+  <p>流亡黯道 1 的掉落過濾器編輯器。英文與簡體過濾器會搭配內建台服繁中名稱對照，套用統一的分類架構，並即時預覽地上的物品標籤。</p>
   <div class="dropzone" id="dz">
     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
       <button class="btn primary" id="gateNew">新建 Filter</button>
@@ -297,7 +315,7 @@ h1{font-family:var(--display);font-size:28px;font-weight:400;color:var(--gold-hi
     <div class="brand"><b>Filter Forge</b><span>POE1</span></div>
     <div class="files" id="files"></div>
     <div class="tools">
-      <button class="btn" id="nameMode" title="切換區塊名稱來源">官方譯名</button>
+      <button class="btn" id="nameMode" title="切換區塊名稱來源" hidden>內建譯名</button>
       <button class="btn" id="undoBtn" title="復原 Ctrl+Z" disabled>復原</button>
       <button class="btn" id="redoBtn" title="重做 Ctrl+Shift+Z" disabled>重做</button>
       <button class="btn" id="stylePresets">樣式階級</button>
@@ -306,8 +324,8 @@ h1{font-family:var(--display);font-size:28px;font-weight:400;color:var(--gold-hi
       <button class="btn" id="newDoc">新建</button>
       <button class="btn" id="pick">開啟</button>
       <a class="btn" href="README_防呆與操作說明.md" target="_blank" rel="noopener" style="text-decoration:none">說明</a>
-      <button class="btn" id="save">匯出</button>
-      <button class="btn primary" id="saveTW">匯出繁體版</button>
+      <button class="btn" id="save" title="保留原檔註解文字，只輸出編輯後的規則">匯出</button>
+      <button class="btn primary" id="saveTW" title="輸出規則並把非引號內的簡體註解轉成繁體">匯出繁體版</button>
     </div>
   </header>
 
@@ -4984,9 +5002,9 @@ Zodiac Leather	星辰皮甲	7</script>
 /* ======================================================================
    1. 譯名資料
    ---------------------------------------------------------------------
-   NAMES：台服官方繁中物品名（英文 refName → 繁中），共 4627 筆，
-          取自 Awakened PoE Trade 的 cmn-Hant 資料集（圖檔來自 webtw.poecdn.com，
-          即台服客戶端字串）。第三欄是分類代碼。
+   NAMES：台服繁中物品名對照（英文 refName → 繁中），共 4627 筆來源列，
+          取自 Awakened PoE Trade 的 cmn-Hant 社群資料集；資料標註對照
+          webtw.poecdn.com 的台服客戶端字串。第三欄是分類代碼。
    CLASSES：物品種類（Class）名稱表。GGG 沒有公開的對照檔，這份是人工整理，
           其中多數以台服底子名稱的共同字尾交叉驗證過；沒把握的一律留英文，
           可在「譯名」對話框自行補上。
@@ -5023,9 +5041,10 @@ const CLASSES={
 };
 
 /* 簡→繁字元表（依這批檔案實際用到的字產生，等同 OpenCC s2tw） */
-const TW_C="专專丝絲丢丟个個丰豐临臨丽麗义義乌烏书書买買乱亂争爭于於亚亞产產仆僕从從仪儀价價优優会會伟偉传傳伤傷体體余餘佣傭侦偵兰蘭兹茲内內冈岡军軍冲衝净淨准準减減击擊刚剛创創删刪别別制製剂劑剑劍剥剝务務动動励勵势勢勋勳区區华華单單卖賣卢盧卧臥卫衛厅廳厨廚双雙发髮变變叠疊后後启啟唤喚团團园園国國图圖圣聖场場块塊坚堅坟墳声聲备備复複头頭夺奪奋奮奖獎学學宝寶实實审審宫宮将將尔爾尘塵尽盡层層属屬岩巖巅巔币幣师師帜幟带帶庄莊庙廟废廢开開异異弃棄弹彈强強归歸忆憶志誌总總恒恆恳懇恶惡愤憤战戰托託扣釦扩擴抛拋护護报報拟擬拥擁挡擋捡撿换換掳擄敌敵断斷无無时時显顯晓曉术術朱硃机機杀殺权權来來杯盃极極标標样樣档檔梦夢棱稜欧歐残殘殒殞毁毀污汙泪淚洁潔涂塗涩澀渊淵渔漁温溫游遊溃潰溅濺滤濾潜潛灭滅灵靈灾災炉爐点點炼鍊炽熾烧燒烫燙烬燼热熱爱愛独獨狮獅狱獄猎獵猫貓献獻玛瑪环環现現电電监監盖蓋盘盤矫矯砖磚础礎礼禮离離种種称稱秽穢稳穩笔筆筑築类類纠糾红紅约約级級纪紀纯純纹紋线線组組细細经經绑綁结結绞絞统統续續绯緋绸綢绿綠缀綴缓緩缚縛缠纏罗羅肤膚脉脈脑腦脚腳腾騰致緻苍蒼药藥莱萊蓝藍虚虛虫蟲蚀蝕蜕蛻装裝见見视視觉覺认認记記许許论論设設证證诅詛识識诈詐词詞试試诚誠语語诱誘说說请請谒謁谜謎贝貝负負贡貢贤賢败敗货貨质質贪貪购購贵貴贷貸费費贼賊赋賦赎贖赏賞赛賽踪蹤转轉轮輪辅輔辩辯边邊达達过過运運还還这這远遠连連遗遺酿釀里裡鉴鑑针針钉釘钢鋼钥鑰钴鈷钻鑽铁鐵铠鎧银銀铸鑄链鍊锋鋒错錯锢錮锤錘锯鋸锻鍛镂鏤镜鏡镶鑲长長门門闪閃间間阳陽阶階险險随隨隐隱雏雛雾霧顶頂项項顿頓预預颅顱额額颤顫风風飞飛饰飾马馬驱驅验驗魇魘鱼魚鲁魯鲨鯊鸟鳥鸥鷗麦麥黄黃齿齒";
+const TW_C="专專丝絲丢丟个個丰豐临臨丽麗义義乌烏书書买買乱亂争爭于於亚亞产產仆僕从從仪儀价價优優会會伟偉传傳伤傷体體余餘佣傭侦偵兰蘭兹茲内內冈岡军軍冲衝净淨准準减減击擊刚剛创創删刪别別制製剂劑剑劍剥剝务務动動励勵势勢勋勳区區华華单單卖賣卢盧卧臥卫衛厅廳厨廚双雙发髮变變叠疊后後启啟唤喚团團园園国國图圖圣聖场場块塊坚堅坟墳声聲备備复複头頭夺奪奋奮奖獎学學宝寶实實审審宫宮将將尔爾尘塵尽盡层層属屬岩巖巅巔币幣师師帜幟带帶庄莊庙廟废廢开開异異弃棄弹彈强強归歸忆憶志誌总總恒恆恳懇恶惡愤憤战戰托託扣釦扩擴抛拋护護报報拟擬拥擁挡擋捡撿换換掳擄敌敵断斷无無时時显顯晓曉术術朱硃机機杀殺权權来來杯盃极極标標样樣档檔梦夢棱稜欧歐残殘殒殞毁毀污汙泪淚洁潔涂塗涩澀渊淵渔漁温溫游遊溃潰溅濺滤濾潜潛灭滅灵靈灾災炉爐点點炼鍊炽熾烧燒烫燙烬燼热熱爱愛独獨狮獅狱獄猎獵猫貓献獻玛瑪环環现現电電监監盖蓋盘盤矫矯砖磚础礎礼禮离離种種称稱秽穢稳穩笔筆筑築类類纠糾红紅约約级級纪紀纯純纹紋线線组組细細经經绑綁结結绞絞统統续續绯緋绸綢绿綠缀綴缓緩缚縛缠纏罗羅肤膚脉脈脑腦脚腳腾騰致緻苍蒼药藥莱萊蓝藍虚虛虫蟲蚀蝕蜕蛻装裝见見视視觉覺认認记記许許论論设設证證诅詛识識诈詐词詞试試诚誠语語诱誘说說请請谒謁谜謎贝貝负負贡貢贤賢败敗货貨质質贪貪购購贵貴贷貸费費贼賊赋賦赎贖赏賞赛賽踪蹤转轉轮輪辅輔辩辯边邊达達过過运運还還这這远遠连連遗遺酿釀里裡鉴鑑针針钉釘钢鋼钥鑰钴鈷钻鑽铁鐵铠鎧银銀铸鑄链鍊锋鋒错錯锢錮锤錘锯鋸锻鍛镂鏤镜鏡镶鑲长長门門闪閃间間阳陽阶階险險随隨隐隱雏雛雾霧顶頂项項顿頓预預颅顱额額颤顫风風飞飛饰飾马馬驱驅验驗魇魇鱼魚鲁魯鲨鯊鸟鳥鸥鷗麦麥黄黃齿齒简簡释釋";
 const TW_W=[["炉炼化","爐煉化"],["飞升手","飛昇手"],["西里衣","西里衣"],["形炼狱","形煉獄"],["意志戒","意志戒"],["贵链接","貴鏈接"],["飞升）","飛昇）"],["轮回长","輪迴長"],["之链）","之鏈）"],["的链接","的鏈接"],["意志石","意志石"],["盘链","盤鏈"],["扣钉","扣釘"],["扣链","扣鏈"],["链接","鏈接"]];
 const TWMAP={}; for(let i=0;i<TW_C.length;i+=2) TWMAP[TW_C[i]]=TW_C[i+1];
+TWMAP['魇']='魘';
 function twConv(s){
   if(!s) return s;
   const held=[]; let out=s;
@@ -5047,7 +5066,7 @@ function tr(en){
 }
 
 /* ======================================================================
-   2. 標準分類：直接沿用文子過濾器的九大類
+   2. 標準分類：Filter Forge 九大類
    ================================================================== */
 const TAX=[
   {id:'1',name:'通貨',cls:['Stackable Currency','Currency','Delve Stackable Socketable Currency','Delve Socketable Currency']},
@@ -5189,7 +5208,7 @@ function parseDoc(text,name){
       if(cur) cur.count++;
       continue;
     }
-    /* 章節標題：支援「# 1.1 標題」與 NeverSink 的「# [[0200]] 標題」／「#   [0301] 標題」 */
+    /* 章節標題：支援「# 1.1 標題」與「# [[0200]] 標題」／「#   [0301] 標題」 */
     let num=null,title=null,depth=1;
     let sm=line.match(/^#\s*([0-9]+(?:\.[0-9]+)*)\s+(.+)$/);
     if(sm && !/^#\s*\[/.test(line)){ num=sm[1]; title=sm[2]; depth=Math.min(4,num.split('.').length); }
@@ -5208,7 +5227,7 @@ function parseDoc(text,name){
     nodes.push({kind:'raw',text:line});
     i++;
   }
-  /* NeverSink 前面的目錄會重複列出所有章節編號，只保留第一個 Show/Hide 之後真正用到的 */
+  /* 有些 Filter 的前置目錄會重複章節編號，只保留第一個 Show/Hide 之後真正用到的 */
   const used=new Set(blocks.map(b=>b.section));
   const trimmed=sections.filter(s=>used.has(s.id)||s.count>0);
   return {name,eol,nodes,blocks,sections:trimmed.length?trimmed:sections,dirty:false};
@@ -5380,7 +5399,7 @@ function ensureSafetyLayer(){
   return {b:s.b,changed};
 }
 
-/* 名稱：官方譯名優先，找不到才用作者註解 */
+/* 名稱：內建繁中對照優先，找不到才用作者註解 */
 function nameSource(b){
   const bt=findRule(b,'BaseType'), cl=findRule(b,'Class');
   const r=(bt&&bt.values.length)?bt:((cl&&cl.values.length)?cl:null);
@@ -5445,9 +5464,10 @@ function lint(b){
   const out=[];
   const conds=b.rules.filter(r=>!r.unknown&&!/^(Set|Play|Minimap|Custom|Disable|Enable|Continue)/i.test(r.key));
   if(!conds.length&&!findRule(b,'Continue')){
-    out.push(b.type==='Hide'
-      ? {lv:'w',msg:'沒有任何條件的 Hide：會擋掉所有沒被上面規則攔截的物品。放在檔尾是正常收尾，放在中間會吃掉後面的規則'}
-      : {lv:'e',msg:'沒有任何條件的 Show：會顯示所有沒被上面規則攔截的物品'});
+    const atEnd=b===state.doc.blocks[state.doc.blocks.length-1];
+    if(!atEnd) out.push(b.type==='Hide'
+      ? {lv:'w',msg:'無條件 Hide 位於 Filter 中間，會讓後面的規則無法命中'}
+      : {lv:'e',msg:'無條件 Show 位於 Filter 中間，會先接住所有物品，使後面的規則失效'});
   }
   const fs=getNum(b,'SetFontSize');
   if(fs!=null&&(fs<18||fs>45)) out.push({lv:'w',msg:`字級 ${fs} 超出遊戲可用範圍 18–45，實際會被夾到 ${fs<18?18:45}`});
@@ -5620,7 +5640,10 @@ function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;',
 
 function renderFiles(){
   $('#files').innerHTML=state.docs.map((d,i)=>
-    `<button class="ftab ${d===state.doc?'on':''} ${d.dirty?'dirty':''}" data-i="${i}">${esc(d.name)} <i>${d.blocks.length}</i></button>`).join('');
+    `<div class="ftab ${d===state.doc?'on':''} ${d.dirty?'dirty':''}" data-i="${i}">
+      <button class="ftabpick" title="${esc(d.name)}"><span class="fn">${esc(d.name)}</span><i>${d.blocks.length}</i></button>
+      <button class="ftabclose" data-close="${i}" title="關閉 ${esc(d.name)}" aria-label="關閉 ${esc(d.name)}">×</button>
+    </div>`).join('');
 }
 function renderOutline(){
   const d=state.doc,rows=[];
@@ -5867,7 +5890,7 @@ function renderInspector(){
       <button class="toggle ${beam.temp?'on':''}" id="beamTemp" style="flex:0 0 auto;width:94px"><span class="box">${beam.temp?'✕':''}</span>Temp</button>
     </div>`:''}
     <div class="field" style="margin-top:12px"><label>自訂音效檔</label>
-      <input class="inp" id="snd" value="${esc(snd)}" placeholder="例如 文子过滤音效\\崇神石.mp3"></div>
+      <input class="inp" id="snd" value="${esc(snd)}" placeholder="例如 FilterForge音效\\高價通貨.mp3"></div>
     <button class="toggle ${noDrop?'on':''}" id="ddsToggle"><span class="box">${noDrop?'✕':''}</span>關閉預設掉落音</button>
   </div>
 
@@ -5885,7 +5908,7 @@ function renderInspector(){
       </div>`;
     }).join('')}
     <button class="addcond" id="addcond">＋ 新增條件</button>
-    <div class="hintline">一行一個值。下面灰字是查到的官方繁中譯名。</div>
+    <div class="hintline">一行一個值。下面灰字是內建繁中名稱對照。</div>
   </div>`;
 }
 function renderAll(){
@@ -5949,7 +5972,12 @@ document.querySelectorAll('.tabs button').forEach(btn=>btn.addEventListener('cli
   document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('on'));
   btn.classList.add('on'); state.tab=btn.dataset.tab; renderInspector();
 }));
-$('#files').addEventListener('click',e=>{ const t=e.target.closest('.ftab'); if(t) selectDoc(state.docs[+t.dataset.i]); });
+$('#files').addEventListener('click',e=>{
+  const close=e.target.closest('.ftabclose');
+  if(close){ requestCloseDoc(state.docs[+close.dataset.close]); return; }
+  const t=e.target.closest('.ftab');
+  if(t) selectDoc(state.docs[+t.dataset.i]);
+});
 
 $('#inspector').addEventListener('click',e=>{
   const b=curBlock(); if(!b) return;
@@ -6063,7 +6091,7 @@ $('#inspector').addEventListener('change',e=>{
 /* 工具列 */
 $('#nameMode').addEventListener('click',()=>{
   state.nameMode = state.nameMode==='official'?'author':'official';
-  $('#nameMode').textContent = state.nameMode==='official'?'官方譯名':'作者註解';
+  $('#nameMode').textContent = state.nameMode==='official'?'內建譯名':'作者註解';
   renderList(true); renderInspector(); renderFloor();
 });
 $('#undoBtn').addEventListener('click',doUndo);
@@ -6073,8 +6101,14 @@ $('#safetyBtn').addEventListener('click',openSafetyManager);
 $('#lintBtn').addEventListener('click',()=>{
   const gs=lintGroups();
   const total=gs.reduce((a,g)=>a+g.n,0);
+  const guide=`<div style="padding:10px 12px;margin-bottom:9px;border:1px solid var(--rule);background:#00000030;color:var(--muted);font-size:11.5px;line-height:1.8">
+    <b style="color:var(--gold-hi)">檢查規則：</b>
+    最後必須有一條「沒有 Class、BaseType、Rarity 等條件的 Show」作為防呆層，並具備特殊色或提示；
+    同時檢查字級、RGBA 0–255、小地圖／光柱參數、未知關鍵字、重複值，以及 Hide 上無效的音效設定。
+    <span style="color:var(--faint)">這裡不判斷物品價格，也不能取代遊戲本身的 Filter 載入驗證。</span>
+  </div>`;
   $('#modalTitle').textContent=total?`檢查結果 · ${total} 項，${gs.length} 類`:'檢查結果';
-  $('#modalBody').innerHTML= total
+  $('#modalBody').innerHTML= guide+(total
     ? gs.map(g=>`<div style="padding:9px 0;border-bottom:1px solid #ffffff0d">
         <div style="display:flex;gap:9px;align-items:flex-start">
           <span class="lv ${g.lv}" style="flex:0 0 42px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;padding:2px 0;text-align:center;border:1px solid;${g.lv==='e'?'color:#e2a89e;border-color:#b0574a55':'color:#dcb87f;border-color:#d0934155'}">${g.lv==='e'?'錯誤':'注意'}</span>
@@ -6084,7 +6118,7 @@ $('#lintBtn').addEventListener('click',()=>{
           `<button class="chip" data-jump="${b.id}" style="padding:3px 7px;font-size:10.5px">${esc(displayName(b))}</button>`).join('')}
           ${g.n>g.blocks.length?`<span style="color:var(--faint);font-size:10.5px;align-self:center">…還有 ${g.n-g.blocks.length} 個</span>`:''}</div>
         </div>`).join('')
-    : '<p style="color:var(--muted)">沒有發現問題。字級、顏色範圍、小地圖與光柱參數、關鍵字拼字都通過了。</p>';
+    : '<p style="color:var(--muted)">沒有發現問題。防呆層、字級、顏色範圍、小地圖與光柱參數、關鍵字拼字都通過了。</p>');
   $('#modalFoot').innerHTML='';
   $('#modal').classList.add('on');
 });
@@ -6275,18 +6309,58 @@ function assignablePresetItems(){
 function styleTierPreview(t){
   return `color:${css(t.fg,DEF_FG)};background:${css(t.bg,DEF_BG)};border-color:${css(t.bd,'transparent')}`;
 }
-function renderPresetItemList(items,query){
+function presetMatches(items,query){
   const q=String(query||'').trim().toLowerCase();
-  const shown=items.filter(x=>!q||[x.v,tr(x.v)||'',x.cat].join(' ').toLowerCase().includes(q));
+  return items.filter(x=>!q||[x.v,tr(x.v)||'',x.cat].join(' ').toLowerCase().includes(q));
+}
+function renderPresetItemList(items,query,checked){
+  const shown=presetMatches(items,query);
   $('#presetItems').innerHTML=shown.length?shown.map(x=>`<label class="presetitem">
-    <input type="checkbox" data-item="${esc(x.v)}">
+    <input type="checkbox" data-item="${esc(x.v)}" ${checked&&checked.has(x.v)?'checked':''}>
     <span><b>${esc(tr(x.v)||x.v)}</b>${tr(x.v)?` <small>${esc(x.v)}</small>`:''}</span>
     <em>${esc(x.cat)}</em>
   </label>`).join(''):'<div class="empty" style="padding:28px">找不到符合的物品</div>';
+  const n=$('#presetSelCount'); if(n) n.textContent=`已勾選 ${checked?checked.size:0}／${items.length}`;
   return shown.length;
 }
-function presetSelectedValues(){
-  return [...$('#presetItems').querySelectorAll('input:checked')].map(x=>x.dataset.item);
+function tierEditorHTML(t){
+  const opt=(arr,cur)=>arr.map(x=>`<option value="${esc(x)}" ${x===cur?'selected':''}>${esc(x)}</option>`).join('');
+  return `<div class="presetedit" id="presetEditor">
+    <h4>編輯 ${esc(t.name)}</h4>
+    <div class="preseteditgrid">
+      <div class="field wide"><label>階級名稱</label><input class="inp" id="peName" maxlength="24" value="${esc(t.name)}"></div>
+      <div class="field wide"><label>用途說明</label><input class="inp" id="peDesc" maxlength="40" value="${esc(t.desc)}"></div>
+      <div class="field"><label>文字色</label><input type="color" id="peFg" value="${hexColor(t.fg,'#ffffff')}"></div>
+      <div class="field"><label>背景色</label><input type="color" id="peBg" value="${hexColor(t.bg,'#000000')}"></div>
+      <div class="field"><label>邊框色</label><input type="color" id="peBd" value="${hexColor(t.bd,'#c8aa6e')}" ${t.bd?'':'disabled'}></div>
+      <div class="field"><label>字級</label><input class="inp" id="peFont" type="number" min="18" max="45" value="${t.font}"></div>
+    </div>
+    <div class="options">
+      <div><strong><label><input type="checkbox" id="peBdOn" ${t.bd?'checked':''}> 顯示邊框</label></strong>
+        <span class="hintline">關閉時會移除 SetBorderColor</span></div>
+      <div><strong><label><input type="checkbox" id="peMmOn" ${t.mm?'checked':''}> 小地圖圖示</label></strong>
+        <select class="inp" id="peMmSize" ${t.mm?'':'disabled'}>${[['0','大'],['1','中'],['2','小']].map(([v,n])=>`<option value="${v}" ${String(t.mm?.size??0)===v?'selected':''}>${n}</option>`).join('')}</select>
+        <select class="inp" id="peMmColor" ${t.mm?'':'disabled'}>${opt(MM_COLORS,t.mm?.color||'Yellow')}</select>
+        <select class="inp" id="peMmShape" ${t.mm?'':'disabled'}>${opt(MM_SHAPES,t.mm?.shape||'Circle')}</select></div>
+      <div><strong><label><input type="checkbox" id="peBeamOn" ${t.beam?'checked':''}> 掉落光柱</label></strong>
+        <select class="inp" id="peBeamColor" ${t.beam?'':'disabled'}>${opt(MM_COLORS,t.beam?.color||'Yellow')}</select>
+        <label class="toggle" style="padding-bottom:0"><input type="checkbox" id="peBeamTemp" ${t.beam?.temp?'checked':''} ${t.beam?'':'disabled'}> Temp 光柱</label></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn primary" id="presetSaveStyle">儲存此階修改</button></div>
+  </div>`;
+}
+function colorObject(hex,alpha){
+  const m=String(hex).match(/^#([0-9a-f]{6})$/i); if(!m) return null;
+  return {r:parseInt(m[1].slice(0,2),16),g:parseInt(m[1].slice(2,4),16),b:parseInt(m[1].slice(4,6),16),a:alpha??255};
+}
+function readTierEditor(old){
+  const bdOn=$('#peBdOn').checked,mmOn=$('#peMmOn').checked,beamOn=$('#peBeamOn').checked;
+  return {...old,name:$('#peName').value.trim()||old.name,desc:$('#peDesc').value.trim()||old.desc,
+    fg:colorObject($('#peFg').value,old.fg?.a??255),bg:colorObject($('#peBg').value,old.bg?.a??255),
+    bd:bdOn?colorObject($('#peBd').value,old.bd?.a??255):null,
+    font:Math.max(18,Math.min(45,parseInt($('#peFont').value,10)||old.font)),
+    mm:mmOn?{size:parseInt($('#peMmSize').value,10),color:$('#peMmColor').value,shape:$('#peMmShape').value}:null,
+    beam:beamOn?{color:$('#peBeamColor').value,temp:$('#peBeamTemp').checked}:null};
 }
 function applyPresetItems(values,tier){
   const wanted=new Set(values),groups=new Map();
@@ -6321,32 +6395,58 @@ function applyPresetItems(values,tier){
 }
 function openStylePresetManager(){
   if(!state.doc) return;
-  const items=assignablePresetItems();
+  const items=assignablePresetItems(),checked=new Set();
   const cur=()=>state.styleTiers.find(t=>t.id===state.presetTier)||state.styleTiers[2];
   $('#modalTitle').textContent='樣式階級 · 勾選物品快速歸類';
   $('#modalBody').innerHTML=`
-    <p style="margin:0;color:var(--muted)">先選一個階級，再勾選物品。套用後，物品會從原群組抽出並改用這個階級；不同 Class 或附加條件的物品會分成多條安全規則，但外觀保持一致。</p>
+    <p style="margin:0;color:var(--muted)">每個階級都能編輯名稱、說明、文字／背景／邊框色、字級、小地圖圖示與光柱。選好階級並勾選物品後，物品會從原群組抽出並套用該階樣式。</p>
     <div class="presetgrid">${state.styleTiers.map(t=>`<button class="presetcard ${t.id===state.presetTier?'on':''}" data-tier="${t.id}">
       <span class="gl" style="${styleTierPreview(t)}">${esc(t.name)}</span><small>${esc(t.desc)} · ${t.font}px</small>
     </button>`).join('')}</div>
-    <div style="display:flex;gap:7px">
+    ${tierEditorHTML(cur())}
+    <div style="display:flex;gap:7px;flex-wrap:wrap">
       <input class="inp" id="presetSearch" type="search" placeholder="搜尋物品、英文名稱或分類">
       <button class="chip" id="presetAll" style="flex:0 0 auto">勾選搜尋結果</button>
       <button class="chip" id="presetNone" style="flex:0 0 auto">全部取消</button>
+      <button class="chip" id="presetEverything" style="flex:0 0 auto">全部勾選</button>
     </div>
     <div class="presetitems" id="presetItems"></div>
-    <div class="hintline">目前共 ${items.length} 種可歸類物品；具有 StackSize 的數量分色規則會保留，不會被這裡拆掉。</div>`;
+    <div class="hintline"><span id="presetSelCount">已勾選 0／${items.length}</span>；具有 StackSize 的數量分色規則會保留，不會被這裡拆掉。</div>`;
   $('#modalFoot').innerHTML='<button class="btn" id="cbNo">取消</button><button class="btn" id="presetCapture">用目前區塊覆蓋此階樣式</button><button class="btn primary" id="presetApply">套用到勾選物品</button>';
   $('#modal').classList.add('on');
-  renderPresetItemList(items,'');
+  renderPresetItemList(items,'',checked);
   $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
-  $('#presetSearch').oninput=e=>renderPresetItemList(items,e.target.value);
-  $('#presetAll').onclick=()=>$('#presetItems').querySelectorAll('input').forEach(x=>x.checked=true);
-  $('#presetNone').onclick=()=>$('#presetItems').querySelectorAll('input').forEach(x=>x.checked=false);
+  const rerender=()=>renderPresetItemList(items,$('#presetSearch').value,checked);
+  $('#presetSearch').oninput=rerender;
+  $('#presetAll').onclick=()=>{ for(const x of presetMatches(items,$('#presetSearch').value)) checked.add(x.v); rerender(); };
+  $('#presetNone').onclick=()=>{ checked.clear(); rerender(); };
+  $('#presetEverything').onclick=()=>{ for(const x of items) checked.add(x.v); rerender(); };
+  $('#modalBody').onchange=e=>{
+    const item=e.target.closest('.presetitem input');
+    if(item){ item.checked?checked.add(item.dataset.item):checked.delete(item.dataset.item);
+      const n=$('#presetSelCount'); if(n) n.textContent=`已勾選 ${checked.size}／${items.length}`; return; }
+    if(e.target.id==='peBdOn') $('#peBd').disabled=!e.target.checked;
+    if(e.target.id==='peMmOn') ['#peMmSize','#peMmColor','#peMmShape'].forEach(s=>$(s).disabled=!e.target.checked);
+    if(e.target.id==='peBeamOn') ['#peBeamColor','#peBeamTemp'].forEach(s=>$(s).disabled=!e.target.checked);
+  };
   $('#modalBody').onclick=e=>{
-    const card=e.target.closest('.presetcard'); if(!card) return;
-    state.presetTier=card.dataset.tier;
-    $('#modalBody').querySelectorAll('.presetcard').forEach(x=>x.classList.toggle('on',x===card));
+    const card=e.target.closest('.presetcard');
+    if(card){
+      state.presetTier=card.dataset.tier;
+      $('#modalBody').querySelectorAll('.presetcard').forEach(x=>x.classList.toggle('on',x===card));
+      $('#presetEditor').outerHTML=tierEditorHTML(cur());
+      return;
+    }
+    if(e.target.closest('#presetSaveStyle')){
+      const i=state.styleTiers.findIndex(t=>t.id===state.presetTier);
+      state.styleTiers[i]=readTierEditor(state.styleTiers[i]);
+      saveStyleTiers();
+      const c=$(`.presetcard[data-tier="${state.presetTier}"]`),t=state.styleTiers[i];
+      c.querySelector('.gl').textContent=t.name; c.querySelector('.gl').style.cssText=styleTierPreview(t);
+      c.querySelector('small').textContent=`${t.desc} · ${t.font}px`;
+      $('#presetEditor').outerHTML=tierEditorHTML(t);
+      toast(`已儲存「${t.name}」`);
+    }
   };
   $('#presetCapture').onclick=()=>{
     const b=curBlock(); if(!b){ toast('請先在主畫面選一個已調好樣式的區塊'); return; }
@@ -6357,7 +6457,7 @@ function openStylePresetManager(){
     toast(`已把目前區塊存成「${state.styleTiers[i].name}」樣式`);
   };
   $('#presetApply').onclick=()=>{
-    const values=presetSelectedValues();
+    const values=[...checked];
     if(!values.length){ toast('請先勾選要歸類的物品'); return; }
     const t=cur(),n=applyPresetItems(values,t);
     if(!n){ toast('找不到可套用的物品規則'); return; }
@@ -6424,11 +6524,8 @@ $('#addcat').addEventListener('click',()=>{
 });
 
 /* 檔案 */
-function blankFilterText(){
-  return `# Filter Forge 新建空白 Filter
-# 使用「樣式階級」或開啟其他 Filter 後開始建立規則
-
-# 9.99 Filter Forge 防呆層
+function safetyLayerText(){
+  return `# 9.99 Filter Forge 防呆層
 # 未命中任何前方規則的物品會以特殊色顯示
 Show # Filter Forge 防呆層 - 未分類／未命中物品
     SetFontSize 45
@@ -6497,38 +6594,22 @@ Show # Filter Forge - 普通／魔法裝備
     Rarity <= Magic
 ${starterTierLines(tier('t8'))}
 
-${blankFilterText().split('\n').slice(3).join('\n')}`);
+${safetyLayerText()}`);
   return out.join('\n');
 }
-function openNewFilter(){
-  $('#modalTitle').textContent='新建 Filter';
-  $('#modalBody').innerHTML=`
-    <p style="margin:0;color:var(--muted)">這裡只建立 Filter Forge 自己產生的 Filter，不會直接套用任何第三方 Filter 的規則與樣式。</p>
-    <div class="presetgrid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
-      <button class="presetcard" data-newfilter="full" style="padding:12px">
-        <span class="gl" style="color:#fff;background:#641933;border-color:#ff4f7d">Filter Forge 完整新建</span>
-        <small>${Object.keys(NAMES).length} 筆內建物品 · 原創安全分組 · 建議</small>
-      </button>
-      <button class="presetcard" data-newfilter="blank" style="padding:12px">
-        <span class="gl" style="color:#fff;background:#640064;border-color:#ff00ff">空白 Filter</span>
-        <small>只含最後防呆層</small>
-      </button>
-    </div>
-    <div class="hintline">完整新建會加入通貨、精髓、化石、碎片、聖甲蟲、聯盟物品、命運卡、寶石與傳奇／裝備底材，再以廣義規則和最後防呆層接住遺漏物品。</div>`;
-  $('#modalFoot').innerHTML='<button class="btn" id="cbNo">取消</button>';
-  $('#modal').classList.add('on');
-  $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
-  $('#modalBody').onclick=e=>{
-    const card=e.target.closest('[data-newfilter]'); if(!card) return;
-    const id=card.dataset.newfilter;
-    $('#modal').classList.remove('on');
-    if(id==='full') addDoc(buildFullStarterFilter(),'FilterForge_完整新建.filter');
-    else addDoc(blankFilterText(),'FilterForge_空白.filter');
-    toast(id==='full'?'已建立 Filter Forge 完整 Filter':'已建立空白 Filter');
-  };
+function uniqueNewName(){
+  const base='FilterForge_完整新建',used=new Set(state.docs.map(d=>d.name));
+  if(!used.has(base+'.filter')) return base+'.filter';
+  let n=2; while(used.has(`${base}_${n}.filter`)) n++;
+  return `${base}_${n}.filter`;
 }
-function addDoc(text,name){
+function openNewFilter(){
+  addDoc(buildFullStarterFilter(),uniqueNewName(),{isNew:true});
+  toast('已建立 Filter Forge 完整 Filter');
+}
+function addDoc(text,name,opt){
   const d=parseDoc(text,name);
+  if(opt&&opt.isNew){ d.isNew=true; d.dirty=true; }
   state.docs.push(d); selectDoc(d);
   $('#gate').classList.add('off'); $('#app').classList.add('on');
 }
@@ -6537,6 +6618,32 @@ function selectDoc(d){
   state.undo=[]; state.redo=[]; state.palFrom=d.name;
   const first=d.sections.find(s=>s.depth===1); if(first) state.open.add(first.num);
   $('#q').value=''; syncUndo(); renderAll();
+}
+function closeDoc(d){
+  const i=state.docs.indexOf(d); if(i<0) return;
+  const wasCurrent=d===state.doc;
+  state.docs.splice(i,1);
+  $('#modal').classList.remove('on');
+  if(!state.docs.length){
+    state.doc=null; state.sel=null; state.undo=[]; state.redo=[];
+    $('#app').classList.remove('on'); $('#gate').classList.remove('off');
+    $('#bench').classList.remove('open'); $('#files').innerHTML='';
+    return;
+  }
+  if(wasCurrent) selectDoc(state.docs[Math.min(i,state.docs.length-1)]);
+  else renderFiles();
+}
+function requestCloseDoc(d){
+  if(!d) return;
+  $('#modalTitle').textContent='關閉 Filter';
+  $('#modalBody').innerHTML=`
+    <p style="margin:0 0 10px;color:var(--text)">要在關閉「<b style="color:var(--gold-hi)">${esc(d.name)}</b>」前先儲存嗎？</p>
+    <p style="margin:0;color:var(--muted)">「儲存並關閉」會先匯出繁體版 .filter；「不儲存」會直接關閉這個分頁。</p>`;
+  $('#modalFoot').innerHTML='<button class="btn" id="closeCancel">取消</button><button class="btn" id="closeDiscard">不儲存</button><button class="btn primary" id="closeSave">儲存並關閉</button>';
+  $('#modal').classList.add('on');
+  $('#closeCancel').onclick=()=>$('#modal').classList.remove('on');
+  $('#closeDiscard').onclick=()=>closeDoc(d);
+  $('#closeSave').onclick=()=>{ downloadDoc(d,true); closeDoc(d); };
 }
 function loadFiles(list){
   [...list].forEach(f=>{ const rd=new FileReader(); rd.onload=()=>addDoc(rd.result,f.name); rd.readAsText(f,'utf-8'); });
@@ -6551,20 +6658,38 @@ const dz=$('#dz');
 ['dragleave','drop'].forEach(t=>document.addEventListener(t,e=>{ e.preventDefault(); if(dz) dz.classList.remove('hot'); }));
 document.addEventListener('drop',e=>{ if(e.dataTransfer.files.length) loadFiles(e.dataTransfer.files); });
 
-function download(toTW){
-  const d=state.doc; if(!d) return;
-  if(!safetyState().ok){
-    snapDoc('safety-layer');
-    ensureSafetyLayer();
-    renderAll();
-    toast('已自動補上未分類物品防呆層');
+function prepareDocForExport(d){
+  const prev=state.doc;
+  let changed=false;
+  try{
+    state.doc=d;
+    changed=!safetyState().ok;
+    if(changed) ensureSafetyLayer();
+    return changed;
+  }finally{
+    state.doc=prev;
   }
+}
+function downloadDoc(d,toTW){
+  if(!d) return false;
+  const changed=prepareDocForExport(d);
   const blob=new Blob([serializeDoc(d,toTW)],{type:'text/plain;charset=utf-8'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download=d.name.replace(/(\.filter)?$/i,'')+(toTW?'_繁體':'_edited')+'.filter';
   a.click(); URL.revokeObjectURL(a.href);
-  d.dirty=false; renderFiles(); toast('已匯出 '+a.download);
+  d.dirty=false; d.isNew=false; renderFiles();
+  return changed;
+}
+function download(toTW){
+  const d=state.doc; if(!d) return;
+  const needed=!safetyState().ok;
+  if(needed){
+    snapDoc('safety-layer');
+  }
+  const changed=downloadDoc(d,toTW);
+  if(changed){ renderAll(); toast('已補上防呆層並匯出 '+d.name); }
+  else toast('已匯出 '+d.name);
 }
 $('#save').addEventListener('click',()=>download(false));
 $('#saveTW').addEventListener('click',()=>download(true));
