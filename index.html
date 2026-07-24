@@ -1,1 +1,5953 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Filter Forge · PoE1 過濾器編輯器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Alegreya:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
+<style>
+:root{
+  --ground:#0a0806; --panel:#100e0a; --panel2:#171410;
+  --rule:#2b2318; --rule-lit:#4b3c26;
+  --gold:#c8aa6e; --gold-hi:#efdcae; --gold-dim:#7f6c47;
+  --text:#cdc4b1; --muted:#877e6e; --faint:#5d5648;
+  --show:#7fae63; --hide:#b0574a; --warn:#d09341;
+  --display:'Marcellus SC',serif;
+  --serif:'Alegreya','PingFang TC','Microsoft JhengHei',serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --ui:'PingFang TC','Microsoft JhengHei','Noto Sans TC',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--ground);color:var(--text);font-family:var(--ui);font-size:14px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(1200px 700px at 18% -10%,#1a150e 0,transparent 62%),radial-gradient(900px 600px at 105% 110%,#171009 0,transparent 60%);}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:none}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#2e2618}
+::-webkit-scrollbar-thumb:hover{background:#4a3c26}
+
+#app{display:none;height:100vh;flex-direction:column}
+#app.on{display:flex}
+.topbar{display:flex;align-items:center;gap:14px;padding:0 14px;height:54px;flex:0 0 auto;
+  border-bottom:1px solid var(--rule);background:linear-gradient(#151109,#0d0b07)}
+.brand{display:flex;align-items:baseline;gap:8px;flex:0 0 auto}
+.brand b{font-family:var(--display);font-size:16px;color:var(--gold-hi);font-weight:400;letter-spacing:.06em}
+.brand span{font-family:var(--mono);font-size:9px;color:var(--faint);letter-spacing:.16em}
+.files{display:flex;gap:2px;align-items:center;overflow-x:auto;flex:1 1 auto;min-width:0;height:100%}
+.ftab{flex:0 0 auto;max-width:210px;height:100%;padding:0 12px;display:flex;align-items:center;gap:7px;
+  border-bottom:2px solid transparent;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ftab:hover{color:var(--text);background:#ffffff06}
+.ftab.on{color:var(--gold-hi);border-bottom-color:var(--gold);background:#ffffff08}
+.ftab i{font-style:normal;font-family:var(--mono);font-size:9.5px;color:var(--faint)}
+.ftab.dirty i::after{content:' ●';color:var(--gold)}
+.tools{display:flex;gap:6px;flex:0 0 auto;align-items:center}
+.btn{padding:6px 11px;border:1px solid var(--rule-lit);color:var(--text);font-size:12px;letter-spacing:.03em;background:#ffffff05;transition:.14s;white-space:nowrap}
+.btn:hover{border-color:var(--gold-dim);color:var(--gold-hi);background:#c8aa6e14}
+.btn.primary{border-color:var(--gold-dim);color:var(--gold-hi);background:#c8aa6e1a}
+.btn.primary:hover{background:#c8aa6e2e}
+.btn:disabled{opacity:.34;cursor:default}
+.btn:disabled:hover{border-color:var(--rule-lit);color:var(--text);background:#ffffff05}
+.btn .n{font-family:var(--mono);font-size:10px;color:var(--warn);margin-left:4px}
+
+.stage{flex:1 1 auto;display:grid;grid-template-columns:274px minmax(0,1fr) 406px;min-height:0}
+.rail,.bench{background:var(--panel);min-height:0;display:flex;flex-direction:column}
+.rail{border-right:1px solid var(--rule)}
+.bench{border-left:1px solid var(--rule)}
+.stream{min-height:0;display:flex;flex-direction:column;background:#0c0a07}
+.paneltitle{flex:0 0 auto;padding:11px 14px 9px;font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;
+  color:var(--faint);text-transform:uppercase;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center}
+.paneltitle b{color:var(--gold-dim);font-weight:500}
+
+.viewsw{display:flex;border-bottom:1px solid var(--rule);flex:0 0 auto}
+.viewsw button{flex:1 1 0;padding:8px 4px;font-size:11.5px;color:var(--muted);letter-spacing:.05em;border-bottom:2px solid transparent}
+.viewsw button.on{color:var(--gold-hi);border-bottom-color:var(--gold);background:#ffffff07}
+.viewsw button:hover{background:#ffffff08}
+
+.outline{overflow-y:auto;padding:5px 0 40px;flex:1 1 auto}
+.olrow{display:flex;align-items:center;gap:8px;width:100%;text-align:left;padding:5px 13px;color:var(--muted);font-size:12.5px;transition:.1s}
+.olrow:hover{background:#ffffff07;color:var(--text)}
+.olrow.on{background:#c8aa6e12;color:var(--gold-hi);box-shadow:inset 2px 0 0 var(--gold)}
+.olrow .n{font-family:var(--mono);font-size:10px;color:var(--faint);flex:0 0 auto;min-width:32px}
+.olrow .t{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.olrow .c{font-family:var(--mono);font-size:9.5px;color:var(--faint);flex:0 0 auto}
+.olrow.g{color:var(--gold-dim);font-family:var(--display);font-size:13px;letter-spacing:.05em;margin-top:7px;border-top:1px solid var(--rule);padding-top:8px}
+.olrow.d2{padding-left:25px}.olrow.d3{padding-left:38px}.olrow.d4{padding-left:50px}
+.olrow.empty0 .t{color:var(--faint)}
+.caret{width:9px;flex:0 0 auto;color:var(--faint);font-size:8px;transition:transform .15s}
+.caret.open{transform:rotate(90deg)}
+.addcat{margin:10px 12px;padding:8px;border:1px dashed var(--rule-lit);color:var(--muted);font-size:11.5px;width:calc(100% - 24px)}
+.addcat:hover{border-color:var(--gold-dim);color:var(--gold-hi)}
+
+.searchbar{flex:0 0 auto;display:flex;align-items:center;gap:9px;padding:9px 13px;border-bottom:1px solid var(--rule);background:var(--panel)}
+.searchbar input{flex:1 1 auto;background:#0000004d;border:1px solid var(--rule);padding:7px 10px;font-size:13px;outline:none}
+.searchbar input:focus{border-color:var(--gold-dim)}
+.searchbar input::placeholder{color:var(--faint)}
+.vissw{display:flex;border:1px solid var(--rule);flex:0 0 auto}
+.vissw button{padding:6px 11px;font-size:11px;color:var(--muted);font-family:var(--mono);letter-spacing:.06em}
+.vissw button:hover{background:#ffffff08}
+.vissw button.on{background:#c8aa6e1f;color:var(--gold-hi)}
+.vissw button.on.s{background:#7fae6322;color:#a9cf90}
+.vissw button.on.h{background:#b0574a22;color:#dd9d92}
+.countbar{flex:0 0 auto;padding:6px 14px;font-family:var(--mono);font-size:10px;color:var(--faint);border-bottom:1px solid var(--rule);background:#0d0b08}
+
+.list{flex:1 1 auto;overflow-y:auto;padding:4px 0 60px}
+.row{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:6px 14px 6px 0;
+  border-left:4px solid transparent;transition:background .1s}
+.row.s{border-left-color:var(--show)}
+.row.h{border-left-color:var(--hide);background:repeating-linear-gradient(135deg,#ffffff00 0 6px,#b0574a09 6px 12px)}
+.row:hover{background:#ffffff08}
+.row.on{background:#c8aa6e16}
+.row .state{flex:0 0 auto;width:46px;margin-left:10px;font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;
+  text-align:center;padding:3px 0;border:1px solid}
+.row.s .state{color:#a9cf90;border-color:#7fae6355;background:#7fae6314}
+.row.h .state{color:#dd9d92;border-color:#b0574a55;background:#b0574a14}
+.row .body{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
+.row.h .body{opacity:.62}
+.row .path{font-family:var(--mono);font-size:9px;color:var(--faint);letter-spacing:.03em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .rl{display:flex;align-items:center;gap:8px;min-width:0}
+.row .tags{flex:0 0 auto;display:flex;gap:6px;align-items:center;font-family:var(--mono);font-size:9.5px;color:var(--faint)}
+.row .bad{color:var(--warn)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.beamdot{width:4px;height:11px;border-radius:2px;display:inline-block}
+.gl{display:inline-block;font-family:var(--serif);font-weight:500;padding:.1em .45em;line-height:1.32;
+  border:1px solid transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;text-shadow:0 1px 1px #000c}
+.row .gl{font-size:14px}
+.empty{padding:56px 20px;text-align:center;color:var(--faint);font-size:13px;line-height:2}
+
+.bench .body{overflow-y:auto;flex:1 1 auto;padding-bottom:60px}
+.nosel{padding:64px 24px;text-align:center;color:var(--faint);font-size:13px;line-height:2}
+.stagefloor{position:relative;height:184px;flex:0 0 auto;overflow:hidden;border-bottom:1px solid var(--rule);
+  background:radial-gradient(120% 90% at 50% 118%,#241d13 0,#0a0806 68%),#070605}
+.stagefloor::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(#ffffff09 1px,transparent 1px);background-size:7px 7px;opacity:.5}
+.beam{position:absolute;left:50%;bottom:50px;width:30px;height:148px;transform:translateX(-50%);filter:blur(7px);opacity:.72;animation:pulse 3.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.5;height:138px}50%{opacity:.85;height:158px}}
+.beamcore{position:absolute;left:50%;bottom:50px;width:3px;height:118px;transform:translateX(-50%);filter:blur(1px);opacity:.9}
+.glow{position:absolute;left:50%;bottom:42px;width:150px;height:34px;transform:translateX(-50%);border-radius:50%;filter:blur(13px);opacity:.4}
+.previewlabel{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);max-width:88%;z-index:2;text-align:center}
+.minimapchip{position:absolute;top:11px;right:11px;width:54px;height:54px;border-radius:50%;background:#0d0b0899;
+  border:1px solid var(--rule);display:flex;align-items:center;justify-content:center}
+.minimapchip.off{opacity:.28}
+.soundchip{position:absolute;left:11px;top:11px;max-width:58%;font-family:var(--mono);font-size:9px;color:var(--gold-dim);
+  letter-spacing:.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sec{border-bottom:1px solid var(--rule);padding:13px 15px 17px}
+.sec > h3{margin:0 0 11px;font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;color:var(--faint);
+  text-transform:uppercase;font-weight:500;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sec > h3 span{text-transform:none;letter-spacing:.02em;font-size:10px}
+.field{margin-bottom:10px}
+.field > label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}
+.inp{width:100%;background:#00000059;border:1px solid var(--rule);padding:6px 9px;font-size:12.5px;outline:none}
+.inp:focus{border-color:var(--gold-dim)}
+textarea.inp{resize:vertical;min-height:50px;font-family:var(--mono);font-size:11.5px;line-height:1.7}
+select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--faint) 50%),linear-gradient(135deg,var(--faint) 50%,transparent 50%);
+  background-position:calc(100% - 14px) 12px,calc(100% - 9px) 12px;background-size:5px 5px;background-repeat:no-repeat}
+.seg{display:flex;border:1px solid var(--rule)}
+.seg button{flex:1 1 0;padding:7px;font-size:12px;color:var(--muted);letter-spacing:.06em}
+.seg button:hover{background:#ffffff08}
+.seg button.on{background:#7fae6322;color:#a9cf90}
+.seg button.on.h{background:#b0574a22;color:#dd9d92}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px}
+.ci{border:1px solid var(--rule);background:#00000038;padding:7px 7px 6px;position:relative}
+.ci > label{display:block;font-size:10.5px;color:var(--muted);letter-spacing:.06em;margin-bottom:5px}
+.ci .swwrap{position:relative;height:36px;margin-bottom:5px;border:1px solid var(--rule-lit);
+  background-image:linear-gradient(45deg,#2a241a 25%,transparent 25%,transparent 75%,#2a241a 75%),linear-gradient(45deg,#2a241a 25%,#191510 25%,#191510 75%,#2a241a 75%);
+  background-size:8px 8px;background-position:0 0,4px 4px}
+.ci .swwrap i{position:absolute;inset:0;display:block}
+.ci .swwrap input[type=color]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:none;padding:0;background:none}
+.ci .none{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9.5px;color:var(--faint);pointer-events:none}
+.ci input.chex{width:100%;background:#00000059;border:1px solid var(--rule);padding:3px 4px;font-family:var(--mono);font-size:10px;outline:none;text-align:center}
+.ci input.chex:focus{border-color:var(--gold-dim)}
+.ci input[type=range]{width:100%;margin:1px 0 0}
+.ci .x{position:absolute;top:3px;right:4px;font-size:10px;color:var(--faint);padding:1px 3px;line-height:1}
+.ci .x:hover{color:var(--hide)}
+input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;height:20px}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--rule-lit)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;background:var(--gold);margin-top:-4.5px;transform:rotate(45deg)}
+input[type=range]::-moz-range-track{height:2px;background:var(--rule-lit)}
+input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--gold);border:none;border-radius:0;transform:rotate(45deg)}
+.quick{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:5px 9px;border:1px solid var(--rule-lit);font-size:11px;color:var(--muted);transition:.12s}
+.chip:hover{border-color:var(--gold-dim);color:var(--gold-hi);background:#c8aa6e14}
+.palette{display:flex;flex-wrap:wrap;gap:5px;max-height:184px;overflow-y:auto;padding:2px 1px}
+.pchip{border:1px solid transparent;padding:1px;line-height:0}
+.pchip:hover{border-color:var(--gold-dim)}
+.pchip.on{border-color:var(--gold)}
+.pchip .gl{font-size:11.5px;max-width:120px}
+.scope{display:flex;gap:6px;margin-top:9px}
+.scope .chip{flex:1 1 0;text-align:center;line-height:1.4}
+.toggle{display:flex;align-items:center;gap:9px;padding:6px 0;font-size:12.5px;color:var(--muted);width:100%;text-align:left}
+.toggle .box{width:14px;height:14px;border:1px solid var(--rule-lit);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gold)}
+.toggle.on{color:var(--text)}
+.toggle.on .box{border-color:var(--gold-dim)}
+.cond{border:1px solid var(--rule);margin-bottom:9px;background:#00000038}
+.cond .hd{display:flex;gap:6px;align-items:center;padding:6px 7px;border-bottom:1px solid var(--rule)}
+.cond .hd input.k{flex:1 1 auto;min-width:0;background:transparent;border:none;outline:none;font-family:var(--mono);font-size:11.5px;color:var(--gold-hi)}
+.cond .hd select{flex:0 0 60px;background:#00000059;border:1px solid var(--rule);font-family:var(--mono);font-size:11px;padding:3px;outline:none}
+.cond .hd .x{color:var(--faint);padding:2px 5px}
+.cond .hd .x:hover{color:var(--hide)}
+.cond textarea{width:100%;background:transparent;border:none;outline:none;padding:7px;font-family:var(--mono);font-size:11.5px;line-height:1.75;resize:vertical;min-height:32px;color:var(--text)}
+.cond .tr{padding:0 8px 7px;font-size:11px;color:var(--gold-dim);line-height:1.7}
+.addcond{width:100%;padding:7px;border:1px dashed var(--rule-lit);color:var(--muted);font-size:11.5px}
+.addcond:hover{border-color:var(--gold-dim);color:var(--gold-hi)}
+.warn{font-size:11px;color:var(--warn);margin-top:5px}
+.hintline{font-size:11px;color:var(--faint);margin-top:6px;line-height:1.7}
+.lintlist{margin:0;padding:0;list-style:none}
+.lintlist li{padding:6px 8px;border-left:2px solid var(--warn);background:#d093410d;margin-bottom:5px;font-size:11.5px;color:#dcb87f}
+.lintlist li.err{border-left-color:var(--hide);background:#b0574a12;color:#e2a89e}
+.tabs{display:flex;border-bottom:1px solid var(--rule);flex:0 0 auto}
+.tabs button{flex:1 1 0;padding:9px;font-size:11.5px;color:var(--muted);letter-spacing:.08em;border-bottom:2px solid transparent}
+.tabs button.on{color:var(--gold-hi);border-bottom-color:var(--gold)}
+.tabs button:hover{background:#ffffff06}
+.srcbox{width:100%;min-height:330px;background:#00000059;border:1px solid var(--rule);padding:11px;font-family:var(--mono);
+  font-size:11.5px;line-height:1.8;outline:none;resize:vertical;white-space:pre;overflow-x:auto}
+.srcbox:focus{border-color:var(--gold-dim)}
+
+#gate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:26px;padding:30px;text-align:center}
+#gate.off{display:none}
+.gatemark{position:relative;width:200px;height:150px}
+.gatemark .b{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);width:34px;height:116px;filter:blur(9px);opacity:.6;background:linear-gradient(to top,#c8aa6e,transparent)}
+.gatemark .l{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);font-family:var(--serif);font-size:19px;padding:.12em .5em;border:1px solid #c8aa6e;background:#000000d9;color:#efdcae;white-space:nowrap}
+h1{font-family:var(--display);font-size:28px;font-weight:400;color:var(--gold-hi);margin:0;letter-spacing:.08em}
+#gate p{margin:0;color:var(--muted);font-size:13.5px;max-width:520px;line-height:1.95}
+#gate .k{font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:.12em}
+.dropzone{border:1px dashed var(--rule-lit);padding:24px 42px;transition:.15s;display:flex;flex-direction:column;gap:11px;align-items:center}
+.dropzone.hot{border-color:var(--gold);background:#c8aa6e12}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1c1710;border:1px solid var(--gold-dim);
+  color:var(--gold-hi);padding:9px 18px;font-size:12.5px;z-index:99;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+.modal{position:fixed;inset:0;background:#000000c4;display:none;align-items:center;justify-content:center;z-index:80;padding:24px}
+.modal.on{display:flex}
+.modalbox{background:var(--panel2);border:1px solid var(--rule-lit);max-width:680px;width:100%;max-height:80vh;display:flex;flex-direction:column}
+.modalbox h2{margin:0;padding:14px 18px;font-family:var(--display);font-size:16px;font-weight:400;color:var(--gold-hi);
+  border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center}
+.modalbody{overflow-y:auto;padding:14px 18px}
+.modalfoot{padding:12px 18px;border-top:1px solid var(--rule);display:flex;gap:8px;justify-content:flex-end}
+.issue{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #ffffff08;width:100%;text-align:left}
+.issue:hover{background:#ffffff06}
+.issue .lv{flex:0 0 42px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;padding:2px 0;text-align:center;border:1px solid}
+.issue .lv.e{color:#e2a89e;border-color:#b0574a55}
+.issue .lv.w{color:#dcb87f;border-color:#d0934155}
+.issue .tx{flex:1 1 auto;min-width:0;font-size:12px}
+.issue .tx b{display:block;color:var(--muted);font-weight:400;font-size:10.5px;font-family:var(--mono);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+@media (max-width:1240px){.stage{grid-template-columns:230px minmax(0,1fr) 352px}}
+@media (max-width:960px){
+  .stage{grid-template-columns:1fr}
+  .rail{display:none}
+  .bench{position:fixed;inset:54px 0 0;z-index:20;border-left:none;display:none}
+  .bench.open{display:flex}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div id="gate">
+  <div class="gatemark"><div class="b"></div><div class="l">無效石</div></div>
+  <h1>Filter Forge</h1>
+  <p>流亡黯道 1 的掉落過濾器編輯器。英文與簡體過濾器都會換上台服官方繁中譯名，套用統一的分類架構，並即時預覽地上的物品標籤。</p>
+  <div class="dropzone" id="dz">
+    <button class="btn primary" id="gatePick">開啟 .filter 檔</button>
+    <span class="k">或把檔案拖進這個框，可一次開多個</span>
+  </div>
+</div>
+
+<div id="app">
+  <header class="topbar">
+    <div class="brand"><b>Filter Forge</b><span>POE1</span></div>
+    <div class="files" id="files"></div>
+    <div class="tools">
+      <button class="btn" id="nameMode" title="切換區塊名稱來源">官方譯名</button>
+      <button class="btn" id="undoBtn" title="復原 Ctrl+Z" disabled>復原</button>
+      <button class="btn" id="redoBtn" title="重做 Ctrl+Shift+Z" disabled>重做</button>
+      <button class="btn" id="lintBtn">檢查<span class="n" id="lintN"></span></button>
+      <button class="btn" id="pick">開啟</button>
+      <button class="btn" id="save">匯出</button>
+      <button class="btn primary" id="saveTW">匯出繁體版</button>
+    </div>
+  </header>
+
+  <div class="stage">
+    <aside class="rail">
+      <div class="viewsw">
+        <button data-v="taxonomy" class="on">標準分類</button>
+        <button data-v="native">檔案原生章節</button>
+      </div>
+      <div class="outline" id="outline"></div>
+      <button class="addcat" id="addcat">＋ 自訂分類</button>
+    </aside>
+
+    <section class="stream">
+      <div class="searchbar">
+        <input id="q" type="search" placeholder="搜尋名稱、譯名、BaseType、Class、詞綴…">
+        <div class="vissw" id="vissw">
+          <button data-v="all" class="on">全部</button>
+          <button data-v="show">SHOW</button>
+          <button data-v="hide">HIDE</button>
+        </div>
+      </div>
+      <div class="countbar" id="count"></div>
+      <div class="list" id="list"></div>
+    </section>
+
+    <aside class="bench" id="bench">
+      <div class="stagefloor" id="floor"></div>
+      <div class="tabs">
+        <button data-tab="props" class="on">屬性</button>
+        <button data-tab="src">原始碼</button>
+      </div>
+      <div class="body" id="inspector"></div>
+    </aside>
+  </div>
+</div>
+
+<input type="file" id="fileinput" accept=".filter,.txt" multiple style="display:none">
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal"><div class="modalbox">
+  <h2><span id="modalTitle"></span><button class="btn" id="modalClose">關閉</button></h2>
+  <div class="modalbody" id="modalBody"></div>
+  <div class="modalfoot" id="modalFoot"></div>
+</div></div>
+
+<script id="namedata" type="text/plain">A Chilling Wind	凜冽之風	5
+A Dab of Ink	代伯之墨	5
+A Dusty Memory	塵封記憶	5
+A Familiar Call	似曾相識	5
+A Fate Worse Than Death	比死更慘的命運	5
+A Modest Request	謙卑請求	5
+A Mother's Parting Gift	母親的禮物	5
+A Note in the Wind	隨風飄記	5
+A Sea of Blue	藍海	5
+A Stone Perfected	完石	5
+Abandoned Wealth	棄財求生	5
+Abberath's Hooves	艾貝拉斯之蹄	7
+Abberath's Horn	艾貝拉斯之角	7
+Aberrant Fossil	特異化石	1
+Abhorrent Interrogation	悖逆審訊	7
+Abrasive Catalyst	研磨的催化劑	1
+Absolution	赦免	6
+Absolution of Inspiring	赦免．啟發	6
+Abyss Scarab	聖甲蟲：深淵	3
+Abyss Scarab of Descending	聖甲蟲：落降深淵	8
+Abyss Scarab of Edifice	聖甲蟲：宏偉深淵	3
+Abyss Scarab of Multitudes	聖甲蟲：眾生深淵	3
+Abyss Scarab of Profound Depth	聖甲蟲：深沉深淵	3
+Abyssal Axe	深淵巨斧	7
+Abyssal Delirium Orb	深淵之譫妄玉	1
+Abyssal Incubator	深淵的培育器	4
+Abyssal Sceptre	深淵權杖	7
+Abyssus	深淵之喚	7
+Accelerating Catalyst	加速催化劑	1
+Acclimatisation	適者生存	5
+Accumulator Wand	蓄能法杖	7
+Acid Slitherer	毒素滑行者	4
+Acton's Nightmare	輪迴的夢魘	7
+Actum	談判	7
+Added Chaos Damage Support	附加混沌傷害輔助	6
+Added Cold Damage Support	附加冰冷傷害輔助	6
+Added Fire Damage Support	附加火焰傷害輔助	6
+Added Lightning Damage Support	附加閃電傷害輔助	6
+Additional Accuracy Support	額外命中輔助	6
+Adherent of Zarokh	澤洛克的黨羽	8
+Admiral's Arrogance	將軍的傲慢	7
+Adolescent Rhex	成年雛鳥	4
+Advanced Traps Support	進階陷阱輔助	6
+Advancing Fortress	超越壁壘	7
+Aegis Aurora	幻芒聖盾	7
+Aetheric Fossil	神幻化石	1
+Aetherwind Gloves	乙太之風手套	7
+Agate Amulet	瑪瑙護身符	7
+Aggregator Charm	匯聚符	4
+Agnerod East	東方雷霆聖杖	7
+Agnerod North	北方雷霆聖杖	7
+Agnerod South	南方雷霆聖杖	7
+Agnerod West	西方雷霆聖杖	7
+Ahkeli's Meadow	阿卡莉的草原	7
+Ahkeli's Mountain	阿卡莉的山巒	7
+Ahkeli's Valley	阿卡莉的峽谷	7
+Ahn's Contempt	漢恩的蔑視	7
+Ahn's Heritage	漢恩的遺產	7
+Ahn's Might	漢恩的期許	7
+Ahuana's Bite	阿呼阿娜的咬痕	7
+Akil's Prophecy	阿基爾的預言	5
+Akoya's Gaze	艾古亞的凝視	7
+Al Dhih	鬣犬之牙	7
+Al-Hezmin's Crest	奧赫茲明刻紋	3
+Alberon's Warpath	阿爾貝隆的征途	7
+Albino Rhoa Feather	白化的羽毛	1
+Alchemist's Mark	煉金術士印記	6
+Alder Spiked Shield	榿木刺盾	7
+Algor Mortis	阿爾戈．莫堤斯	7
+Alivia's Grace	奧薇莉亞的恩典	5
+Allelopathy	相生相剋	7
+Allflame Ember of Flesh	不滅之火血肉餘燼	8
+Allflame Ember of Kulemak	不滅之火骷髏馬克餘燼	8
+Allflame Ember of Propagation	不滅之火傳播餘燼	8
+Allflame Ember of Resplendence	不滅之火輝煌餘燼	8
+Allflame Ember of Toads	不滅之火蟾蜍餘燼	8
+Allflame Ember of the Ethereal	不滅之火虛靈餘燼	8
+Allflame Ember of the Gilded	不滅之火鍍金餘燼	8
+Allflame Ember of the Wildwood	不滅之火荒林餘燼	8
+Alloyed Spiked Shield	合金刺盾	7
+Allure	魅惑	7
+Alluring Bounty	誘惑之寶	5
+Alone in the Darkness	暗黑孤單中	5
+Alpha's Howl	極地之嗥	7
+Alpine Devil	高峰羊人	4
+Alpine Shaman	高峰術士	4
+Altered Distant Memory	遙遠記憶：編造	7
+Altered Perception	變動感知	5
+Alternating Sceptre	輪迴權杖	7
+Amanamu's Gaze	阿姆那姆的邪眼	7
+Amber Amulet	琥珀護身符	7
+Amber Oil	琥珀油瓶	1
+Ambition	野心	7
+Ambitious Obsession	上進執迷	5
+Ambu's Charge	安姆布的戰甲	7
+Ambush	伏擊	6
+Ambush Boots	伏擊之靴	7
+Ambush Mitts	伏擊護手	7
+Ambush Scarab	聖甲蟲：伏擊	3
+Ambush Scarab of Containment	聖甲蟲：遏制伏擊	3
+Ambush Scarab of Discernment	聖甲蟲：洞察伏擊	3
+Ambush Scarab of Hidden Compartments	聖甲蟲：暗室伏擊	3
+Ambush Scarab of Potency	聖甲蟲：爆發伏擊	3
+Ambusher	伏擊刺刃	7
+Amethyst Flask	紫晶藥劑	7
+Amethyst Ring	紫晶戒指	7
+An Audience With The King	謁見國王	3
+Anarchic Spiritblade	翻天魂刃	7
+Anarchy Scarab	聖甲蟲：混亂	3
+Anarchy Scarab of Gigantification	聖甲蟲：浩瀚混亂	3
+Anarchy Scarab of Partnership	聖甲蟲：結夥混亂	3
+Anarchy Scarab of the Exceptional	聖甲蟲：至高混亂	8
+Anarchy's Price	混亂代價	5
+Anathema	咒詛	7
+Ancestral Call Support	先祖怒嚎輔助	6
+Ancestral Club	祖靈之杵	7
+Ancestral Cry	先祖戰吼	6
+Ancestral Protector	先祖衛士	6
+Ancestral Vision	先祖預視	7
+Ancestral Warchief	先祖戰士長	6
+Ancient Gauntlets	遠古護手	7
+Ancient Greaves	遠古脛甲	7
+Ancient Mask	遠古面具	7
+Ancient Orb	古變石	1
+Ancient Reliquary Key	古典遺鑰	4
+Ancient Skull	遠古骷髏	7
+Ancient Spirit Shield	遠古魔盾	7
+Ancient Sword	遠古之劍	7
+Ancient Wombgift	古老之胎贈	8
+Andvarius	貪慾之記	7
+Angelic Kite Shield	天使鳶盾	7
+Anger	憤怒	6
+Animate Guardian	幻化守衛	6
+Animate Guardian of Smiting	幻化守衛．重擊	6
+Animate Weapon	幻化武器	6
+Animate Weapon of Ranged Arms	幻化武器．遠程	6
+Animate Weapon of Self Reflection	幻化武器．反射	6
+Annihilation Support	湮滅輔助	6
+Annihilation's Approach	殲滅的方法	7
+Annulment Shard	無效石碎片	1
+Antique Gauntlets	古鋼護手	7
+Antique Greaves	古鋼脛甲	7
+Antique Rapier	古代細劍	7
+Apep's Rage	艾普之怒	7
+Apep's Slumber	艾普之眠	7
+Apep's Supremacy	艾普霸權	7
+Apex Cleaver	巔峰砍斧	7
+Apex Mode	巔峰模式	7
+Apex Rapier	銳鋒細劍	7
+Apocalypse	天啟	5
+Apothecary's Gloves	靈藥手套	7
+Apprentice Gloves	學徒手套	7
+Aquamarine Flask	海藍藥劑	7
+Arakaali's Daughter	艾爾卡莉之女	4
+Arakaali's Fang	艾爾卡莉之牙	7
+Araku Tiki	隱靈之符	7
+Arbitrary Tenets	武斷原則	7
+Arborix	阿布里斯	7
+Arc	電弧	6
+Arc of Oscillating	電弧．震盪	6
+Arc of Surging	電弧．波動	6
+Arcane Cloak	秘能披風	6
+Arcane Surge Support	秘能波動輔助	6
+Arcane Vestment	奧術長衣	7
+Arcanist Brand	奧術烙印	6
+Arcanist Gloves	秘術手套	7
+Arcanist Slippers	秘術便鞋	7
+Archdemon Crown	罪魔邪冠	7
+Architect's Hand	構築之手	7
+Archive Reliquary Key	文書遺鑰	4
+Archmage Support	魔幻輔助	6
+Archon Kite Shield	威能鳶盾	7
+Archon Kite Shield Piece	威能鳶盾碎片	8
+Arctic Armour	極地裝甲	6
+Arctic Wolf	極地狼	4
+Arena Plate	鬥者之鎧	7
+Armageddon Brand	末日烙印	6
+Armageddon Brand of Recall	末日烙印．呼喚	6
+Armageddon Brand of Volatility	末日烙印．揮發	6
+Arming Axe	長柄斧	7
+Armour Cruncher	毀甲巨獸	4
+Armourer's Scrap	護甲片	1
+Armoursmith's Delirium Orb	護甲之譫妄玉	1
+Arn's Anguish	昂恩的煩惱	7
+Arrogance Support	傲慢輔助	6
+Arrogance of the Vaal	瓦爾之傲	5
+Arrow Nova Support	箭矢新星輔助	6
+Artillery Ballista	火砲砲塔	6
+Artillery Ballista of Cross Strafe	火砲砲塔 ．掃射	6
+Artillery Ballista of Focus Fire	火砲砲塔 ．集火	6
+Artillery Quiver	火炮箭袋	7
+Ascent From Flesh	血軀昇華	7
+Asenath's Gentle Touch	安賽娜絲的安撫之語	7
+Asenath's Mark	安賽娜絲的迅敏之冠	7
+Ashbark Tincture	灰樹皮萃取物	7
+Ashcaller	灰燼行者	7
+Ashes of the Stars	星塵	7
+Ashrend	拂燼	7
+Ashscale Talisman	灰燼魔符	7
+Asphyxia's Wrath	冰靈之吼	7
+Assailum	刺殺	7
+Assassin Bow	暗殺弓	7
+Assassin's Boots	刺殺者之靴	7
+Assassin's Favour	刺客恩惠	5
+Assassin's Garb	刺殺者之裝	7
+Assassin's Gift	刺客的餽贈	5
+Assassin's Mark	刺客印記	6
+Assassin's Mitts	刺殺者護手	7
+Assembler Wand	拼裝法杖	7
+Astragali	骰子	1
+Astral Leather	星際皮甲	7
+Astral Lich	星界巫妖	8
+Astral Plate	星芒戰鎧	7
+Astral Projector	星空之影	7
+Astral Protection	星際保護	5
+Astramentis	均衡之符	7
+Astrolabe Amulet	星盤護身符	7
+Atonement Mask	贖罪面具	7
+Atziri's Acuity	阿茲里的捷思	7
+Atziri's Arsenal	阿茲里的武庫	5
+Atziri's Disfavour	阿茲里的刑刃	7
+Atziri's Foible	阿茲里聖徽	7
+Atziri's Promise	阿茲里的諾言	7
+Atziri's Reflection	阿茲里的映照	7
+Atziri's Reign	阿茲里之權	7
+Atziri's Rule	阿茲里的統御	7
+Atziri's Splendour	阿茲里的威權	7
+Atziri's Step	阿茲里的金履	7
+Audacity	膽識	5
+Augmented Distant Memory	遙遠記憶：增幅	7
+Augyre	相星占卜	7
+Aukuna's Will	奧庫納之意	7
+Aul's Uprising	奧爾的崛起	7
+Auric Mace	聖約之錘	7
+Aurseize	富貴之運	7
+Aurumvorax	靈護	7
+Auspicious Ambitions	吉祥之志	5
+Autoexertion	自動竭盡	6
+Automation	自動化	6
+Auxium	奧術之符	7
+Avalanche Rider	崩雪騎士	4
+Aventail Helmet	戰意之盔	7
+Avian Pursuit	追擊之翼	5
+Avian Retch	叢林反芻鳥	4
+Avian Twins Talisman	雙子魔符	7
+Awakened Added Chaos Damage Support	覺醒．附加混沌傷害輔助	6
+Awakened Added Cold Damage Support	覺醒．附加冰冷傷害輔助	6
+Awakened Added Fire Damage Support	覺醒．附加火焰傷害輔助	6
+Awakened Added Lightning Damage Support	覺醒．附加閃電傷害輔助	6
+Awakened Ancestral Call Support	覺醒．先祖怒嚎輔助	6
+Awakened Arrow Nova Support	覺醒．箭矢新星輔助	6
+Awakened Blasphemy Support	覺醒．詛咒光環輔助	6
+Awakened Brutality Support	覺醒．殘虐輔助	6
+Awakened Burning Damage Support	覺醒．燃燒傷害輔助	6
+Awakened Cast On Critical Strike Support	覺醒．暴擊時施放輔助	6
+Awakened Cast While Channelling Support	覺醒．引導時施放輔助	6
+Awakened Chain Support	覺醒．連鎖輔助	6
+Awakened Cold Penetration Support	覺醒．冰冷穿透輔助	6
+Awakened Controlled Destruction Support	覺醒．精準破壞輔助	6
+Awakened Deadly Ailments Support	覺醒．致命異常輔助	6
+Awakened Elemental Damage with Attacks Support	覺醒．元素攻擊傷害輔助	6
+Awakened Elemental Focus Support	覺醒．元素集中輔助	6
+Awakened Empower Support	覺醒．賦予輔助	6
+Awakened Enhance Support	覺醒．增幅輔助	6
+Awakened Enlighten Support	覺醒．啟蒙輔助	6
+Awakened Fire Penetration Support	覺醒．火焰穿透輔助	6
+Awakened Fork Support	覺醒．分裂輔助	6
+Awakened Generosity Support	覺醒．和善輔助	6
+Awakened Greater Multiple Projectiles Support	覺醒．高階多重投射輔助	6
+Awakened Hextouch Support	覺醒．咒術降臨輔助	6
+Awakened Increased Area of Effect Support	覺醒．增加範圍效果輔助	6
+Awakened Lightning Penetration Support	覺醒．閃電穿透輔助	6
+Awakened Melee Physical Damage Support	覺醒．近戰物理傷害輔助	6
+Awakened Melee Splash Support	覺醒．近戰傷害擴散輔助	6
+Awakened Minion Damage Support	覺醒．召喚物傷害輔助	6
+Awakened Multistrike Support	覺醒．多重打擊輔助	6
+Awakened Spell Cascade Support	覺醒．秘能爆發輔助	6
+Awakened Spell Echo Support	覺醒．施放迴響輔助	6
+Awakened Swift Affliction Support	覺醒．極速苦痛輔助	6
+Awakened Unbound Ailments Support	覺醒．無邊異能輔助	6
+Awakened Unleash Support	覺醒．釋放輔助	6
+Awakened Vicious Projectiles Support	覺醒．猛毒投射物輔助	6
+Awakened Void Manipulation Support	覺醒．虛空操縱輔助	6
+Awakener's Orb	喚醒者之玉	1
+Awakening Fragment	覺醒碎片	3
+Awl	鑿釘	7
+Axiom Perpetuum	歷史公理	7
+Azadi Crest	愛札丁的榮冠	7
+Azure Oil	碧藍油瓶	1
+Azure Rage	碧藍之怒	5
+Azurite Flashpowder	碧藍閃光粉	4
+Azyran's Reward	艾斯尤倫的報酬	5
+Badge of the Brotherhood	激情之章	7
+Baited Expectations	誘餌之期待	5
+Balefire	野火	7
+Ball Lightning	天雷之珠	6
+Ball Lightning of Orbiting	天雷之珠．軌跡	6
+Ball Lightning of Static	天雷之珠．靜電	6
+Ballista Totem Support	砲塔圖騰輔助	6
+Bane	災厄	6
+Bane of Condemnation	災厄．譴責	6
+Banishing Blade	放逐之刃	7
+Baran's Crest	巴倫刻紋	3
+Barb Serpent	棘刺巨蛇	4
+Barbed Club	銳刺木棒	7
+Barbute Helmet	輕騎盔	7
+Baroque Round Shield	古代圓盾	7
+Barrage	彈幕	6
+Barrage Support	彈幕輔助	6
+Barrage of Volley Fire	彈幕．齊射	6
+Barrow Ape	遺塚狂猿	4
+Basalt Flask	石化藥劑	7
+Baselard	冷光長劍	7
+Basemetal Treads	金屬鐵靴	7
+Basic Disguise Kit	基礎偽裝套組	4
+Basket Rapier	練武者細劍	7
+Bastard Sword	重劍	7
+Bated Breath	凝息	7
+Battered Foil	鈍刃細劍	7
+Battered Helm	殘破之盔	7
+Battery Staff	蓄能長杖	7
+Battle Buckler	鬥者輕盾	7
+Battle Hammer	強化戰錘	7
+Battle Lamellar	爭戰鱗甲	7
+Battle Plate	戰鎧	7
+Battle Sword	士兵長劍	7
+Battlemage's Cry	戰法戰吼	6
+Beacon of Madness	瘋癲之引	7
+Bear Trap	捕熊陷阱	6
+Bear Trap of Skewers	捕熊陷阱．串燒	6
+Bear's Girdle	熊之束	7
+Bearded Devil	長鬚羊人	4
+Bearded Shaman	長鬚咒靈	4
+Bearded Skycaller	堅蹄羊人喚空者	4
+Beauty	美麗	7
+Beauty Through Death	夕陽紅顏	5
+Behead Support	斬首輔助	6
+Behemoth Mace	巴哈姆特	7
+Belly of the Beast	獸腹	7
+Belt of the Deceiver	狡徒束腰	7
+Beltimber Blade	刀鋒禁材	7
+Berek's Grip	貝雷克的冰與雷之曲	7
+Berek's Pass	貝雷克的冰與火之歌	7
+Berek's Respite	貝雷克的火與雷之樂	7
+Berserk	狂戰	6
+Bestiary Scarab	聖甲蟲：獸獵	3
+Bestiary Scarab of Duplicating	聖甲蟲：增生獸獵	3
+Bestiary Scarab of the Herd	聖甲蟲：牧群獸獵	3
+Bestiary Scarab of the Shadowed Crow	聖甲蟲：暗影烏鴉獸獵	3
+Betrayal Scarab	聖甲蟲：反叛	3
+Betrayal Scarab of Reinforcements	聖甲蟲：支援反叛	3
+Betrayal Scarab of Unbreaking	聖甲蟲：催堅反叛	8
+Betrayal Scarab of the Allflame	聖甲蟲：不滅之火反叛	8
+Betrayal's Sting	反叛之針	7
+Beyond Scarab	聖甲蟲：超越	3
+Beyond Scarab of Corruption	聖甲蟲：腐化超越	3
+Beyond Scarab of Haemophilia	聖甲蟲：血病超越	3
+Beyond Scarab of Resurgence	聖甲蟲：復興超越	3
+Beyond Scarab of the Invasion	聖甲蟲：侵略超越	3
+Bijoux	珠寶	5
+Binds of Bloody Vengeance	血腥復仇的束縛	7
+Bino's Kitchen Knife	比諾的廚刀	7
+Bisco's Collar	畢斯寇的項圈	7
+Bisco's Leash	畢斯寇繫帶	7
+Bismuth Flask	灰岩藥劑	7
+Bitter Instinct	苦澀直覺	7
+Bitterbind Point	苦綑畸點	7
+Bitterdream	苦夢	7
+Black Maw Talisman	黑牙魔符	7
+Black Mórrigan	黑色莫里根	4
+Black Oil	漆黑油瓶	1
+Black Scorpion	漆黑毒蠍	4
+Black Sun Crest	黑陽之冠	7
+Black Thumb	黑指	7
+Black Zenith	漆黑極頂	7
+Blackflame	黯炎	7
+Blackgleam	黑炎之芒	7
+Blackheart	幽暗之語	7
+Blacksmith's Delirium Orb	鐵匠之譫妄玉	1
+Blacksmith's Whetstone	磨刀石	1
+Blade Blast	劍刃爆破	6
+Blade Blast of Dagger Detonation	劍刃爆破．匕首爆炸	6
+Blade Blast of Unloading	劍刃爆破．卸載	6
+Blade Flurry	刀鋒亂舞	6
+Blade Flurry of Incision	刀鋒亂舞．切割	6
+Blade Trap	刀鋒陷阱	6
+Blade Trap of Greatswords	刀鋒陷阱．巨劍	6
+Blade Trap of Laceration	刀鋒陷阱．撕裂	6
+Blade Vortex	飛刃風暴	6
+Blade Vortex of the Scythe	飛刃風暴．鐮刀	6
+Bladed Mace	多刃錘	7
+Bladefall	虛空刀雨	6
+Bladefall of Impaling	虛空刀雨．穿刺	6
+Bladefall of Trarthus	特拉特斯虛空刀雨	6
+Bladefall of Volleys	虛空刀雨．齊射	6
+Bladestorm	旋天劍舞	6
+Bladestorm of Uncertainty	旋天劍舞．未知	6
+Blasphemer	褻瀆者	4
+Blasphemer's Grasp	褻瀆者之握	7
+Blasphemy Support	詛咒光環輔助	6
+Blast Rain	爆裂箭雨	6
+Blast Rain of Trarthus	特拉特斯爆裂箭雨	6
+Blastchain Mine Support	連鎖爆破地雷輔助	6
+Blasting Blade	爆破之刃	7
+Blasting Wand	爆裂魔杖	8
+Blazing Arrow Quiver	熾熱箭袋	7
+Blazing Fragment	熾熱碎片	3
+Blazing Salvo	熾熱魔炮	6
+Bleached Crawler	白漆蝕腐蟲	4
+Blessed Call Support	禮贈呼喚輔助	6
+Blessed Orb	祝福石	1
+Blight	萎滅	6
+Blight Scarab	聖甲蟲：凋落	3
+Blight Scarab of Blooming	聖甲蟲：綻放凋落	3
+Blight Scarab of Bounty	聖甲蟲：珍寶凋落	3
+Blight Scarab of Invigoration	聖甲蟲：振奮凋落	3
+Blight Scarab of the Blightheart	聖甲蟲：枯萎之心凋落	3
+Blight of Atrophy	萎滅．萎縮	6
+Blight of Contagion	萎滅．瘟疫	6
+Blighted Delirium Orb	凋落之譫妄玉	1
+Blighted Incubator	凋落的培育器	4
+Blightwell	枯井	7
+Blind Support	致盲輔助	6
+Blind Venture	盲途	5
+Blinder	襲眼鉤	7
+Blink Arrow	閃現射擊	6
+Blink Arrow of Bombarding Clones	閃現射擊．炸彈客	6
+Blink Arrow of Prismatic Clones	閃現射擊．神秘客	6
+Blizzard Crown	暴雪之冠	7
+Block Chance Reduction Support	減少格擋率輔助	6
+Blood Ape	血面狂猿	4
+Blood Chieftain	血面酋長	4
+Blood Demon	血腥惡魔	4
+Blood Price	血償	7
+Blood Rage	鮮血狂怒	6
+Blood Raiment	血色之衣	7
+Blood Sap Tincture	鮮血液萃取物	7
+Blood Sceptre	血色權杖	7
+Blood and Sand	血腥沙戮	6
+Blood of Corruption	墮落之血	7
+Blood of the Karui	卡魯之血	7
+Bloodbond	血肉結合	7
+Bloodgrip	鮮血支配	7
+Bloodlust Support	嗜血輔助	6
+Bloodnotch	缺血症	7
+Bloodplay	血謔	7
+Bloodseeker	嗜血之爪	7
+Bloodsoaked Banner Support	浸血鬥旗輔助	6
+Bloodsoaked Medallion	血染勳章	7
+Bloodstained Fossil	血漬化石	1
+Bloodthirst Support	渴血輔助	6
+Blue Pearl Amulet	碧珠護身符	7
+Blueprint: Bunker	藍圖：碉堡	4
+Blueprint: Laboratory	藍圖：實驗室	4
+Blueprint: Mansion	藍圖：官邸	4
+Blueprint: Prohibited Library	藍圖：禁忌館藏	4
+Blueprint: Records Office	藍圖：紀錄室	4
+Blueprint: Repository	藍圖：展覽室	4
+Blueprint: Smuggler's Den	藍圖：走私者老巢	4
+Blueprint: Tunnels	藍圖：地道	4
+Blueprint: Underbelly	藍圖：地下道	4
+Blunderbore	失誤之孔	7
+Blunt Arrow Quiver	鈍矢箭袋	7
+Blunt Arrow Quiver Piece	鈍矢箭袋碎片	8
+Blunt Force Condenser	鈍擊力凝聚錘	7
+Boarding Axe	萬用手斧	7
+Bodyswap	屍術傳送	6
+Bodyswap of Sacrifice	屍術傳送．獻祭	6
+Bold Undertakings	大膽行動	7
+Bone Armour	骨製戰甲	7
+Bone Bow	骨製弓	7
+Bone Circlet	靈骨之冠	7
+Bone Cruncher	碎骨獸	4
+Bone Helmet	喚骨頭盔	7
+Bone Offering	骸骨奉獻	6
+Bone Rhoa	枯骨恐喙鳥	4
+Bone Ring	骸骨之戒	7
+Bone Spirit Shield	骨製魔盾	7
+Bonechill Support	寒冰刺骨輔助	6
+Bonemeld	骨融	7
+Bones of Ullr	烏勒爾之骨	7
+Boneshatter	碎骨	6
+Boneshatter of Carnage	碎骨．屠殺	6
+Boneshatter of Complex Trauma	碎骨．創傷	6
+Bonespire Support	骨刺輔助	6
+Bonespire Talisman	脊骨魔符	7
+Boom Mace	爆裂之錘	7
+Boon of Justice	正義之福	5
+Boon of the First Ones	初始者的祝福	5
+Boot Blade	戰亂劍	7
+Boot Knife	戰亂刀	7
+Borealwood Tincture	針葉木萃取物	7
+Bottled Faith	瓶中信仰	7
+Bound By Destiny	被命運束縛	7
+Bound Fate	命運繫帶	7
+Bound Fossil	畛域化石	1
+Bound by Flame	縛焰之契	5
+Boundless Realms	無盡之境	5
+Bowyer's Dream	弓匠的夢想	5
+Brain Rattler	腦亂者	7
+Bramble Cobra	叢林眼鏡蛇	4
+Bramblejack	刺棘寶甲	7
+Brand Recall	烙印呼喚	6
+Branded Kite Shield	聖記鳶盾	7
+Brass Maul	銅影巨錘	7
+Brass Spirit Shield	銅鍛魔盾	7
+Breach Ring	裂痕戒指	7
+Breach Scarab of Instability	聖甲蟲：動盪裂痕	8
+Breach Scarab of Resonant Cascade	聖甲蟲：共鳴浪湧裂痕	3
+Breach Scarab of the Dreamer	聖甲蟲：築夢裂痕	3
+Breach Scarab of the Hive	聖甲蟲：窩巢裂痕	8
+Breach Scarab of the Incensed Swarm	聖甲蟲：怒潮裂痕	8
+Breach Scarab of the Marshal	聖甲蟲：元帥裂痕	8
+Breakrib Talisman	碎骨魔符	7
+Breath of the Council	議會之息	7
+Breathstealer	偷息	7
+Brightbeak	光耀之錘	7
+Brimstone Treads	硫磺鐵靴	7
+Brine Vassal	海洋之奴	4
+Brinerot Flag	布琳洛特之旗	7
+Brinerot Mark	布琳洛特印記	7
+Brinerot Whalers	布琳洛特岸行者	7
+Briskwrap	荒途	7
+Broad Axe	闊斧	7
+Broad Sword	闊劍	7
+Broadhead Arrow Quiver	寬矢箭袋	7
+Broken Faith	破碎信念	7
+Broken Promises	不守信	5
+Broken Truce	打破休戰	5
+Bronn's Lithe	布隆的影衣	7
+Bronze Gauntlets	青銅護手	7
+Bronze Plate	青銅鎧甲	7
+Bronze Sceptre	銅鍛權杖	7
+Bronze Tower Shield	青銅塔盾	7
+Bronzescale Boots	銅影長靴	7
+Bronzescale Gauntlets	銅影手套	7
+Brooding Tarantula	毛蛛之母	4
+Brother's Gift	兄弟之贈	5
+Brother's Stash	伯仲財庫	5
+Brotherhood in Exile	流亡兄弟會	5
+Brush, Paint and Palette	畫筆、顏料和調色盤	5
+Brutal Restraint	殘酷的紀律	7
+Brutality Support	殘虐輔助	6
+Brute Force Solution	蠻力衝撞	7
+Brutus' Lead Sprinkler	布魯特斯的刑具	7
+Bubonic Trail	布巴尼克的線索	7
+Buckskin Tower Shield	鹿皮塔盾	7
+Buckskin Tunic	鹿皮外套	7
+Burial Idol	埋葬魔偶	8
+Burial Medallion	埋葬獎章	1
+Buried Treasure	深埋祕寶	5
+Burning Arrow	燃燒箭矢	6
+Burning Arrow of Vigour	燃燒箭矢．活力	6
+Burning Blood	燃燒之血	5
+Burning Damage Support	燃燒傷害輔助	6
+Burnished Foil	冷芒刺劍	7
+Burnished Spiked Shield	冷芒刺盾	7
+Burst Band	暴裂法帶	4
+Butcher Axe	屠戮之斧	7
+Butcher Knife	屠夫刀	7
+Butcher Sword	殺戮巨劍	7
+Cabalist Regalia	秘術法衣	7
+Cadigan's Authority	卡迪根的權威	7
+Cadigan's Crown	卡迪根皇冠	7
+Caer Blaidd, Wolfpack's Den	塞爾．佈雷德狼穴	7
+Calamitous Visions	悲慘幻視	7
+Call of the Brotherhood	意志呼喚	7
+Call of the Void	虛空呼喚	7
+Call to the First Ones	先人召喚	5
+Callinellus Malleus	堅定之刃	7
+Calling Wand	呼喚法杖	7
+Callous Mask	無情之面	7
+Callous Mask Piece	無情之面碎片	8
+Cameria's Avarice	卡美利亞的貪婪	7
+Cameria's Cut	卡麥歷亞之割	5
+Cameria's Maul	卡美利亞之錘	7
+Candlestick Relic	燭台聖物	7
+Cane of Kulemak	骷髏馬克的靈杖	7
+Cane of Unravelling	初惡枝枒	7
+Capacity Rod	才能長桿	7
+Capricious Spiritblade	怪談魂刃	7
+Carcass Jack	致命之體	7
+Cardinal Round Shield	祭者圓盾	7
+Careful Planning	審慎計畫	7
+Carnage Ape	殺戮狂猿	4
+Carnage Chieftain	殺戮酋長	4
+Carnage Heart	屠戮之心	7
+Carnal Armour	禁禮之甲	7
+Carnal Boots	禁禮之靴	7
+Carnal Mitts	禁禮護手	7
+Carnal Sceptre	禁禮權杖	7
+Carrion Burrower	食腐掘地蟲	4
+Carrion Queen	食腐蟲后	4
+Carrion Swarmer	食腐蟲	4
+Cartographer's Delight	製圖師之喜悅	5
+Cartographer's Delirium Orb	製圖之譫妄玉	1
+Cartographer's Incubator	製圖師的培育器	4
+Cartography Scarab of Corruption	聖甲蟲：腐化製圖	3
+Cartography Scarab of Escalation	聖甲蟲：惡化製圖	3
+Cartography Scarab of Risk	聖甲蟲：風險製圖	3
+Cartography Scarab of Singularity	聖甲蟲：極寶製圖	3
+Cartography Scarab of the Multitude	聖甲蟲：增生製圖	3
+Carved Wand	粗紋法杖	7
+Carving Knife	雕刻刀	7
+Cassia's Pride	卡西亞的驕傲	7
+Cast On Critical Strike Support	暴擊時施放輔助	6
+Cast on Death Support	死亡時施放輔助	6
+Cast on Melee Kill Support	近戰擊殺時施放輔助	6
+Cast on Ward Break Support	保護破碎時施放輔助	6
+Cast when Damage Taken Support	受傷時施放輔助	6
+Cast when Stunned Support	暈眩時施放輔助	6
+Cast while Channelling Support	引導時施放輔助	6
+Cat's Paw	貓爪刃	7
+Caustic Arrow	腐蝕箭矢	6
+Caustic Arrow of Poison	腐蝕箭矢．中毒	6
+Cave Beast	洞穴獸	4
+Cave Skitterer	洞穴沙蛛	4
+Cavern Drifter	穴洞漂泊者	4
+Ceaseless Feast	無盡盛宴	7
+Cedar Tower Shield	松木塔盾	7
+Ceinture of Benevolence	仁愛之心	7
+Celestial Armoursmith's Incubator	眾星．鐵匠的培育器	4
+Celestial Blacksmith's Incubator	眾星．鑄鐵的培育器	4
+Celestial Jeweller's Incubator	眾星．珠寶匠的培育器	4
+Censer Relic	香爐聖物	7
+Cerberus Limb	獄犬殘肢	7
+Ceremonial Axe	血儀之斧	7
+Ceremonial Kite Shield	祭儀鳶盾	7
+Ceremonial Mace	祭禮之錘	7
+Cerulean Ring	碧藍戒指	7
+Chain Belt	扣鏈腰帶	7
+Chain Boots	鏈甲長靴	7
+Chain Gloves	鏈甲手套	7
+Chain Hauberk	鎖子長甲	7
+Chain Hook	奪魂勾索	6
+Chain Hook of Trarthus	特拉特斯奪魂勾索	6
+Chain Support	連鎖輔助	6
+Chain of Endurance	堅決鎖鏈	7
+Chainmail Doublet	護體鎖甲	7
+Chainmail Tunic	鏈甲外衣	7
+Chainmail Vest	鎖鏈背心	7
+Chains of Command	統帥之鏈	7
+Chains of Emancipation	解放鏈	7
+Chalice of Horrors	恐懼之缶	7
+Challenging Delirium Orb	挑戰之譫妄玉	1
+Challenging Incubator	挑戰的培育器	4
+Champion Kite Shield	鬥士鳶盾	7
+Chance to Bleed Support	機率流血輔助	6
+Chance to Flee Support	機率逃跑輔助	6
+Chance to Poison Support	機率中毒輔助	6
+Chaos Orb	混沌石	1
+Chaos Shard	混沌石碎片	1
+Chaotic Astrolabe	混沌星盤	8
+Chaotic Disposition	渾沌性情	5
+Charan's Sword	查蘭之劍	7
+Charged Dash	雷霆衝鋒	6
+Charged Dash of Projection	雷霆衝鋒．投射	6
+Charged Mines Support	地雷充能輔助	6
+Charged Traps Support	陷阱充能輔助	6
+Chasing Risk	冒險犯難	5
+Checkmate	將軍	5
+Chernobog's Pillar	五芒屏障	7
+Cherrubim's Maleficence	薛魯賓的惡作劇	7
+Chest Splitter	開膛利刃	7
+Chestplate	胸甲	7
+Chill of Corruption	腐化寒息	7
+Chimerascale Boots	龍蜥鱗長靴	7
+Chimerascale Gauntlets	龍蜥鱗護手	7
+Chimeric Croaker	幻想冥蛙	4
+Chiming Spirit Shield	魂相魔盾	7
+Chin Sol	亂矢之弦	7
+Chitus' Apex	切特斯的威權	7
+Chober Chaber	忠誠之錘	7
+Choir of the Storm	暴風之語	7
+Choking Guilt	窒息內疚	5
+Chromatic Orb	幻色石	1
+Chrome-infused Chimeral	注鉻龍蜥	4
+Chrome-infused Croaker	注鉻蛙	4
+Chrome-infused Goliath	注鉻巨獸	4
+Chrome-touched Chimeral	觸鉻龍蜥	4
+Chrome-touched Croaker	觸鉻蛙	4
+Chrome-touched Goliath	觸鉻巨獸	4
+Chronicle of Atzoatl	阿茲瓦特史記	8
+Chrysalis Talisman	蟲蛹魔符	7
+Cinderswallow Urn	噬燼甕	7
+Circle of Ambition	野心之環	7
+Circle of Anguish	煎熬之環	7
+Circle of Fear	恐懼之環	7
+Circle of Guilt	愧疚之環	7
+Circle of Nostalgia	懷舊之環	7
+Circle of Regret	遺憾之環	7
+Citadel Bow	城塞戰弓	7
+Citrine Amulet	黃晶護身符	7
+Clarity	清晰	6
+Clasped Boots	環帶長靴	7
+Clasped Mitts	環帶護手	7
+Clayshaper	塑泥者	7
+Clear Oil	清透油瓶	1
+Cleave	劈砍	6
+Cleave of Rage	劈砍．盛怒	6
+Cleaver	切割者	7
+Cloak of Defiance	衛道之袍	7
+Cloak of Flame	烈炎之袍	7
+Cloak of Tawm'r Isley	陶米兒艾斯理之袍	7
+Close Combat Support	近身戰輔助	6
+Close Helmet	護面盔	7
+Cloth Belt	飾布腰帶	7
+Cloth Belt Piece	飾布腰帶碎片	8
+Cloudwhisper Boots	雲語短靴	7
+Cluster Traps Support	散彈陷阱輔助	6
+Clutching Talisman	咒箍魔符	7
+Cobalt Jewel	鈷藍珠寶	7
+Cobra Lash	毒蛇鞭笞	6
+Coffer Relic	寶箱聖物	7
+Cogwork Ring	齒輪戒指	7
+Coiled Staff	強化長杖	7
+Coiled Wand	纏繞法杖	7
+Coiling Whisper	盤繞細語	7
+Coin of Desecration	玷污之硬幣	8
+Coin of Knowledge	知識之硬幣	8
+Coin of Power	力量之硬幣	8
+Coin of Restoration	恢復之硬幣	8
+Coin of Skill	技巧之硬幣	8
+Cold Iron Point	寒鋼之刃	7
+Cold Penetration Support	冰冷穿透輔助	6
+Cold Snap	霜暴	6
+Cold Snap of Power	霜暴．暴擊	6
+Cold to Fire Support	寒冰轉烈焰輔助	6
+Cold-attuned Buckler	冷調輕盾	7
+Colossal Hybrid Flask	高階複合藥劑	7
+Colossal Life Flask	高階生命藥劑	7
+Colossal Mana Flask	高階魔力藥劑	7
+Colossal Tower Shield	巨型塔盾	7
+Colosseum Plate	決鬥之鎧	7
+Colossus Crusher	巨像破壞者	4
+Colossus Mallet	巨型重錘	7
+Combat Focus	專精作戰	7
+Combustion Support	燃燒輔助	6
+Command of the Pit	闇核號令	7
+Commander's Brigandine	指揮者鎖甲	7
+Companionship Support	羈絆輔助	6
+Composite Bow	合成弓	7
+Composite Ring	複合戒指	7
+Compound Bow	複合弓	7
+Compound Spiked Shield	複合刺盾	7
+Concentrated Effect Support	集中效應輔助	6
+Conductive Quiver	電光箭袋	7
+Conductivity	導電	6
+Conduit Line	導管線	4
+Cone Helmet	錐頂盔	7
+Conflagration	燎原箭矢	6
+Congregation Support	聚眾輔助	6
+Congregator Wand	匯能法杖	7
+Conjurer Boots	咒者長靴	7
+Conjurer Gloves	咒者手套	7
+Conjurer's Vestment	咒者長衣	7
+Conjuror of Rot	腐化魔者	8
+Conqueror Idol	征服者魔偶	8
+Conqueror's Helmet	征服者的頭盔	7
+Conquest Chainmail	征戰鎖甲	7
+Conquest Helmet	征戰頭盔	7
+Conquest Lamellar	征戰薄甲	7
+Consecrated Path	奉獻之路	6
+Consecrated Path of Endurance	奉獻之路．持久	6
+Contagion	瘟疫	6
+Contagion of Subsiding	瘟疫．消退	6
+Contagion of Transference	瘟疫．移轉	6
+Contract: Breaking the Unbreakable	契約書：攻破不破者	7
+Contract: Bunker	契約書：碉堡	4
+Contract: Death to Darnaw	契約書：達爾奈之死	7
+Contract: Heart of Glory	榮譽之心	7
+Contract: Laboratory	契約書：實驗室	4
+Contract: Mansion	契約書：官邸	4
+Contract: Prohibited Library	契約書：禁忌館藏	4
+Contract: Records Office	契約書：紀錄室	4
+Contract: Repository	契約書：展覽室	4
+Contract: Smuggler's Den	契約書：走私者老巢	4
+Contract: The Slaver King	契約書：奴隸王	7
+Contract: The Twins	契約書：雙胞胎	7
+Contract: Tunnels	契約書：地道	4
+Contract: Underbelly	契約書：地下道	4
+Controlled Blaze Support	精準烈火輔助	6
+Controlled Destruction Support	精準破壞輔助	6
+Convening Wand	召集法杖	7
+Conversion Trap	迷魅陷阱	6
+Convocation	號召	6
+Convoking Wand	召喚法杖	7
+Cooldown Recovery Support	冷卻恢復輔助	6
+Cooperation	協作	7
+Copper Kris	銅器波刃	7
+Copper Plate	銅鍛板甲	7
+Copper Sword	青銅短劍	7
+Copper Tower Shield	銅鍛塔盾	7
+Coral Amulet	珊瑚護身符	7
+Coral Ring	珊瑚戒指	7
+Coralito's Signature	克拉里多的名印	7
+Cord Belt	繩帶	8
+Coronal Leather	光耀皮甲	7
+Coronal Maul	花冠重錘	7
+Corpsewalker	行屍走肉	7
+Corroded Blade	鏽斑巨劍	7
+Corroded Fossil	斑駁化石	1
+Corroded Tower Shield	斑駁塔盾	7
+Corrugated Buckler	波紋輕盾	7
+Corrupted Arach	墮魂巨蛛	4
+Corrupted Beast	腐化獸	4
+Corrupted Rhoa	腐化的恐喙鳥	4
+Corrupted Spitter	腐化魔蛛	4
+Corrupting Cry Support	汙染戰吼輔助	6
+Corrupting Fever	腐化潮	6
+Corsair Sword	海賊長刀	7
+Cortex	深沉記憶	7
+Corundum Flask	金剛藥劑	7
+Coruscating Elixir	閃耀精華	7
+Cosmic Fragment	宇宙碎片	3
+Cosmic Reliquary Key	宇宙遺鑰	4
+Cospri's Malice	卡斯普里的怨恨	7
+Cospri's Will	卡斯普里意志	7
+Costly Curio	昂貴古玩	5
+Council of Cats	貓咪議會	5
+Courtesan Sword	花魁之劍	7
+Coveted Possession	飢渴之佔	5
+Coward's Chains	懦夫的鎖鏈	7
+Coward's Legacy	懦夫的遺產	7
+Cowards' Wail	懦夫之哀	7
+Cowl of the Ceraunophile	狂雷斗篷	7
+Cowl of the Cryophile	酷寒斗篷	7
+Cowl of the Thermophile	嗜炎斗篷	7
+Crack Mace	碎裂之錘	7
+Crackling Lance	碎雷電閃	6
+Crackling Lance of Branching	碎雷電閃．分支	6
+Crackling Lance of Disintegration	碎雷電閃．毀滅	6
+Craghead	岩頭	7
+Craiceann's Carapace	奎爾珊硬甲	7
+Craiceann's Chitin	奎爾珊畸面	7
+Craiceann's Pincers	奎爾珊堅鉗	7
+Craiceann's Tracks	奎爾珊之跡	7
+Craiceann, First of the Deep	初始之潭奎爾珊	4
+Craicic Chimeral	奎爾珊龍蜥	4
+Craicic Maw	奎爾珊裂齒獸	4
+Craicic Sand Spitter	奎爾珊噴砂爪蟹	4
+Craicic Savage Crab	奎爾珊殘暴的蟹	4
+Craicic Shield Crab	奎爾珊重盾巨蟹	4
+Craicic Spider Crab	奎爾珊蛛蛛蟹	4
+Craicic Squid	奎爾珊烏賊	4
+Craicic Vassal	奎爾珊之奴	4
+Craicic Watcher	奎爾珊看守者	4
+Creeping Frost	寒霜滲透	6
+Creeping Frost of Floes	寒霜滲透．浮冰	6
+Cremation	熔炎送葬	6
+Cremation of Exhuming	熔炎送葬．深掘	6
+Cremation of the Volcano	熔炎送葬．火山	6
+Crescent Splinter	新月裂片	1
+Crescent Staff	新月長杖	7
+Crest of Desire	慾望之冠	7
+Crest of Perandus	普蘭德斯之徽	7
+Crested Tower Shield	榮冠塔盾	7
+Crimson Jewel	赤紅珠寶	7
+Crimson Oil	緋紅油瓶	1
+Crimson Raiment	緋紅之衣	7
+Crimson Round Shield	緋紅圓盾	7
+Critical Strike Affliction Support	暴擊苦痛輔助	6
+Crop Rotation	作物輪作	7
+Crown of Eyes	邪眼之冠	7
+Crown of Thorns	刺棘之冠	7
+Crown of the Inward Eye	暗眼之冠	7
+Crown of the Pale King	殞皇之冠	7
+Crown of the Tyrant	堂皇冠冕	7
+Crude Bow	粗製弓	7
+Crude Sensing Charm	初級感知咒術	4
+Crude Ward	低階法杖	4
+Cruelty Support	殘酷輔助	6
+Crusader Boots	聖戰長靴	7
+Crusader Buckler	聖戰輕盾	7
+Crusader Chainmail	聖戰鎖甲	7
+Crusader Gloves	聖戰手套	7
+Crusader Helmet	聖戰之盔	7
+Crusader Plate	征戰重鎧	7
+Crusader's Exalted Orb	聖戰士的崇高石	1
+Crushing Fist	粉碎之拳	6
+Crushing Force Magnifier	粉碎力增幅錘	7
+Crustacean Sniper	狙影沙蟹	4
+Cryonic Ring	低溫之戒	8
+Crypt Ambusher	地穴潛伏者	4
+Crypt Armour	地穴戰甲	7
+Crypt Weaver	深穴巨蛛	4
+Crystal Belt	水晶腰帶	7
+Crystal Sceptre	水晶權杖	7
+Crystal Wand	水晶法杖	7
+Crystallised Omniscience	晶化全知	7
+Crystallised Power	晶化之力	7
+Crystallised Rancour	晶化仇怨	8
+Cull the Weak Support	弱者撲殺輔助	6
+Culling Strike Support	撲殺輔助	6
+Cured Quiver	火焰箭袋	7
+Curio of Absorption	融合之逸品	7
+Curio of Consumption	消耗之逸品	7
+Curio of Decay	腐化之逸品	7
+Curio of Potential	野心之逸品	7
+Curiosity	好奇	7
+Cursed Ground Support	詛咒地面輔助	6
+Cursed Spawn	詛咒海蟲	4
+Cursed Words	髒話	5
+Curtain Call	華麗閉幕	7
+Curved Blade	彎刃	7
+Cutlass	軍用長刃	7
+Cutthroat's Garb	殘殺者之裝	7
+Cybil's Paw	希比爾的冰爪	7
+Cyclone	旋風斬	6
+Cyclone of Tumult	旋風斬．騷動	6
+Cyclopean Coil	巨岩之環	7
+Dagger Axe	匕斧	7
+Damage on Full Life Support	滿血傷害輔助	6
+Damnation	咒縛	5
+Dance of Destruction	毀滅之舞	7
+Dance of the Offered	奉獻之舞	7
+Dancing Sword	劍舞	4
+Daresso's Courage	德瑞索的勇者之盾	7
+Daresso's Defiance	德瑞索的衛衣	7
+Daresso's Passion	德瑞索的熱情	7
+Daresso's Salute	德瑞索的戰禮	7
+Dark Dreams	漆黑夢魘	5
+Dark Marionette	黑暗木偶	4
+Dark Pact	暗夜血契	6
+Dark Pact of Trarthus	特拉特斯暗夜血契	6
+Dark Reaper	黑暗奪魂鐮	4
+Dark Temptation	暗黑的誘惑	5
+Darker Half	晦暗不明	5
+Darkness Enthroned	夜惡降臨	7
+Darkray Vectors	暗雷	7
+Darkscorn	夜吟	7
+Darksteel Treads	暗鋼鐵靴	7
+Darkwood Sceptre	烏木權杖	7
+Dash	幻步	6
+Dawnbreaker	破曉	7
+Dawnstrider	晨行者	7
+Dead Reckoning	死亡清算	7
+Deadhand Talisman	亡手魔符	7
+Deadly Ailments Support	致命異常輔助	6
+Deadly Joy	致命喜悅	5
+Deafening Essence of Anger	憤怒之破空精髓	1
+Deafening Essence of Anguish	煎熬之破空精髓	1
+Deafening Essence of Contempt	輕視之破空精髓	1
+Deafening Essence of Doubt	疑惑之破空精髓	1
+Deafening Essence of Dread	忌憚之破空精髓	1
+Deafening Essence of Envy	忌妒之破空精髓	1
+Deafening Essence of Fear	恐懼之破空精髓	1
+Deafening Essence of Greed	貪婪之破空精髓	1
+Deafening Essence of Hatred	憎恨之破空精髓	1
+Deafening Essence of Loathing	厭惡之破空精髓	1
+Deafening Essence of Misery	悽慘之破空精髓	1
+Deafening Essence of Rage	肆虐之破空精髓	1
+Deafening Essence of Scorn	傲視之破空精髓	1
+Deafening Essence of Sorrow	哀惜之破空精髓	1
+Deafening Essence of Spite	刻毒之破空精髓	1
+Deafening Essence of Suffering	苦難之破空精髓	1
+Deafening Essence of Torment	折磨之破空精髓	1
+Deafening Essence of Woe	悲痛之破空精髓	1
+Deafening Essence of Wrath	雷霆之破空精髓	1
+Deafening Essence of Zeal	熱情之破空精髓	1
+Death	死亡	5
+Death Bow	死亡之弓	7
+Death Rush	亡者呼喚	7
+Death and Taxes	亡者之財	7
+Death's Door	死亡大門	7
+Death's Hand	死神之手	7
+Death's Harp	冥使之琴	7
+Death's Oath	冥使之體	7
+Deathly Designs	致死記號	5
+Debeon's Dirge	狄恩的輓歌	7
+Decay Support	腐化輔助	6
+Decaying Fragment	腐朽碎片	3
+Decaying Reliquary Key	腐化遺鑰	4
+Decimation Bow	獵魂之弓	7
+Decorative Axe	富貴之斧	7
+Decoy Totem	誘餌圖騰	6
+Decurve Bow	直弓	7
+Dedication to the Goddess	女神奉獻	3
+Deep Crustacean	深潭甲蟹	4
+Deep One Talisman	深淵魔符	7
+Deerskin Boots	鹿皮短靴	7
+Deerskin Gloves	鹿皮手套	7
+Deerstalker	獵蹤	7
+Defiance Banner	反抗之旗	6
+Defiance of Destiny	拒絕命運	7
+Deft Fossil	靈巧化石	1
+Deicide Mask	弒神之面	7
+Deidbell	喪鐘	7
+Delirium Orb	譫妄玉	1
+Delirium Scarab	聖甲蟲：譫妄	3
+Delirium Scarab of Delusions	聖甲蟲：幻覺譫妄	3
+Delirium Scarab of Mania	聖甲蟲：狂熱譫妄	3
+Delirium Scarab of Neuroses	聖甲蟲：神經譫妄	3
+Delirium Scarab of Paranoia	聖甲蟲：偏執譫妄	3
+Dementophobia	癡呆症	5
+Demigod's Wager	昇華的賭注	5
+Demon Crown	惡魔邪冠	7
+Demon Dagger	惡魔短匕	7
+Demon Stitcher	縫魔	7
+Demon's Horn	魔角法杖	7
+Dendrobate	箭毒蛙	7
+Dense Fossil	稠密化石	1
+Desecrate	褻瀆	6
+Desecrated Virtue	褻瀆的美德	5
+Desert Brigandine	荒野鎖鎧	7
+Despair	絕望	6
+Desperate Crusade	絕望遠征	5
+Despot Axe	霸主巨斧	7
+Destined to Crumble	殞落的命運	5
+Destiny Leather	命運皮甲	7
+Destroyer Regalia	滅世法衣	7
+Destructive Link	連結：破壞	6
+Destructive Play	毀滅遊戲	7
+Determination	堅定	6
+Detonate Dead	屍體爆破	6
+Detonate Dead of Chain Reaction	屍體爆破．連鎖	6
+Detonate Dead of Scavenging	屍體爆破．清洗	6
+Detonate Mines	引爆地雷	6
+Devoto's Devotion	德沃托的信念之盔	7
+Devour Support	吞噬輔助	6
+Devourer	吞噬獸	4
+Devouring Fragment	吞噬碎片	3
+Devouring Totem	吞噬圖騰	6
+Devout Chainmail	虔誠鏈甲	7
+Dextral Catalyst	右旋催化劑	8
+Dialla's Malefaction	達拉的罪刑	7
+Dialla's Subjugation	達拉之訓	5
+Diamond Flask	寶鑽藥劑	7
+Diamond Ring	寶鑽戒指	7
+Dimensional Barrier	次元壁壘	7
+Dire Pelt	恐懼皮盔	7
+Dirt Scrabbler	撥土者	4
+Disapprobation Axe	駁斥之斧	7
+Discharge	解放	6
+Discharge of Misery	解放．苦痛	6
+Discipline	紀律	6
+Disdain	蔑視	5
+Disintegrator	滅碎獠杖	7
+Dissolution of the Flesh	血肉溶解	7
+Divinarius	戒律之影	7
+Divination Distillate	寶視精華	7
+Divination Scarab of Pilfering	聖甲蟲：盜竊命運	3
+Divination Scarab of Plenty	聖甲蟲：富饒命運	3
+Divination Scarab of The Cloister	聖甲蟲：迴廊命運	3
+Divine Beauty	神聖之美	5
+Divine Blast	神聖爆破	6
+Divine Crown	神聖之冠	7
+Divine Ire	聖怒	6
+Divine Ire of Disintegration	聖怒．毀滅	6
+Divine Ire of Holy Lightning	聖怒．雷神	6
+Divine Justice	神判	5
+Divine Life Flask	不朽生命藥劑	7
+Divine Mana Flask	不朽魔力藥劑	7
+Divine Orb	神聖石	1
+Divine Retribution	神聖制裁	6
+Divine Sentinel Support	聖潔守望輔助	6
+Divine Vessel	眾神聖器	3
+Diviner's Delirium Orb	聖人之譫妄玉	1
+Diviner's Incubator	聖者的培育器	4
+Doedre's Damning	德瑞的魔具	7
+Doedre's Elixir	德瑞的妙藥	7
+Doedre's Madness	德瑞競之狂	5
+Doedre's Scorn	德瑞的蔑視	7
+Doedre's Skin	德瑞之膚	7
+Doedre's Tenure	德瑞的精神手套	7
+Doedre's Tongue	德瑞的毒舌	7
+Dominating Blow	霸氣之擊	6
+Dominating Blow of Inspiring	霸氣之擊．啟發	6
+Domination Scarab	聖甲蟲：支配	3
+Domination Scarab of Apparitions	聖甲蟲：映像支配	3
+Domination Scarab of Evolution	聖甲蟲：進化支配	3
+Domination Scarab of Terrors	聖甲蟲：惡懼支配	3
+Doomfletch	滅世	7
+Doomsower	終末之始	7
+Doon Cuebiyari	黑鋼	7
+Doppelgänger Guise	達佩爾甘格偽裝	7
+Doryani's Catalyst	多里亞尼的幻化之杖	7
+Doryani's Delusion	多里亞尼的幻想	7
+Doryani's Epiphany	多里亞尼的頓悟	5
+Doryani's Fist	多里亞尼之拳	7
+Doryani's Invitation	多里亞尼之約	7
+Doryani's Machinarium	多里亞尼的機械迷城	7
+Doryani's Prototype	多里亞尼之型	7
+Double Axe	雙刃巨斧	7
+Double Claw	雙刃爪	7
+Double Strike	雙重打擊	6
+Double Strike of Impaling	雙重打擊．穿刺	6
+Double Strike of Momentum	雙重打擊．氣勢	6
+Dragon Mace	龍之錘	7
+Dragonbone Rapier	龍骨細劍	7
+Dragonscale Boots	龍鱗長靴	7
+Dragonscale Doublet	龍鱗護甲	7
+Dragonscale Gauntlets	龍鱗手套	7
+Dragoon Sword	騎兵軍刀	7
+Draped in Dreams	披夢	5
+Dread Banner	恐懼之旗	6
+Dread Maul	威權巨錘	7
+Dread Primate	恐懼狂猿	4
+Dreadarc	恐懼之鐮	7
+Dream Fragments	夢語之痕	7
+Dream Mace	夢境之錘	7
+Dreamfeather	幻夢飛羽	7
+Dreamquest Slippers	幻夢之尋便鞋	7
+Driftwood Club	朽木之棒	7
+Driftwood Maul	朽木巨錘	7
+Driftwood Sceptre	朽木權杖	7
+Driftwood Spiked Shield	朽木刺盾	7
+Driftwood Wand	朽木法杖	7
+Drillneck	穿心	7
+Drox's Crest	圖拉克斯刻紋	3
+Druidic Alchemist	德魯伊鍊金師	4
+Dual Strike	雙持打擊	6
+Dual Strike of Ambidexterity	雙持打擊．靈活	6
+Duality	雙重性	5
+Dune Hellion	沙丘獄犬	4
+Dusk Blade	暮色之刃	7
+Dusk Ring	幽暗戒指	7
+Duskdawn	宵曉	7
+Dusktoe	迎暮	7
+Duskwalk Slippers	暮色之行便鞋	7
+Dust Scrabbler	撥塵者	4
+Dyadian Dawn	戴亞迪安的晨曦	7
+Dyadus	龍鳳吟	7
+Dying Anguish	消逝之怒	5
+Dying Breath	亡者之息	7
+Dying Light	垂死之光	5
+Dying Sun	滅日	7
+Eagle Claw	鷹爪刃	7
+Earendel's Embrace	伊爾多恩的擁抱	7
+Earth Drinker	大地吞食者	5
+Earthbreaker Support	地破輔助	6
+Earthquake	震地	6
+Earthquake of Amplification	震地．增幅	6
+Earthshatter	碎地重擊	6
+Earthshatter of Fragility	碎地重擊．易碎	6
+Earthshatter of Prominence	碎地重擊．卓越	6
+Eber's Unification	希伯的統治	7
+Ebony Tower Shield	烏木塔盾	7
+Echo of Loneliness	孤獨之迴響	8
+Echo of Reverence	敬畏之迴響	8
+Echo of Trauma	創傷之迴響	8
+Echoes of Creation	創造迴聲	7
+Echoes of Love	愛我請舉手	5
+Echoforge	核聲	7
+Eclipse Solaris	宇蝕	7
+Eclipse Staff	月蝕長杖	7
+Eclipse Support	朔望輔助	6
+Edge of Madness	瘋狂邊界	7
+Eelskin Boots	鰻皮短靴	7
+Eelskin Gloves	鰻皮手套	7
+Eelskin Sole	鰻皮鞋底	4
+Eelskin Tunic	鰻皮之衣	7
+Efficacy Support	效能輔助	6
+Efficient Training	充分訓練	7
+Elder Sword	智者長劍	7
+Elder's Exalted Orb	尊師的崇高石	8
+Eldritch Blasphemy Support	異界詛咒光環輔助	6
+Eldritch Chaos Orb	異能混沌石	1
+Eldritch Exalted Orb	異能崇高石	1
+Eldritch Eye	異能之眼	4
+Eldritch Gaze	異能凝視	7
+Eldritch Incubator	異界尊師的培育器	4
+Eldritch Orb of Annulment	異能無效石	1
+Eldritch Perfection	完美異能	5
+Elegant Foil	貴族細劍	7
+Elegant Hubris	優雅的高傲	7
+Elegant Ringmail	權貴環甲	7
+Elegant Round Shield	權貴圓盾	7
+Elegant Sword	貴族之劍	7
+Elemental Army Support	元素軍隊輔助	6
+Elemental Damage with Attacks Support	元素攻擊傷害輔助	6
+Elemental Focus Support	元素集中輔助	6
+Elemental Hit	元素打擊	6
+Elemental Hit of the Spectrum	元素打擊．光譜	6
+Elemental Penetration Support	元素穿透輔助	6
+Elemental Proliferation Support	元素擴散輔助	6
+Elemental Weakness	元素要害	6
+Elevore	愛勒弗	7
+Elixir of the Unbroken Circle	不破環之靈藥	7
+Emberwake	餘燼之痕	7
+Embroidered Gloves	刺繡手套	7
+Emperor of Purity	純潔帝王	5
+Emperor's Cunning	帝王的詭計	7
+Emperor's Luck	帝運	5
+Emperor's Mastery	帝王的純熟	7
+Emperor's Might	帝王的霸權	7
+Emperor's Vigilance	帝王的戒心	7
+Emperor's Wit	帝王的智慧	7
+Empire's Grasp	帝國之掌	7
+Empower Support	賦予輔助	6
+Enamel Brooch	琺瑯胸針	4
+Enameled Buckler	釉彩輕盾	7
+Enchanted Incubator	附魔的培育器	4
+Endless Night	無盡的夜晚	5
+Endless Tide	無盡潮汐	7
+Endothermic Buckler	熱力輕盾	7
+Endurance Charge on Melee Stun Support	近戰擊暈獲得耐力球輔助	6
+Enduring Cry	堅決戰吼	6
+Energised Armour	能量堅甲	7
+Energy Blade	能量之刃	7
+Energy From Within	潛能防護	7
+Energy Leech Support	能量偷取輔助	6
+Enfeeble	衰弱	6
+Engraved Greatsword	符文巨劍	7
+Engraved Hatchet	雕文戰斧	7
+Engraved Wand	符文法杖	7
+Enhance Support	增幅輔助	6
+Enkindling Orb	點燃石	1
+Enlighten Support	啟蒙輔助	6
+Enmity's Embrace	惡言之擁	7
+Enraptured Arachnid	狂怒猛蛛	4
+Enraptured Beast	猛獸野瘋狂	4
+Enraptured Crab	迷幻的蟹	4
+Enshrouded Astrolabe	壟罩星盤	8
+Enslaved Hellion	奴役地獄犬	4
+Ensnaring Arrow	誘捕箭矢	6
+Enthalpic Ring	焓能之戒	8
+Entropic Devastation	熵毀滅	7
+Ephemeral Edge	影殞	7
+Escaped Rhex	竄逃雛鳥	4
+Esh's Mirror	艾許之鏡	7
+Esh's Visage	艾許之面	7
+Espionage Disguise Kit	間諜偽裝套組	4
+Essence Drain	靈魂吸取	6
+Essence Drain of Desperation	靈魂吸取．絕望	6
+Essence Drain of Wickedness	靈魂吸取．邪惡	6
+Essence Scarab	聖甲蟲：精髓	3
+Essence Scarab of Adaptation	聖甲蟲：適性精髓	3
+Essence Scarab of Ascent	聖甲蟲：上升精髓	3
+Essence Scarab of Calcification	聖甲蟲：鈣化精髓	3
+Essence Scarab of Stability	聖甲蟲：穩定精髓	3
+Essence Worm	菁華蠕蟲	7
+Essence of Delirium	譫妄精髓	1
+Essence of Desolation	荒蕪精髓	8
+Essence of Horror	極恐精髓	1
+Essence of Hysteria	浮誇精髓	1
+Essence of Insanity	錯亂精髓	1
+Essentia Sanguis	精華收割器	7
+Essential Keyring	基礎鑰匙圈	4
+Estoc	穿甲刺劍	7
+Etched Greatsword	術雕巨劍	7
+Etched Hatchet	蝕刻戰斧	7
+Etched Kite Shield	刻文鳶盾	7
+Etched in Blood	腐爛於血	5
+Eternal Blessing Support	永恆祝福輔助	6
+Eternal Bonds	永恆之繫	5
+Eternal Burgonet	永恆堅盔	7
+Eternal Damnation	永恆的詛咒	7
+Eternal Life Flask	永恆生命藥劑	7
+Eternal Mana Flask	永恆魔力藥劑	7
+Eternal Orb	永恆寶珠	1
+Eternal Sword	永恆之劍	7
+Ethereal Knives	虛空匕首	6
+Ethereal Knives of Lingering Blades	虛空匕首．餘刃	6
+Ethereal Knives of the Massacre	虛空匕首．屠殺	6
+Eventuality Rod	萬能長桿	7
+Ever-Changing	千變萬化	5
+Eviscerate	剔骨	6
+Ewar's Mirage	伊沃幻像	7
+Exalted Orb	崇高石	1
+Exalted Shard	崇高石碎片	1
+Exceptional Eldritch Ember	卓越異能灰燼	1
+Exceptional Eldritch Ichor	卓越異能靈液	1
+Excommunicate Support	放逐輔助	6
+Exemplar Support	典範輔助	6
+Exhausting Spirit Shield	力竭魔盾	7
+Exothermic Tower Shield	熱氣塔盾	7
+Exotic Coinage	異域幣鑄	1
+Expedition Logbook	探險日誌	4
+Expedition Scarab	聖甲蟲：探險	3
+Expedition Scarab of Archaeology	聖甲蟲：考古探險	3
+Expedition Scarab of Infusion	聖甲蟲：注能探險	8
+Expedition Scarab of Runefinding	聖甲蟲：尋符探險	3
+Expedition Scarab of Verisium Powder	聖甲蟲：維里西姆粉末探險	3
+Expedition's End	遠征之盡	7
+Expert Retaliation Support	專家復仇輔助	6
+Explosive Arrow	爆炸箭矢	6
+Explosive Concoction	爆裂物	6
+Explosive Concoction of Destruction	爆裂物．破壞	6
+Explosive Trap	爆裂陷阱	6
+Explosive Trap of Magnitude	爆裂陷阱．量級	6
+Explosive Trap of Shrapnel	爆裂陷阱．彈片	6
+Exquisite Blade	精緻之刃	7
+Exquisite Leather	精製皮甲	7
+Exsanguinate	抽血	6
+Exsanguinate of Transmission	抽血．傳染	6
+Extractor Mentis	心靈抽取	7
+Extreme Archaeology	極限考古學	7
+Eye Gouger	刺眼鉤	7
+Eye of Chayula	夏烏拉之眼	7
+Eye of Innocence	無罪之眼	7
+Eye of Malice	邪眼	7
+Eye of Winter	凜冬之眼	6
+Eye of Winter of Finality	凜冬之眼．終結	6
+Eye of Winter of Transience	凜冬之眼．轉瞬	6
+Eyes of the Greatwolf	巨狼之眼	7
+Ezomyte Axe	艾茲麥巨斧	7
+Ezomyte Blade	艾茲麥巨劍	7
+Ezomyte Burgonet	艾茲麥堅盔	7
+Ezomyte Dagger	艾茲麥短匕	7
+Ezomyte Peak	艾茲麥的榮光	7
+Ezomyte Spiked Shield	艾茲麥刺盾	7
+Ezomyte Staff	艾茲麥長杖	7
+Ezomyte Tower Shield	艾茲麥塔盾	7
+Facebreaker	毀面者	7
+Faceted Fossil	雕琢化石	1
+Fairgraves' Tricorne	費爾之帽	7
+Faithful Helmet	信仰頭盔	7
+Faithguard	信仰守護	7
+Familial Contract	家庭契約書	4
+Faminebind	饑荒之結	7
+Fancy Foil	華麗細劍	7
+Fangjaw Talisman	齒鯊魔符	7
+Farric Ape	費爾羅狂猿	4
+Farric Chieftain	費爾羅酋長	4
+Farric Flame Hellion Alpha	費爾羅烈焰犬幻獸	4
+Farric Frost Hellion Alpha	費爾羅冰霜犬幻獸	4
+Farric Gargantuan	費爾羅巨人	4
+Farric Goatman	費爾羅羊人	4
+Farric Goliath	費爾羅巨獸	4
+Farric Lynx Alpha	費爾羅山貓幻獸	4
+Farric Magma Hound	費爾羅岩漿獵犬	4
+Farric Pit Hound	費爾羅坑穴獵犬	4
+Farric Taurus	費爾羅金牛人	4
+Farric Tiger Alpha	費爾羅猛虎幻獸	4
+Farric Ursa	費爾羅暴熊	4
+Farric Wolf Alpha	費爾羅惡狼幻獸	4
+Farrul's Bite	費爾羅咥喙	7
+Farrul's Chase	費爾羅獵靴	7
+Farrul's Fur	費爾羅羽衣	7
+Farrul's Pounce	費爾羅鋒爪	7
+Farrul, First of the Plains	初始之地費爾羅	4
+Faster Attacks Support	快速攻擊輔助	6
+Faster Casting Support	快速施放輔助	6
+Faster Projectiles Support	快速投射輔助	6
+Fate of the Vaal	瓦爾之命	7
+Fated End	命運終結	7
+Fateful Meeting	命運大會	5
+Father's Love	父愛	5
+Faun's Horn	獸角法杖	7
+Feastbind	盛宴之結	7
+Feathered Arrow Quiver	羽翼箭袋	7
+Feeding Frenzy Support	豢養狂熱輔助	6
+Femurs of the Saints	聖徒脛骨	7
+Fencer Helm	擊劍士之盔	7
+Fencoil	綠藤	7
+Fenumal Devourer	菲恩絲吞噬獸	4
+Fenumal Hybrid Arachnid	菲恩絲混血蜘蛛	4
+Fenumal Plagued Arachnid	菲恩絲疫病蜘蛛	4
+Fenumal Queen	菲恩絲女皇	4
+Fenumal Scorpion	菲恩絲毒蠍	4
+Fenumal Scrabbler	菲恩絲搗亂者	4
+Fenumal Widow	菲恩絲黑寡婦	4
+Fenumus' Shroud	菲恩絲魘甲	7
+Fenumus' Spinnerets	菲恩絲刺靴	7
+Fenumus' Toxins	菲恩絲獠牙	7
+Fenumus' Weave	菲恩絲夜織	7
+Fenumus, First of the Night	初始之夜菲恩絲	4
+Feral Chimeral	狂野龍蜥	4
+Feral Fowl	野雞	4
+Feral Incubator	狂野的培育器	4
+Fertile Catalyst	富饒的催化劑	1
+Fertile Mind	豐富心靈	7
+Festering Resentment	潰爛怨恨	7
+Festival Mask	節慶之面	7
+Fetid Maw	惡臭裂齒獸	4
+Fevered Mind	狂熱之心	7
+Fickle Spiritblade	非命魂刃	7
+Fidelitas' Spike	費德利塔斯之鋒	7
+Field Lamellar	野戰薄甲	7
+Fiend Dagger	妖魔短匕	7
+Fiery Cannibal	烈焰食人族	4
+Fighting Bull	戰鬥公牛	4
+Filth Maw	污穢裂齒獸	4
+Fine Delirium Orb	精良之譫妄玉	1
+Fine Incubator	精緻的培育器	4
+Fine Lockpick	精良鎖撬	4
+Fine Sensing Charm	精良感知咒術	4
+Fine Sharpening Stone	精良磨刀石	4
+Fingerless Silk Gloves	魔指手套	7
+Fir Round Shield	杉木圓盾	7
+Fire Arrow Quiver	火靈箭袋	7
+Fire Of Unknown Origin	神秘之火的起源	5
+Fire Penetration Support	火焰穿透輔助	6
+Fire Trap	火焰陷阱	6
+Fire Trap of Blasting	火焰陷阱．爆發	6
+Fireball	火球	6
+Firesong	炔頌	7
+Firestorm	烈炎風暴	6
+Firestorm of Meteors	烈炎風暴．隕石	6
+Firestorm of Pelting	烈炎風暴．猛擲	6
+First Piece of Brutality	第一暴虐碎片	7
+First Piece of Directions	第一象限碎片	7
+First Piece of Focus	第一專注碎片	7
+First Piece of Storms	第一風暴碎片	7
+First Piece of Time	第一時空碎片	7
+First Piece of the Arcane	第一奧術碎片	7
+Fishing Rod	魚竿	7
+Fishscale Gauntlets	魚鱗手套	7
+Fissure Support	裂隙輔助	6
+Fist of War Support	拳霸輔助	6
+Flame Dash	烈焰衝刺	6
+Flame Dash of Return	烈焰衝刺．返回	6
+Flame Hellion	煉獄犬	4
+Flame Link	連結：烈焰	6
+Flame Surge	怒焰奔騰	6
+Flame Surge of Combusting	怒焰奔騰．燃燒	6
+Flame Wall	烈焰之牆	6
+Flameblast	烈焰爆破	6
+Flameblast of Celerity	烈焰爆破．迅速	6
+Flameblast of Contraction	烈焰爆破．緊縮	6
+Flamesight	炎視	7
+Flamethrower Trap	噴火陷阱	6
+Flamethrower Trap of Stability	噴火陷阱．穩定	6
+Flamewood Support	焚木輔助	6
+Flammability	易燃	6
+Flanged Arrowhead	法蘭箭矢	4
+Flanged Drill	法蘭鑽頭	4
+Flanged Mace	護體之錘	7
+Flare Mace	閃耀之錘	7
+Flashfire Blade	瞬炎之刃	7
+Flaying Knife	殘體利刃	7
+Flesh Offering	血肉奉獻	6
+Flesh and Spirit	肉體與魂靈	7
+Flesh and Stone	血肉骸骨	6
+Flesh of Xesht	烈許之血肉	8
+Flesh-Eater	血肉之嗜	7
+Fleshcrafter	人體匠師	7
+Fleshrender	血肉撕扯者	7
+Fleshripper	裂肉者	7
+Flicker Strike	閃現打擊	6
+Flicker Strike of Power	閃現打擊．暴擊	6
+Flickerflame Blade	閃火之刃	7
+Fluid Motion	流暢行動	7
+Fluted Bascinet	全罩戰盔	7
+Focal Stone	聚焦石	4
+Focused Amulet	專注護身符	7
+Focused Ballista Support	專注砲塔輔助	6
+Focused Channelling Support	專注引導輔助	6
+Foliate Brooch	箔片胸針	4
+Font of Thunder	雷霆聖器	7
+Footman Sword	士兵巨劍	7
+Forbidden Flame	禁忌烈焰	7
+Forbidden Flesh	禁忌血肉	7
+Forbidden Power	禁忌之力	5
+Forbidden Rite	禁忌儀式	6
+Forbidden Rite of Soul Sacrifice	禁忌儀式．靈魂獻祭	6
+Forbidden Shako	禁忌軍帽	7
+Forbidden Taste	禁果	7
+Forbidden Tome	禁忌之書	4
+Foreboding Incubator	預示的培育器	4
+Forest Beast	叢林猛獸	4
+Forest Tiger	森林猛虎	4
+Forest Warrior	森林戰士	4
+Forgotten Reliquary Key	遺忘遺鑰	4
+Fork Support	分裂輔助	6
+Formless Ring	無形之戒	8
+Fortify Support	護體輔助	6
+Fortress Covenant	堅壁誓約	7
+Fossilised Delirium Orb	石化之譫妄玉	1
+Fossilised Incubator	化石的培育器	4
+Fossilised Spirit Shield	石化魔盾	7
+Foul Staff	惡靈長杖	7
+Foulborn Exalted Orb	穢生崇高石	8
+Foulborn Orb of Augmentation	穢生增幅石	8
+Foulborn Regal Orb	穢生富豪石	8
+Foulgrasp Support	邪穢之握輔助	6
+Foundry Bow	鑄造之弓	7
+Fourth Piece of Focus	第四專注碎片	7
+Foxhide Sole	湖皮鞋底	4
+Foxshade	狐毛鎧	7
+Fractal Thoughts	異想	7
+Fractured Fossil	破裂化石	1
+Fracturing Orb	破裂石	1
+Fracturing Shard	破裂石碎片	1
+Fragility	虛弱	7
+Fragment of Constriction	干擾斷片	3
+Fragment of Emptiness	空虛斷片	3
+Fragment of Enslavement	奴役斷片	3
+Fragment of Eradication	根除斷片	3
+Fragment of Knowledge	智慧斷片	3
+Fragment of Purification	淨化斷片	3
+Fragment of Shape	雕塑斷片	3
+Fragment of Terror	恐懼斷片	3
+Fragment of the Chimera	奇美拉斷片	3
+Fragment of the Hydra	九頭蛇斷片	3
+Fragment of the Minotaur	牛頭斷片	3
+Fragment of the Phoenix	鳳凰斷片	3
+Fragmented Delirium Orb	碎片之譫妄玉	1
+Fragmented Incubator	碎片培育器	4
+Fragmenting Arrowhead	碎片箭矢	4
+Freezing Pulse	冰霜脈衝	6
+Freezing Wolf	凍冰狼	4
+Frenzy	狂怒	6
+Frenzy of Onslaught	狂怒．猛攻	6
+Fresh Meat Support	鮮肉輔助	6
+Friendship	友誼小船	5
+Fright Claw	恐懼之爪	7
+Fright Maul	恐懼重錘	7
+Frigid Bond Support	冰寒之繫輔助	6
+Frigid Fossil	寒風化石	1
+From Bone to Ashes	骨頭燒到灰燼	5
+Frontier Leather	邊戍皮甲	7
+Frost Blades	冰霜之刃	6
+Frost Blades of Katabasis	冰霜之刃．降臨	6
+Frost Bomb	寒霜爆	6
+Frost Bomb of Forthcoming	寒霜爆．來臨	6
+Frost Bomb of Instability	寒霜爆．不定	6
+Frost Shield	寒霜護盾	6
+Frost Wall	冰牆	6
+Frost Wall of Encroachment	冰牆．侵襲	6
+Frostbite	凍傷	6
+Frostblink	霜漣之瞬	6
+Frostblink of Wintry Blast	霜漣之瞬．寒風	6
+Frostbolt	寒冰彈	6
+Frostbreath	霜息	7
+Frostmage Support	霜法輔助	6
+Frozen Cannibal	冰凍食人族	4
+Frozen Legion	戰亂．凍結	6
+Frozen Legion of Rallying	戰亂．凍結．號召	6
+Fruiting Astrolabe	碩果星盤	8
+Fugitive Boots	逃難短靴	7
+Fugitive Ring	亡命之戒	8
+Fulgurite Tincture	電熔岩萃取物	7
+Full Chainmail	連身鎖甲	7
+Full Dragonscale	連身龍鱗鎧	7
+Full Leather	連身皮甲	7
+Full Plate	連身鎧甲	7
+Full Ringmail	連身環甲	7
+Full Scale Armour	連身鱗甲	7
+Full Wyrmscale	連身龍鱗戰甲	7
+Full Wyvernscale	全套龍鱗甲	7
+Fundamental Fossil	根本化石	1
+Fungal Astrolabe	菌群星盤	8
+Fungal Remission	細菌解方	7
+Further Invention	進步發明	5
+Fury Hound	殘暴獵犬	4
+Fury Valve	憤怒閉鎖	7
+Gale Crown	颶風之冠	7
+Galesight	風視	7
+Galvanic Arrow	電流箭矢	6
+Galvanic Arrow of Energy	電流箭矢．能量	6
+Galvanic Arrow of Surging	電流箭矢．波動	6
+Galvanic Field	電光領域	6
+Galvanic Field of Intensity	電光領域．強度	6
+Gamblesprint	豪賭	7
+Gang's Momentum	剛勇	7
+Garb of the Ephemeral	無常禮袍	7
+Garukhan's Flight	卡洛翰之影	7
+Gavel	堅錘	7
+Gemcutter's Incubator	寶石匠的培育器	4
+Gemcutter's Mercy	寶石匠的憐憫	5
+Gemcutter's Prism	寶石匠的稜鏡	1
+Gemcutter's Promise	寶石匠的允諾	5
+Gemini Claw	雙子戰爪	7
+Gemstone Sword	寶石之劍	7
+General's Brigandine	將軍鎧甲	7
+General's Cry	將軍戰吼	6
+General's Helmet	將軍的頭盔	7
+Generosity Support	和善輔助	6
+Geodesic Ring	大地戒指	7
+Geofri's Baptism	吉爾菲的淨罪之錘	7
+Geofri's Crest	吉爾菲的榮光	7
+Geofri's Sanctuary	吉爾菲的聖殿	7
+Geomancer's Incubator	占卜師的培育器	4
+Ghastly Eye Jewel	極懼之眼珠寶	7
+Ghostwrithe	鬧鬼	7
+Giant Life Flask	巨型生命藥劑	7
+Giant Mana Flask	巨型魔力藥劑	7
+Giantsbane	大屠殺	7
+Giantslayer Helmet	巨人殺手頭盔	7
+Gift of Asenath	安賽娜絲贈禮	5
+Gift of the Gemling Queen	寶石皇后的贈禮	5
+Gift to the Goddess	女神之贈	3
+Gifts from Above	神賜	7
+Gilded Axe	金柄之斧	7
+Gilded Buckler	金面輕盾	7
+Gilded Fossil	鑲金化石	1
+Gilded Sallet	金面護盔	7
+Girded Tower Shield	征戰塔盾	7
+Glacial Cascade	冰川之刺	6
+Glacial Cascade of the Fissure	冰川之刺．裂隙	6
+Glacial Hammer	冰霜之錘	6
+Glacial Hammer of Shattering	冰霜之錘．粉碎	6
+Glacial Shield Swipe	冰川盾擊	6
+Glade Mamba	原野毒吻	4
+Gladiator Helmet	角鬥者之盔	7
+Gladiator Plate	角鬥重鎧	7
+Gladius	鬥士長劍	7
+Glass Shank	玻璃利片	7
+Glassblower's Bauble	玻璃彈珠	1
+Glimmer of Hope	希望微光	5
+Glimpse of Chaos	混沌一瞥	7
+Gloam Ring	黃昏戒指	7
+Gloomfang	憂愁獠根	7
+Glorious Leather	榮耀皮甲	7
+Glorious Plate	榮耀戰鎧	7
+Glorious Vanity	輝煌的虛榮	7
+Gluttonous Gull	狂食反芻鳥	4
+Gluttony	貪食腰	7
+Gluttony Support	暴食輔助	6
+Glyphic Fossil	雕紋化石	1
+Gnarled Branch	朽木之幹	7
+Goat's Horn	羊角法杖	7
+Goathide Boots	羊皮短靴	7
+Goathide Buckler	羊皮輕盾	7
+Goathide Gloves	羊皮手套	7
+Goatman	堅蹄羊人	4
+Goatman Fire-raiser	堅蹄羊人咒炎者	4
+Goatman Shaman	堅蹄羊人術師	4
+Goatman Stomper	重踏羊人	4
+Goblinedge	妖精之緣	7
+Gold Amulet	帝金護身符	7
+Gold Flask	黃金藥劑	7
+Gold Ring	金光戒指	7
+Golden Blade	黃金之刃	7
+Golden Bracers	黃金臂甲	7
+Golden Brooch	黃金胸針	4
+Golden Buckler	金陽輕盾	7
+Golden Caligae	黃金纏鞋	7
+Golden Flame	黃金聖炎	7
+Golden Hoop	金環	7
+Golden Kris	金耀波刃	7
+Golden Mantle	黃金戰甲	7
+Golden Mask	黃金之面	7
+Golden Obi	金羽腰帶	7
+Golden Oil	金黃油瓶	1
+Golden Plate	金耀之鎧	7
+Golden Visage	黃金頭飾	7
+Golden Wreath	金黃花環	7
+Goldrim	金縷帽	7
+Goldwyrm	龍炎足跡	7
+Goliath Gauntlets	巨靈護手	7
+Goliath Greaves	巨靈脛甲	7
+Gorebreaker	血裂	7
+Goredrill	血鑿	7
+Gorgon's Gaze	戈耳戈的凝視	7
+Gouger	穿體鑿	7
+Grace	優雅	6
+Grace of the Goddess	女神恩典	7
+Graceful Sword	權貴之劍	7
+Grand Eldritch Ember	宏偉異能灰燼	1
+Grand Eldritch Ichor	宏偉異能靈液	1
+Grand Life Flask	優質生命藥劑	7
+Grand Mana Flask	優質魔力藥劑	7
+Grand Ringmail	宏偉環甲	7
+Grand Spectrum	巨光譜	7
+Grandmaster Keyring	大師鑰匙圈	4
+Granite Eater	食岩爪蟹	4
+Granite Flask	堅岩藥劑	7
+Grappler	捕捉者	7
+Grasping Astrolabe	執掌星盤	8
+Grasping Mail	貪婪鎧甲	7
+Grasping Nightshade	束縛夜影	7
+Grattus Signet	格拉圖斯之記	7
+Grave Knowledge	亡靈智慧	5
+Gravebind	幽墓束縛	7
+Gravel Eater	食礫爪蟹	4
+Graven's Secret	格雷文的秘密	7
+Grazing Taurus	牧金牛人	4
+Great Crown	強化巨盔	7
+Great Helmet	巨盔	7
+Great Mallet	剛猛巨錘	7
+Great Old One's Tentacles	偉大老者之觸	7
+Great Old One's Ward	邪神庇護	7
+Great White Claw	白靈之爪	7
+Greater Ancestral Call Support	高階先祖怒嚎輔助	6
+Greater Chain Support	高階連鎖輔助	6
+Greater Devour Support	高階吞噬輔助	6
+Greater Eldritch Ember	高階異能灰燼	1
+Greater Eldritch Ichor	高階異能靈液	1
+Greater Fork Support	高階分裂輔助	6
+Greater Kinetic Instability Support	高階力量紊亂輔助	6
+Greater Life Flask	良質生命藥劑	7
+Greater Mana Flask	良質魔力藥劑	7
+Greater Multiple Projectiles Support	高階多重投射輔助	6
+Greater Multistrike Support	高階多重打擊輔助	6
+Greater Spell Cascade Support	高階秘能爆發輔助	6
+Greater Spell Echo Support	高階施放迴響輔助	6
+Greater Unleash Support	高階釋放輔助	6
+Greater Volley Support	高階齊射輔助	6
+Greatwolf Talisman	狼王魔符	7
+Greed's Embrace	貪婪之擁	7
+Grelwood Shank	沃德步伐	7
+Grinning Fetish	遠古之祭	7
+Grip of the Council	議會之握	7
+Gripped Gloves	擒拿手套	7
+Grizzly Pelt	灰熊皮盔	7
+Ground Slam	裂地之擊	6
+Ground Slam of Earthshaking	裂地之擊．地震	6
+Grove Bow	叢林獵弓	7
+Gruelling Gauntlet	困苦關卡	7
+Gruthkul's Pelt	葛魯斯寇真皮	7
+Guardian Turtle	守護野龜	4
+Guardian's Blessing Support	守護者的祝福輔助	6
+Guardian's Challenge	守護者的挑戰	5
+Guarding Gauntlets	保衛手套	7
+Gut Ripper	裂臟鉤	7
+Gutting Knife	重傷短刀	7
+Haemophilia	逆凝之血	7
+Hairy Bonecruncher	長毛碎骨獸	4
+Hale Negator	強彈辯駁	7
+Half-remembered Goliath	腦殘巨人	4
+Hall of Grandmasters	元帥殿堂	7
+Hallow Support	聖徒輔助	6
+Hallowed Ground	萬聖之地	7
+Hallowed Hybrid Flask	祝福複合藥劑	7
+Hallowed Life Flask	祝福生命藥劑	7
+Hallowed Mana Flask	祝福魔力藥劑	7
+Hammered Buckler	鉚釘輕盾	7
+Hand of Heresy	異端之手	7
+Hand of Thought and Motion	思動之手	7
+Hand of Wisdom and Action	智行之手	7
+Hand of the Fervent	熱情之手	7
+Hand of the Lords	諸王之手	7
+Hands of the High Templar	聖宗神手	7
+Harbinger Bow	先驅者之弓	7
+Harlequin Mask	鷹喙之面	7
+Harmonic Spirit Shield	和諧魔盾	7
+Harmony of Souls	靈魂和諧	5
+Harpy Rapier	魔喙細劍	7
+Harpyskin Boots	妖羽皮短靴	7
+Harpyskin Gloves	妖羽皮手套	7
+Harvest Scarab	聖甲蟲：豐收	3
+Harvest Scarab of Cornucopia	聖甲蟲：富饒豐收	3
+Harvest Scarab of Doubling	聖甲蟲：倍增豐收	3
+Haste	迅捷	6
+Hatchling	幼蛛	4
+Hateforge	怨恨鍛造	7
+Hatred	憎恨	6
+Haunted Bascinet	鬧鬼戰盔	7
+Haunting Memories	縈繞回憶	7
+Haunting Shadows	黑影纏繞	5
+Headhunter	獵首	7
+Headman's Sword	行刑巨劍	7
+Headsman Axe	行刑巨斧	7
+Healthy Mind	靈體轉換	7
+Heartbound Loop	結魂之環	7
+Heartbreaker	裂心刃	7
+Heat-attuned Tower Shield	熱調塔盾	7
+Heathen Wand	異徒法杖	7
+Heatshiver	寒焰	7
+Heavy Arrow Quiver	沉頓箭袋	7
+Heavy Belt	重革腰帶	7
+Heavy Quiver	重矢箭袋	7
+Heavy Strike	沉重之擊	6
+Heavy Strike of Trarthus	特拉特斯沉重之擊	6
+Hedron Bow	海德隆之弓	7
+Hegemony's Era	霸權時代	7
+Helical Ring	螺旋戒指	7
+Hellion's Paw	魔爪刃	7
+Her Mask	她的面具	5
+Herald of Agony	苦痛之捷	6
+Herald of Ash	灰燼之捷	6
+Herald of Ice	冰霜之捷	6
+Herald of Purity	純淨之捷	6
+Herald of Thunder	閃電之捷	6
+Heretic's Veil	異教面紗	7
+Heroic Tragedy	英勇悲劇	7
+Heterochromia	陰陽眼	5
+Hex Bloom Support	咒術綻放輔助	6
+Hexblast	咒術枯萎	6
+Hexblast of Contradiction	咒術枯萎．矛盾	6
+Hexblast of Havoc	咒術枯萎．浩劫	6
+Hexclaw Talisman	幻爪魔符	7
+Hexpass Support	咒閃輔助	6
+Hextoad Support	咒蟾輔助	6
+Hextouch Support	咒術降臨輔助	6
+Hezmana's Bloodlust	嗜血黑茲瑪娜	7
+Hidden Potential	深藏的潛能	7
+High-Impact Mine Support	高能地雷輔助	6
+Highborn Bow	貴族之弓	7
+Highborn Staff	貴族長杖	7
+Highland Blade	高山重刃	7
+Hill Devil	山丘魔人	4
+Hiltless	長卷	7
+Hinekora's Lock	悉妮蔻拉的髮絲	1
+Hinekora's Sight	悉妮蔻拉之眼	7
+History	歷史	5
+Hiveborn Support	巢裔輔助	6
+Hivebrain Gland	巢裔主腦腺體	8
+Hollow Fossil	鏤空化石	1
+Hollowpoint Arrowhead	簍空箭矢	4
+Hollowpoint Dagger	簍空短匕	7
+Holy Chainmail	聖語鎖甲	7
+Holy Flame Totem	神聖火舌圖騰	6
+Holy Flame Totem of Ire	神聖火舌圖騰．怒火	6
+Holy Hammers	神聖之錘	6
+Holy Strike	神聖打擊	6
+Holy Sweep	神聖橫掃	6
+Home	家園	5
+Honed Cleaver	珩磨砍斧	7
+Honoured Incubator	榮耀的培育器	8
+Honourhome	私慾的光輝	7
+Hooded Cloak	連帽披風	4
+Hook Sword	鉤爪劍	7
+Hope	希望	5
+Hopeshredder	破滅之希	7
+Horned Scarab of Awakening	聖甲蟲：覺醒犄角	3
+Horned Scarab of Bloodlines	聖甲蟲：血統犄角	3
+Horned Scarab of Glittering	聖甲蟲：閃亮犄角	3
+Horned Scarab of Nemeses	聖甲蟲：復仇犄角	3
+Horned Scarab of Pandemonium	聖甲蟲：萬劫犄角	3
+Horned Scarab of Preservation	聖甲蟲：庇護犄角	3
+Horned Scarab of Tradition	聖甲蟲：傳統犄角	3
+Horned Sceptre	犄角權杖	7
+Horned Talisman	尖角魔符	7
+Host Adder	寄生蟒蛇	4
+Host Chieftain	寄生獸	4
+Host Cobra	寄生眼鏡蛇	4
+House of Mirrors	明鏡	5
+Howlcrack	狂嗥之痕	7
+Hrimnor's Hymn	雷姆諾的奪命樂具	7
+Hrimnor's Resolve	雷姆諾的豪情	7
+Hrimsorrow	冰冷之眼	7
+Hubris	狂妄	5
+Hubris Circlet	靈主之環	7
+Hulking Miscreation	巨大畸形	4
+Humility	謙遜	5
+Hunter Hood	獵者之兜	7
+Hunter's Exalted Orb	狩獵者的崇高石	1
+Hunter's Resolve	獵者之願	5
+Hunter's Reward	獵人的獎賞	5
+Hussar Brigandine	輕騎鎖甲	7
+Hyaon's Fury	海昂的狂怒	7
+Hybrid Arachnid	混血蜘蛛	4
+Hydra	九頭蛇	4
+Hydrascale Boots	火蝮鱗長靴	7
+Hydrascale Gauntlets	火蝮鱗手套	7
+Hydrosphere	水弒界	6
+Hyperboreus	極地束腹	7
+Hypnotic Eye Jewel	催眠之眼珠寶	7
+Hypothermia Support	急凍輔助	6
+Hyrri's Bite	西里的嗜血之矢	7
+Hyrri's Ire	西里的戰衣	7
+Hyrri's Truth	西里的真理	7
+I See Brothers	來了兄弟	5
+Ice Bite Support	霜咬輔助	6
+Ice Crash	寒冰衝擊	6
+Ice Crash of Cadence	寒冰衝擊．節奏	6
+Ice Nova	冰霜新星	6
+Ice Nova of Deep Freeze	冰霜新星．深層冰凍	6
+Ice Nova of Frostbolts	冰霜新星．寒冰彈	6
+Ice Shot	冰霜射擊	6
+Ice Shot of Penetration	冰霜射擊 ．穿透	6
+Ice Spear	冰矛	6
+Ice Spear of Splitting	冰矛．分裂	6
+Ice Trap	冰凍陷阱	6
+Ice Trap of Hollowness	冰凍陷阱．空心	6
+Icefang Orbit	冰風軌跡	7
+Icetomb	冰息	7
+Ichimonji	一文字	7
+Icicle Mine	冰雹地雷	6
+Icicle Mine of Fanning	冰雹地雷．扇動	6
+Icicle Mine of Sabotage	冰雹地雷．破壞	6
+Ignite Proliferation Support	點燃擴散輔助	6
+Ikiaho's Promise	伊基亞呼的承諾	7
+Imbued Catalyst	充能的催化劑	1
+Imbued Wand	魔性法杖	7
+Immolate Support	犧牲輔助	6
+Immortal Call	不朽怒嚎	6
+Immortal Flesh	永生	7
+Immortal Resolve	不朽決心	5
+Immutable Dogma	不變教義	7
+Immutable Force	不變之力	7
+Imp Crown	妖怪邪冠	7
+Imp Dagger	妖邪短匕	7
+Impact Force Propagator	衝擊力擴散錘	7
+Impale Support	穿刺輔助	6
+Impending Doom Support	末日厄運輔助	6
+Imperfect Adherent of Zarokh	不完美澤洛克的黨羽	8
+Imperfect Astral Lich	不完美星界巫妖	8
+Imperfect Blasphemer	不完美褻瀆者	4
+Imperfect Blood Demon	不完美血腥惡魔	4
+Imperfect Conjuror of Rot	不完美腐化魔者	8
+Imperfect Dancing Sword	不完美劍舞	4
+Imperfect Dark Marionette	不完美黑暗木偶	4
+Imperfect Dark Reaper	不完美黑暗奪魂鐮	4
+Imperfect Druidic Alchemist	不完美德魯伊鍊金師	4
+Imperfect Eldritch Eye	不完美異能之眼	4
+Imperfect Fiery Cannibal	不完美烈焰食人族	4
+Imperfect Forest Tiger	不完美森林猛虎	4
+Imperfect Forest Warrior	不完美森林戰士	4
+Imperfect Frozen Cannibal	不完美冰凍食人族	4
+Imperfect Guardian Turtle	不完美守護野龜	4
+Imperfect Half-remembered Goliath	不完美腦殘巨人	4
+Imperfect Hulking Miscreation	不完美巨大畸形	4
+Imperfect Hydra	不完美九頭蛇	4
+Imperfect Judgemental Spirit	不完美審判之魂	4
+Imperfect Meatsack	不完美肉袋	4
+Imperfect Memories	不完美的回憶	5
+Imperfect Naval Officer	不完美海軍軍官	4
+Imperfect Needle Horror	不完美針恐怖	4
+Imperfect Pain Artist	不完美恐怖主義	4
+Imperfect Primal Demiurge	不完美原始造物主	4
+Imperfect Primal Thunderbird	不完美原始雷鳥	4
+Imperfect Runic Skeleton	不完美符文骷髏	4
+Imperfect Sanguimancer Demon	不完美占血惡魔	4
+Imperfect Sawblade Horror	不完美奪魂鋸	4
+Imperfect Serpent Warrior	不完美蛇靈戰士	4
+Imperfect Shadow Construct	不完美影子創造物	4
+Imperfect Slashing Horror	不完美劈砍幽魂	4
+Imperfect Spider Matriarch	不完美蜘蛛女族長	4
+Imperfect Spirit of Fortune	不完美財富之魂	4
+Imperfect Warlord	不完美督軍	4
+Imperial Bow	帝國之弓	7
+Imperial Buckler	帝國輕盾	7
+Imperial Claw	帝國戰爪	7
+Imperial Delirium Orb	帝王之譫妄玉	1
+Imperial Legacy	不朽聖物	5
+Imperial Maul	帝國重錘	7
+Imperial Skean	帝國雙刃匕	7
+Imperial Staff	帝國長杖	7
+Imperial Staff Piece	帝國長杖碎片	8
+Impossible Escape	逃脫不能	7
+Impresence	不在場證明	7
+Incandescent Heart	烈炎之心	7
+Incandescent Invitation	熾熱之邀	4
+Incinerate	燒毀	6
+Incinerate of Expanse	燒毀．蔓延	6
+Incinerate of Venting	燒毀．通風	6
+Increased Area of Effect Support	增加範圍輔助	6
+Increased Critical Damage Support	增加暴擊傷害輔助	6
+Increased Critical Strikes Support	增加暴擊率輔助	6
+Incursion Scarab	聖甲蟲：穿越	3
+Incursion Scarab of Champions	聖甲蟲：鬥士穿越	3
+Incursion Scarab of Invasion	聖甲蟲：侵略穿越	3
+Incursion Scarab of Timelines	聖甲蟲：時間線穿越	3
+Indigo Oil	靛青油瓶	1
+Indigon	地印之環	7
+Inertia	慣性	7
+Inextricable Fate	無法掙脫之命	7
+Infantry Brigandine	步兵鎖甲	7
+Infernal Axe	獄火之刃	7
+Infernal Blade	煉獄之刃	7
+Infernal Blow	煉獄之擊	6
+Infernal Blow of Immolation	煉獄之擊．自焚	6
+Infernal Cry	煉獄戰吼	6
+Infernal Legion Support	煉獄軍團輔助	6
+Infernal Mantle	煉獄之心	7
+Infernal Sword	獄炎重劍	7
+Infested Ape	侵略魔猿	4
+Infested Crab	受感染的蟹	4
+Infested Crawler	病態食腐蟲	4
+Infested Maw	病態裂齒獸	4
+Infested Rhoa	病態恐喙鳥	4
+Infested Serpent	感染巨蛇	4
+Infested Skitterer	感染掠蛛	4
+Infested Tunnelfiend	病態地穴惡靈	4
+Infested Ursa	病態之爪	4
+Infested Vulture	受汙染的禿鷹	4
+Infiltrator Boots	滲透者長靴	7
+Infiltrator Mitts	滲透者護手	7
+Influencing Scarab of Hordes	聖甲蟲：群集感染	3
+Influencing Scarab of Interference	聖甲蟲：干預感染	8
+Influencing Scarab of the Elder	聖甲蟲：尊師感染	3
+Influencing Scarab of the Shaper	聖甲蟲：塑界感染	3
+Infractem	穿雲	7
+Infused Channelling Support	注入引導輔助	6
+Infused Incubator	注能的培育器	4
+Ink Spinner	噴墨巨蛛	4
+Innervate Support	亢奮輔助	6
+Innsbury Edge	茵斯布雷之刃	7
+Inpulsa's Broken Heart	印卜薩的心碎	7
+Inscribed Ultimatum	最後通牒雕刻	8
+Inspiration Support	啟發輔助	6
+Inspired Learning	求知的熱情	7
+Instilling Orb	滴注石	1
+Intensify Support	強化輔助	6
+Intimidating Cry	威嚇戰吼	6
+Intrinsic Catalyst	本質的催化劑	1
+Intuitive Leap	直覺之躍	7
+Intuitive Link	連結：直覺	6
+Invention Support	發明輔助	6
+Invert the Rules Support	規則逆反輔助	6
+Invictus Solaris	堅毅日耀	7
+Inya's Epiphany	茵雅的頓悟	7
+Iolite Ring	混青石戒指	7
+Iron Circlet	鐵鍛之冠	7
+Iron Commander	鋼鐵指揮	7
+Iron Flask	鋼鐵藥劑	7
+Iron Gauntlets	鐵鍛護手	7
+Iron Greaves	鐵鍛脛甲	7
+Iron Grip Support	鋼鐵之握輔助	6
+Iron Hat	粗鐵盔	7
+Iron Mask	鐵鍛之面	7
+Iron Ring	鍛鐵戒指	7
+Iron Sceptre	冷鐵權杖	7
+Iron Staff	鐵鍛長杖	7
+Iron Will Support	鋼鐵意志輔助	6
+Ironscale Boots	鐵影長靴	7
+Ironscale Gauntlets	鐵影手套	7
+Ironwood Buckler	鋼木輕盾	7
+Ironwood Tincture	鐵木林萃取物	7
+Item Quantity Support	物品數量增幅輔助	6
+Item Rarity Support	物品稀有度增幅輔助	6
+Ivory Bow	象牙弓	7
+Ivory Spirit Shield	象牙魔盾	7
+Ixchel's Temptation	伊克契爾的誘惑	7
+Jack in the Box	驚喜盒	5
+Jack, the Axe	劊子手．傑克	7
+Jade Amulet	翠玉護身符	7
+Jade Chopper	碎玉大斧	7
+Jade Flask	翠玉藥劑	7
+Jade Hatchet	碎玉斧	7
+Jagged Foil	鋸狀薄刃	7
+Jagged Fossil	鋸齒化石	1
+Jagged Maul	狼牙重錘	7
+Jasper Axe	靈玉斧	7
+Jasper Chopper	靈玉巨斧	7
+Jaws of Agony	苦痛狂鯊	7
+Jester Mask	小丑面具	7
+Jet Amulet	傑特護身符	7
+Jewelled Foil	寶飾細劍	7
+Jeweller's Delirium Orb	飾品之譫妄玉	1
+Jeweller's Orb	工匠石	1
+Jingling Spirit Shield	靈相魔盾	7
+Jiquani's Potential	吉卡尼的潛力	7
+Jorrhast's Blacksteel	喬赫黑鋼	7
+Journey Tattoo of the Body	軀體的歷練紋身	1
+Journey Tattoo of the Mind	心智的歷練紋身	1
+Journey Tattoo of the Soul	靈魂的歷練紋身	1
+Judgement Staff	審判長杖	7
+Judgemental Spirit	審判之魂	4
+Judging Voices	審判之聲	5
+Justified Ambition	正義野心	5
+Kahuturoa's Certainty	卡胡圖羅亞的確信	7
+Kalandra's Touch	卡蘭德之觸	7
+Kalguuran Delirium Orb	卡爾葛之譫妄玉	1
+Kalguuran Incubator	卡爾葛的培育器	4
+Kalguuran Scarab	聖甲蟲：卡爾葛	8
+Kalguuran Scarab of Enriching	聖甲蟲：富裕卡爾葛	8
+Kalguuran Scarab of Guarded Riches	聖甲蟲：守衛財寶卡爾葛	8
+Kalguuran Scarab of Refinement	聖甲蟲：精化卡爾葛	8
+Kalisa's Grace	卡莉莎的優雅之影	7
+Kaltenhalt	冰霜之鏡	7
+Kamasan Idol	卡瑪薩魔偶	8
+Kaom's Binding	岡姆的束縛	7
+Kaom's Command	岡姆的命令	7
+Kaom's Heart	岡姆的壯志	7
+Kaom's Primacy	岡姆的霸業	7
+Kaom's Roots	岡姆的穩重之靴	7
+Kaom's Sign	岡姆的遠見	7
+Kaom's Spirit	岡姆之魂	7
+Karui Axe	卡魯古斧	7
+Karui Chopper	卡魯巨斧	7
+Karui Maul	卡魯重錘	7
+Karui Sceptre	卡魯權杖	7
+Karui Ward	卡魯的戰徽	7
+Keeper's Corruption	守護者的腐敗	5
+Khatal's Geyser	卡塔爾之泉	7
+Khatal's Weeping	卡塔爾之泣	7
+Kiara's Determination	奇亞拉的決心	7
+Kikazaru	基加薩魯	7
+Kiloava's Bluster	基洛阿瓦的咆嘯	7
+Kinetic Blast	力量爆破	6
+Kinetic Blast of Clustering	力量爆破．聚集	6
+Kinetic Bolt	力量穿引	6
+Kinetic Bolt of Fragmentation	力量穿引．碎片	6
+Kinetic Fusillade	力量猛射	6
+Kinetic Fusillade of Detonation	力量猛射．引爆	6
+Kinetic Instability Support	力量紊亂輔助	6
+Kinetic Rain	力量驟雨	6
+Kinetic Rain of Impact	力量驟雨．衝擊	6
+Kinetic Wand	動能魔杖	8
+Kingmaker	王者之刃	7
+Kingsguard	皇家衛甲	7
+Kintsugi	金繕	7
+Kitava's Feast	奇塔弗之盛宴	7
+Kitava's Teachings	奇塔弗的教學	7
+Kitava's Thirst	奇塔弗之渴望	7
+Knight Helm	騎士之盔	7
+Knockback Support	擊退輔助	6
+Kondo's Pride	剛多的虛榮	7
+Kongming's Stratagem	孔明的神算	7
+Kongor's Undying Rage	康戈的戰炎	7
+Kurgal's Gaze	柯戈的邪眼	7
+Labrys	雙影巨斧	7
+Lacerate	破空斬	6
+Lacerate of Butchering	破空斬．屠宰	6
+Lacerate of Haemorrhage	破空斬．出血	6
+Lacewood Spirit Shield	軟橡魔盾	7
+Lachrymal Necrosis	鐵骨心腸	5
+Lacquered Buckler	漆彩輕盾	7
+Lacquered Garb	漆彩束衣	7
+Lacquered Helmet	漆彩之盔	7
+Lakishu's Blade	拉奇許之刃	7
+Laminated Kite Shield	合板鳶盾	7
+Lancing Steel	鋼之突刺	6
+Lancing Steel of Spraying	鋼之突刺．噴射	6
+Lantador's Lost Love	蘭塔朵迷惘之愛	5
+Lapis Amulet	海玉護身符	7
+Large Cluster Jewel	巨型星團珠寶	7
+Large Hybrid Flask	大型複合藥劑	7
+Large Life Flask	大型生命藥劑	7
+Large Life Flask	生命藥劑（大）	7
+Large Mana Flask	大型魔力藥劑	7
+Last Hope	最後希望	5
+Last Resort	終息	7
+Last Stand	最後一博	5
+Lathi	武術長杖	7
+Latticed Ringmail	精製環甲	7
+Lavianga's Spirit	拉維安加之泉	7
+Lavianga's Wisdom	拉維安加的智慧	7
+Lavish Wombgift	奢華之胎贈	8
+Law of the Wilds	野性法則	7
+Layered Kite Shield	層板鳶盾	7
+Le Heup of All	英靈寶環	7
+Lead Sceptre	鉛鑄權杖	7
+Leadership's Price	領導力的代價	7
+Leap Slam	躍擊	6
+Leap Slam of Groundbreaking	躍擊．地破	6
+Leaping Spider	躍影巨蛛	4
+Leash of Oblation	祭品之繫	7
+Leather Belt	皮革腰帶	7
+Leather Bracers	皮革護腕	4
+Leather Cap	皮帽	7
+Leather Hood	革兜	7
+Leatherscale Boots	粗鱗皮靴	7
+Leer Cast	共鳴之面	7
+Left to Fate	聽天由命	5
+Legacy of Fury	傳承憤怒	7
+Legacy of the Rose	玫瑰的傳承	7
+Legion Boots	軍團長靴	7
+Legion Gloves	軍團手套	7
+Legion Hammer	軍團之錘	7
+Legion Plate	戰亂之鎧	7
+Legion Scarab	聖甲蟲：戰亂	3
+Legion Scarab of Eternal Conflict	聖甲蟲：永恆鬥爭戰亂	3
+Legion Scarab of Officers	聖甲蟲：幹部戰亂	3
+Legion Scarab of The Sekhema	聖甲蟲：絲克瑪戰亂	3
+Legion Scarab of Treasures	聖甲蟲：寶藏戰亂	8
+Legion Sword	軍團長劍	7
+Legion Sword Piece	軍團長劍碎片	8
+Leper's Alms	痲瘋的醫款	7
+Less Duration Support	持續時間縮短輔助	6
+Lesser Eldritch Ember	低階異能灰燼	1
+Lesser Eldritch Ichor	低階異能靈液	1
+Lethal Dose Support	致命劑量輔助	6
+Lethal Pride	致命的驕傲	7
+Lethean Temptation	絕境誘惑	5
+Leviathan Gauntlets	海獸護手	7
+Leviathan Greaves	海獸脛甲	7
+Leyline Gloves	荒野手套	7
+Lich's Circlet	巫妖之冠	7
+Life Gain on Hit Support	擊中生命回復輔助	6
+Life Leech Support	生命偷取輔助	6
+Lifesprig	生機之記	7
+Lifetap Support	活栓輔助	6
+Light Brigandine	輕鎖甲	7
+Light Quiver	輕巧箭袋	7
+Light and Truth	光與諦	5
+Light of Lunaris	月影之耀	7
+Lightbane Raiment	魔道之衣	7
+Lightless Astrolabe	無光星盤	8
+Lightning Arrow	閃電箭矢	6
+Lightning Arrow of Electrocution	閃電箭矢．電刑	6
+Lightning Coil	雷語	7
+Lightning Conduit	導雷	6
+Lightning Conduit of the Heavens	導雷．天堂	6
+Lightning Penetration Support	閃電穿透輔助	6
+Lightning Spire Trap	鋒雷陷阱	6
+Lightning Spire Trap of Overloading	鋒雷陷阱．過載	6
+Lightning Spire Trap of Zapping	鋒雷陷阱．殘喘	6
+Lightning Strike	閃電打擊	6
+Lightning Strike of Arcing	閃電打擊．電弧	6
+Lightning Tendrils	電能釋放	6
+Lightning Tendrils of Eccentricity	電能釋放．異變	6
+Lightning Tendrils of Escalation	電能釋放．擴大	6
+Lightning Trap	閃電陷阱	6
+Lightning Trap of Sparking	閃電陷阱．電球	6
+Lightning Warp	閃電傳送	6
+Lightpoacher	光明獵盜者	7
+Limbsplit	斷罪	7
+Linden Kite Shield	椴木鳶盾	7
+Lingering Remnants	殘墟	5
+Lion Pelt	獅首皮盔	7
+Lion Sword	獅爪巨劍	7
+Lion's Roar	獅吼精華	7
+Lioneye's Fall	獅眼的隕落	7
+Lioneye's Glare	獅眼的戰弓	7
+Lioneye's Paws	獅眼的鬥志	7
+Lioneye's Remorse	獅眼的榮耀之盾	7
+Lioneye's Vision	獅眼的視線	7
+Lithe Blade	細刃	7
+Living Lightning Support	活體閃電輔助	6
+Lochtonial Caress	意識之緣	7
+Locus Mine Support	定位地雷輔助	6
+Lone Antler Talisman	孤角魔符	7
+Lonely Fragment	孤獨碎片	8
+Lonely Reliquary Key	孤獨遺鑰	8
+Lonely Warrior	孤軍奮戰	5
+Long Bow	長弓	7
+Long Staff	長杖	7
+Longsword	大劍	7
+Longtooth Talisman	長牙魔符	7
+Lordly Plate	領主護鎧	7
+Loreweave	智者織衫	7
+Lori's Lantern	羅里的幸運之燈	7
+Loricated Ringmail	覆體環甲	7
+Lost Unity	失落同心	7
+Lost Worlds	失落帝國	5
+Love Through Ice	冰冷愛戀	5
+Loved by the Sun	太陽寵愛	7
+Lowlands Hopper	窪地蚱蜢	4
+Loyalty	忠誠	5
+Lucent Fossil	明透化石	1
+Lucid Dreams	清醒夢境	7
+Lucky Bastion	幸運壁壘	5
+Lucky Connections	好運連連	5
+Lucky Deck	幸運牌組	5
+Luminous Trove	輝煌寶藏	5
+Lunaris Circlet	月影之冠	7
+Lurking Venom	伏擊毒蛛	4
+Lustrous Ward	光輝法杖	4
+Lycosidae	狼蛛	7
+Lysah's Respite	莉莎之息	5
+Maata's Teaching	瑪塔的教導	7
+Machina Mitts	詭計魔手	7
+Machinations Support	詭計輔助	6
+Maddening Incubator	瘋狂的培育器	4
+Maelström Staff	風暴長杖	7
+Maelström of Chaos	混沌之淵	7
+Mage's Vestment	博學長衣	7
+Mageblood	魔血	7
+Magistrate Crown	行政者戰冠	7
+Magmatic Tower Shield	熔岩塔盾	7
+Magna Eclipsis	堅毅之蝕	7
+Magnum Opus	巨著	5
+Mahogany Tower Shield	桃木塔盾	7
+Mahuxotl's Machination	瑪哈薩多的陰謀	7
+Maim Support	癱瘓輔助	6
+Majestic Pelt	莊嚴皮盔	7
+Majestic Plate	莊嚴之鎧	7
+Malachai's Artifice	瑪拉凱的巧技	7
+Malachai's Loop	輪迴	7
+Malachai's Mark	瑪拉凱之面	7
+Malachai's Simula	瑪拉凱的祭具	7
+Malachai's Vision	瑪拉凱的遠見	7
+Malevolence	惡意	6
+Maligaro's Cruelty	馬雷葛蘿的殘暴	7
+Maligaro's Lens	馬雷葛蘿的染血透鏡	7
+Maligaro's Restraint	馬雷葛蘿的染血之環	7
+Maligaro's Virtuosity	馬雷葛蘿的血染手套	7
+Malign Fangs	邪惡獠牙	7
+Mallet	千斤錘	7
+Maloney's Mechanism	馬洛尼的機關	7
+Maloney's Nightfall	馬洛尼的暮光	7
+Maltreatment Axe	肆虐之斧	7
+Man With Bear	熊男	5
+Mana Leech Support	魔力偷取輔助	6
+Manabond	魔能束縛	6
+Manaforged Arrows Support	魔改箭矢輔助	6
+Manastorm	魔能暴風	7
+Mandible Talisman	巨顎魔符	7
+Manifold Ring	孔洞戒指	7
+Mao Kun	賊窩	7
+Map	地圖	8
+Maple Round Shield	楓木圓盾	7
+Maraketh Bow	馬拉克斯弓	7
+Marble Amulet	理石護身符	7
+March of the Legion	軍閥行軍	7
+Mark On Hit Support	擊中時印記輔助	6
+Mark of Submission	臣服之記	7
+Mark of the Doubting Knight	迷茫幻符	7
+Mark of the Elder	尊師之印	7
+Mark of the Red Covenant	焰首支環	7
+Mark of the Shaper	塑者之印	7
+Marohi Erqi	爾奇的巨靈之錘	7
+Marshall's Brigandine	元帥鎧甲	7
+Martyr Boots	烈士長靴	7
+Martyr Gloves	烈士手套	7
+Martyr of Innocence	烈士之淨	7
+Marylene's Fallacy	瑪莉琳的護體之符	7
+Mask of the Spirit Drinker	魂飲化面	7
+Mask of the Stitched Demon	惡縫之面	7
+Mask of the Tribunal	審判莊嚴	7
+Master Lockpick	專業鎖撬	4
+Maternal Rhex	大腹雛鳥	4
+Matryoshka	俄羅斯娃娃	5
+Matua Tupuna	遠祖之顱	7
+Maven's Chisel of Avarice	釋界之貪婪鑿	1
+Maven's Chisel of Divination	釋界之占卜鑿	1
+Maven's Chisel of Procurement	釋界之採購鑿	1
+Maven's Chisel of Proliferation	釋界之增值鑿	1
+Maven's Chisel of Scarabs	釋界之聖甲蟲鑿	1
+Maw of Conquest	雛鳥之征	7
+Maw of Mischief	頑皮裂齒獸	7
+Mawr Blaidd	茂爾．佈雷德	5
+Meat Shield Support	肉盾輔助	6
+Meatgrinder	戮魂重錘	7
+Meatsack	肉袋	4
+Mechalarm Belt	機械腰帶	7
+Mechanical Belt	腰帶外觀：機械龐克	7
+Medium Cluster Jewel	中型星團珠寶	7
+Medium Hybrid Flask	中型複合藥劑	7
+Medium Life Flask	中型生命藥劑	7
+Medium Life Flask	生命藥劑（中）	7
+Medium Mana Flask	中型魔力藥劑	7
+Medved's Challenge	梅德偉的挑戰	7
+Megalomaniac	妄想症	7
+Meginord's Girdle	梅吉諾德的力量泉源	7
+Meginord's Vise	梅吉諾德的巨力腕甲	7
+Melding of the Flesh	血肉融合	7
+Melee Physical Damage Support	近戰物理傷害輔助	6
+Melee Splash Support	近戰傷害擴散輔助	6
+Memory Vault	回憶寶庫	7
+Memory of Loneliness	孤獨之記憶	8
+Memory of Reverence	敬畏之記憶	8
+Memory of Trauma	創傷之記憶	8
+Mercenary's Lot	僱用兵之命	7
+Merciless Armament	無情軍械	5
+Merveil's Attendant	莫薇兒的侍女	4
+Merveil's Blessed	莫薇兒的寵愛	4
+Merveil's Chosen	海妖愛女	4
+Merveil's Daughter	海妖之女	4
+Merveil's Favoured	莫薇兒的幼女	4
+Merveil's Retainer	海妖之僕	4
+Mesh Boots	網眼長靴	7
+Mesh Gloves	網眼手套	7
+Metallic Fossil	金鋼化石	1
+Meticulous Appraiser	細膩鑑定師	7
+Micro-Distillery Belt	微釀腰帶	7
+Midnight Bargain	冥約	7
+Midnight Blade	夜語長劍	7
+Might is Right	正氣	5
+Might of the Meek	儒子可教	7
+Mightblood Ire	力血之怒	7
+Mightflay	力量獵刃	7
+Militant Faith	激進的信仰	7
+Military Staff	軍用長杖	7
+Mind Cage	靈能之籠	7
+Mind of the Council	議會之心	7
+Mindless Scavenger	傀儡骨喙	4
+Mindspiral	靈漩	7
+Minefield Support	地雷網輔助	6
+Ming's Heart	明恩的慧心	7
+Minion Damage Support	召喚物傷害輔助	6
+Minion Life Support	召喚物生命輔助	6
+Minion Pact Support	召喚契約輔助	6
+Minion Speed Support	召喚物速度輔助	6
+Minor Idol	次要魔偶	8
+Mirage Archer Support	幻影射手輔助	6
+Miraged Incubator	蜃景的培育器	8
+Mirror Arrow	魅影射擊	6
+Mirror Arrow of Bombarding Clones	魅影射擊．炸彈客	6
+Mirror Arrow of Prismatic Clones	魅影射擊．神秘客	6
+Mirror Shard	魔鏡碎片	1
+Mirror of Kalandra	卡蘭德的魔鏡	1
+Mirrored Spiked Shield	鋼鏡刺盾	7
+Mirrored Tablet	鏡像碑牌	8
+Misery in Darkness	黑暗中的苦難	5
+Mistwall	迷霧之璧	7
+Mitts	手套	5
+Mjölner	沉默之雷	7
+Mokou's Embrace	莫考之擁	7
+Molten Shell	熔岩護盾	6
+Molten Strike	熔岩之擊	6
+Molten Strike of the Zenith	熔岩之擊．極盛	6
+Momentum Support	氣勢輔助	6
+Mon'tregul's Grasp	凋靈魔爪	7
+Monkey Paw Talisman	猴掌魔符	7
+Monkey Twins Talisman	雙猴魔符	7
+Monochrome	非黑即白	5
+Moon Staff	月神長杖	7
+Moonbender's Wing	月嵐	7
+Moonlit Circlet	月光之冠	7
+Moonsorrow	泣月	7
+Moonstone Ring	月光石戒指	7
+More Duration Support	持續時間延長輔助	6
+More is Never Enough	貪婪無盡	5
+Morning Star	晨星	7
+Mortal Grief	凡人的哀傷	3
+Mortal Hope	凡人的希望	3
+Mortal Ignorance	凡人的無知	3
+Mortal Rage	凡人的憤怒	3
+Mortem Morsu	噬魂之牙	7
+Mosaic Kite Shield	厚裝鳶盾	7
+Mother's Embrace	母親的擁抱	7
+Mountain Hellion	深山地獄犬	4
+Mountain Hellion Alpha	深山地獄犬幻獸	4
+Mountain Lynx	山脊猞猁	4
+Multiple Projectiles Support	多重投射物輔助	6
+Multiple Totems Support	多重圖騰輔助	6
+Multiple Traps Support	多重陷阱輔助	6
+Multistrike Support	多重打擊輔助	6
+Murder Boots	暗殺者長靴	7
+Murder Mitts	暗殺者護手	7
+Murderous Eye Jewel	殺戮之眼珠寶	7
+Murk Runner	陰暗恐喙鳥	4
+Mutant Arach	異變魔蛛	4
+Mutewind Pennant	啞風尖旗	7
+Mutewind Seal	啞風封印	7
+Mutewind Whispersteps	啞風輕步	7
+Muttering Essence of Anger	憤怒之呢喃精髓	1
+Muttering Essence of Contempt	輕視之呢喃精髓	1
+Muttering Essence of Fear	恐懼之呢喃精髓	1
+Muttering Essence of Greed	貪婪之呢喃精髓	1
+Muttering Essence of Hatred	憎恨之呢喃精髓	1
+Muttering Essence of Sorrow	哀惜之呢喃精髓	1
+Muttering Essence of Torment	折磨之呢喃精髓	1
+Muttering Essence of Woe	悲痛之呢喃精髓	1
+Mysterious Incubator	神祕的培育器	4
+Mysterious Wombgift	神秘之胎贈	8
+Mystic Refractor	神秘的折射器	7
+Nadir Mode	深淵模式	7
+Nailed Fist	拳釘	7
+Nameless Astrolabe	無名星盤	8
+Nameless Ring	無名戒指	7
+Nametaker	奪名	7
+Natural Affinity	天性	7
+Natural Hierarchy	自然組織	7
+Naval Contract	契約書：海軍	4
+Naval Officer	海軍軍官	4
+Nebulis	銀河星雲	7
+Nebuloch	銀河眾星	7
+Necromancer Circlet	操靈者之冠	7
+Necromancer Silks	操靈者背心	7
+Necrotic Armour	亡者護甲	7
+Needle Horror	針恐怖	4
+Nevalius Inheritance	涅瓦里烏斯背向	7
+Nexus Gloves	核心手套	7
+Ngamahu's Flame	里特拿馬乎	7
+Ngamahu's Sign	拿瑪乎之印	7
+Night Adder	夜色毒蛇	4
+Night's Hold	夜守	7
+Nightblade Support	夜刃輔助	6
+Nightgrip	夜之觸	7
+Nightmare Bascinet	夢魘戰盔	7
+Nightmare Mace	夢魘之錘	7
+Nightmare Map	夢魘地圖	8
+Nightweave Robe	夜織之袍	7
+Nightwind Slippers	黑夜之風便鞋	7
+Nimis	尼米斯	7
+No Traces	無痕	5
+Noble Axe	權貴巨斧	7
+Noble Claw	貴族戰爪	7
+Noble Idol	高貴魔偶	8
+Noble Tricorne	貴族三角帽	7
+Nomic's Storm	諾米克的風暴	7
+Nook's Crown	邊緣之冠	5
+Noxious Catalyst	毒性催化劑	1
+Noxious Tarantula	劇毒毛蛛	4
+Nubuck Boots	砂影短靴	7
+Nubuck Gloves	砂影手套	7
+Null and Void	虛空	7
+Null's Inclination	虛無之傾	7
+Nuro's Harp	努羅的豎琴	7
+Nycta's Lantern	奈可妲之燈	7
+Oak Buckler	橡木輕盾	7
+Oakbranch Tincture	橡木枝萃取物	7
+Oba's Cursed Trove	歐霸的咒怨寶庫	7
+Obliteration	抹滅	7
+Obscurantis	朦朧詭面	7
+Obscured Delirium Orb	晦澀之譫妄玉	1
+Obscured Incubator	朦朧的培育器	4
+Obsidian Eater	黑曜沙蟹	4
+Obsidian Sharpening Stone	黑曜磨刀石	4
+Occultist's Vestment	秘術長衣	7
+Ochre Sceptre	赤色權杖	7
+Offering to the Goddess	女神祭品	3
+Offering to the Serpent	蛇皮獻祭	7
+Oiled Coat	防水外衣	7
+Oiled Vest	防水背心	7
+Olesya's Delight	奧莉西亞的喜悅	7
+Olmec's Sanctum	遠古之印	7
+Olroth's Charge	奧爾羅斯的衝刺	7
+Olroth's Resolve	奧爾羅斯的決心	7
+Omen Wand	靈兆法杖	7
+Omen of Adrenaline	腎上腺素之預兆	1
+Omen of Amelioration	改善之預兆	1
+Omen of Blanching	白化之預兆	1
+Omen of Brilliance	光輝之預兆	1
+Omen of Connections	連結之預兆	1
+Omen of Death's Door	死者大門之預兆	1
+Omen of Death-dancing	死舞之預兆	1
+Omen of Fortune	財富之預兆	1
+Omen of Refreshment	提神之預兆	1
+Omen of Return	返回之預兆	1
+Omen of the Jeweller	工匠之預兆	1
+Omen of the Soul Devourer	嗜魂者之預兆	1
+Omeyocan	歐門悠根	7
+Ominous Silence	不祥的寂靜	7
+Ondar's Clasp	恩德的迅影	7
+One Last Score	最後一票	5
+One With Nothing	一無所有	7
+Oni-Goroshi	西拉氣流殺	7
+Onyx Amulet	黑曜護身符	7
+Opal Ring	蛋白石戒指	7
+Opal Sceptre	靈石權杖	7
+Opal Wand	靈石法杖	7
+Opalescent Oil	乳白油瓶	1
+Opulent Fossil	華麗化石	1
+Orb of Alchemy	點金石	1
+Orb of Alteration	改造石	1
+Orb of Annulment	無效石	1
+Orb of Augmentation	增幅石	1
+Orb of Binding	束縛石	1
+Orb of Chance	機會石	1
+Orb of Conflict	衝突寶珠	1
+Orb of Dominance	支配之玉	1
+Orb of Fusing	鏈結石	1
+Orb of Intention	意志石	8
+Orb of Regret	後悔石	1
+Orb of Remembrance	回想石	8
+Orb of Scouring	重鑄石	1
+Orb of Storms	風暴漩渦	6
+Orb of Storms of Squalls	風暴漩渦．颮風	6
+Orb of Transmutation	蛻變石	1
+Orb of Unmaking	撤銷石	1
+Orb of Unravelling	拆解石	8
+Orbala's Stand	奧爾巴拉的姿態	7
+Organic Ring	有機之戒	8
+Oriath's End	奧瑞亞之終	7
+Original Sin	原罪	7
+Ornament of the East	東之飾	7
+Ornate Incubator	華麗的孵育器	4
+Ornate Mace	華麗之錘	7
+Ornate Quiver	華麗箭袋	7
+Ornate Ringmail	華麗環甲	7
+Ornate Spiked Shield	華麗刺盾	7
+Ornate Sword	名貴巨劍	7
+Oro's Sacrifice	歐羅的貢品	7
+Oscillating Sceptre	猶疑權杖	7
+Oskarm	厄斯根	7
+Otherworldly Incubator	超凡的培育器	4
+Oubliette Reliquary Key	地窖遺鑰	4
+Outfoxed	反被算計	5
+Overcharge Support	超負荷輔助	6
+Overexertion Support	竭盡全力輔助	6
+Overheat Support	過熱輔助	6
+Overloaded Intensity Support	超載強化輔助	6
+Pacifism	和平主義	7
+Pacifism Support	和平輔助	6
+Padded Jacket	長袖棉襖	7
+Padded Vest	薄襯衣	7
+Pagan Wand	異教法杖	7
+Pain Artist	恐怖主義	4
+Painseeker	尋苦	7
+Painted Buckler	彩繪輕盾	7
+Painted Tower Shield	彩繪塔盾	7
+Paladin Boots	聖騎士長靴	7
+Paladin Crown	聖騎士之冠	7
+Paladin Gloves	聖騎士手套	7
+Paladin's Hauberk	聖騎士長甲	7
+Papyrus Relic	草紙聖物	7
+Paradoxica	矛盾對決	7
+Parasite	寄生蟲	4
+Parasitic Passengers	寄生旅人	5
+Paua Amulet	海靈護身符	7
+Paua Ring	海靈戒指	7
+Peaceful Moments	平靜時刻	5
+Pecoraro	寒光刺劍	7
+Penance Brand	贖罪烙印	6
+Penance Brand of Conduction	贖罪烙印．傳導	6
+Penance Brand of Dissipation	贖罪烙印．消散	6
+Penetrating Arrow Quiver	穿射箭袋	7
+Penitent Mask	懺悔面具	7
+Penumbra Ring	半影戒指	7
+Perandus Blazon	普蘭德斯之印	7
+Perandus Signet	普蘭德斯之記	7
+Perceived Greatness	感知的偉大	7
+Perepiteia	極轉電刑	7
+Perfect Adherent of Zarokh	完美澤洛克的黨羽	8
+Perfect Astral Lich	完美星界巫妖	8
+Perfect Blasphemer	完美褻瀆者	4
+Perfect Blood Demon	完美血腥惡魔	4
+Perfect Conjuror of Rot	完美腐化魔者	8
+Perfect Dancing Sword	完美劍舞	4
+Perfect Dark Marionette	完美黑暗木偶	4
+Perfect Dark Reaper	完美黑暗奪魂鐮	4
+Perfect Druidic Alchemist	完美德魯伊鍊金師	4
+Perfect Eldritch Eye	完美異能之眼	4
+Perfect Fiery Cannibal	完美烈焰食人族	4
+Perfect Forest Tiger	完美森林猛虎	4
+Perfect Forest Warrior	完美森林戰士	4
+Perfect Frozen Cannibal	完美冰凍食人族	4
+Perfect Guardian Turtle	完美守護野龜	4
+Perfect Half-remembered Goliath	完美腦殘巨人	4
+Perfect Hulking Miscreation	完美巨大畸形	4
+Perfect Hydra	完美九頭蛇	4
+Perfect Judgemental Spirit	完美審判之魂	4
+Perfect Meatsack	完美肉袋	4
+Perfect Naval Officer	完美海軍軍官	4
+Perfect Needle Horror	完美針恐怖	4
+Perfect Pain Artist	完美恐怖主義	4
+Perfect Primal Demiurge	完美原始造物主	4
+Perfect Primal Thunderbird	完美原始雷鳥	4
+Perfect Runic Skeleton	完美符文骷髏	4
+Perfect Sanguimancer Demon	完美占血惡魔	4
+Perfect Sawblade Horror	完美奪魂鋸	4
+Perfect Serpent Warrior	完美蛇靈戰士	4
+Perfect Shadow Construct	完美影子創造物	4
+Perfect Slashing Horror	完美劈砍幽魂	4
+Perfect Spider Matriarch	完美蜘蛛女族長	4
+Perfect Spirit of Fortune	完美財富之魂	4
+Perfect Warlord	完美督軍	4
+Perfection	完美無瑕	5
+Perfidy	背信忘義	7
+Perforate	裂地刺穿	6
+Perforate of Bloodshed	裂地刺穿．流血	6
+Perforate of Duality	裂地刺穿．雙持	6
+Pernach	鋒刃重錘	7
+Perquil's Toe	珀奎爾的指頭	7
+Perseverance	恆毅意志	7
+Pestilent Strike	瘟疫打擊	6
+Petrified Blood	石化之血	6
+Petrified Club	堅石木棒	7
+Phantom Boots	魅影長靴	7
+Phantom Mace	幻象之錘	7
+Phantom Mitts	魅影護手	7
+Phase Run	暗影迷蹤	6
+Physical to Lightning Support	物理轉閃電輔助	6
+Pierce Support	穿透輔助	6
+Pig-Faced Bascinet	豬面頭盔	7
+Piledriver	掃蕩者	7
+Pillar of the Caged God	囚神杵	7
+Pillars of Arun	艾倫之柱	7
+Pine Buckler	松木輕盾	7
+Pinnacle Tower Shield	堅毅塔盾	7
+Pinpoint Support	精確輔助	6
+Piscator's Vigil	皮斯卡托的慧眼	7
+Pitbull Demon	鬥牛犬魔	4
+Plague Bearer	病疫之難	6
+Plague Mask	疫災之面	7
+Plagued Arachnid	疫病蜘蛛	4
+Plank Kite Shield	朽木鳶盾	7
+Plate Vest	鐵製背心	7
+Plated Gauntlets	堅鐵護手	7
+Plated Greaves	堅鐵脛甲	7
+Plated Maul	華麗重錘	7
+Plated Parasite	武裝寄生蟲	4
+Platinum Kris	白金波刃	7
+Platinum Sceptre	白金權杖	7
+Pledge of Hands	誓約	7
+Plume of Pursuit	追逐之羽	7
+Plumed Chimeral	彩羽龍蜥	4
+Plummeting Ursa	墮落之爪	4
+Pneumatic Dagger	魂靈短匕	7
+Poacher's Mark	盜獵者印記	6
+Poignard	奪命刺	7
+Point Blank Support	零點射擊輔助	6
+Poisonberry Tincture	毒莓果萃取物	7
+Poisoned Faith	有毒信仰	5
+Poisonous Concoction	毒藥	6
+Poisonous Concoction of Bouncing	毒藥 ．彈炸	6
+Polar Buckler	極地輕盾	7
+Polaric Devastation	極地毀滅	7
+Polaric Invitation	極地之邀	4
+Poleaxe	巨戰斧	7
+Polished Sensing Charm	金光感知咒術	4
+Polished Spiked Shield	光輝刺盾	7
+Poorjoy's Asylum	沉淪之間	7
+Porcupine Goliath	針背巨獸	4
+Portal	時空之門	6
+Portal Scroll	傳送卷軸	1
+Potent Alchemical Resonator	增幅煉金鑄新儀	1
+Potent Chaotic Resonator	增幅混沌鑄新儀	1
+Potentiality Rod	潛能長桿	7
+Power Charge On Critical Support	暴擊獲得暴擊球輔助	6
+Power Siphon	力量抽取	6
+Power Siphon of the Archmage	力量抽取．大法師	6
+Powerful Alchemical Resonator	強力煉金鑄新儀	1
+Powerful Chaotic Resonator	強力混沌鑄新儀	1
+Powerlessness	無力	7
+Praetor Crown	領主戰冠	7
+Pragmatism	實用主義	7
+Praxis	普拉克斯	7
+Precise Arrowhead	精準箭矢	4
+Precision	精準	6
+Precursor Gauntlets	先行者護手	7
+Precursor Greaves	先行者脛甲	7
+Precursor's Emblem	先引之征	7
+Predator Support	掠奪者輔助	6
+Predatory Scorpion	肉食毒蠍	4
+Prehistoric Claw	史前戰爪	7
+Prejudice	偏見	5
+Presence of Chayula	夏烏拉之印	7
+Preserving Gauntlets	庇護手套	7
+Pressurised Dagger	高壓短匕	7
+Preventative Contract	預防契約書	4
+Pride	驕傲	6
+Pride Before the Fall	驕者必敗	5
+Pride of the First Ones	初始者的驕傲	5
+Primal Arrow Quiver	始祖箭袋	7
+Primal Crushclaw	原始之粉碎之爪	4
+Primal Crystallised Lifeforce	原始結晶生靈之力	1
+Primal Cystcaller	原始之羊人	4
+Primal Delirium Orb	初始之譫妄玉	1
+Primal Demiurge	原始造物主	4
+Primal Incubator	先祖培育器	4
+Primal Rhex Matriarch	原始之野雛女酋	4
+Primal Skull Talisman	皇骨魔符	7
+Primal Thunderbird	原始雷鳥	4
+Prime Alchemical Resonator	終極煉金鑄新儀	1
+Prime Chaotic Resonator	終極混沌鑄新儀	1
+Prime Cleaver	原始砍斧	7
+Primeval Rapier	古典刺劍	7
+Primitive Alchemical Resonator	原始煉金鑄新儀	1
+Primitive Chaotic Resonator	原始混沌鑄新儀	1
+Primitive Staff	粗製長杖	7
+Primordial Eminence	先祖卓越	7
+Primordial Fragment	先祖碎片	8
+Primordial Harmony	先祖和諧	7
+Primordial Might	先祖力量	7
+Primordial Staff	史典長杖	7
+Prism Guardian	元素的庇護	7
+Prismatic Burst Support	三相爆發輔助	6
+Prismatic Catalyst	多稜的催化劑	1
+Prismatic Eclipse	虹耀之月	7
+Prismatic Fossil	三相化石	1
+Prismatic Jewel	三相珠寶	7
+Prismatic Oil	三相之油	1
+Prismatic Ring	三相戒指	7
+Prismatic Tincture	三相萃取物	7
+Prismweave	幻彩菱織	7
+Pristine Fossil	原始化石	1
+Processional Relic	詩歌聖物	7
+Profane Proxy	褻瀆之替	7
+Profane Wand	褻瀆法杖	7
+Progenesis	生育	7
+Prometheus' Armoury	普羅米修斯的裝甲庫	5
+Prong Dagger	尖耙短匕	7
+Prophecy Wand	箴言法杖	7
+Prophet Crown	箴言戰冠	7
+Prosperity	興盛	5
+Prospero's Protection	普洛斯彼羅的守護	7
+Protective Link	連結：保護	6
+Provisioning Wombgift	供應之胎贈	8
+Psychotic Axe	神亂之斧	7
+Pulverise Support	磨鍊輔助	6
+Puncture	放血	6
+Puncture of Shanking	腿脛放血	6
+Punishment	懲戒	6
+Pure Talent	純才	7
+Purge Hound	淨化獵犬	4
+Purifying Flame	淨化烈焰	6
+Purifying Flame of Revelations	淨化烈焰．啟示	6
+Purity of Elements	元素淨化	6
+Purity of Fire	火焰淨化	6
+Purity of Ice	冰霜淨化	6
+Purity of Lightning	閃電淨化	6
+Putembo's Meadow	普坦堡的草原	7
+Putembo's Mountain	普坦堡的山巒	7
+Putembo's Valley	普坦堡的峽谷	7
+Pyre	燃焰	7
+Pyre Support	火葬輔助	6
+Pyroclast Mine	炎爆新星地雷	6
+Pyroclast Mine of Sabotage	炎爆新星地雷．破壞	6
+Pyroshock Clasp	烈焰衝擊鉤	7
+Qotra's Regulator	卡特拉的守則	7
+Quarterstaff	細柄長杖	7
+Quartz Flask	石英藥劑	7
+Quartz Sceptre	石英權杖	7
+Quartz Wand	石英法杖	7
+Quecholli	重擊之錘	7
+Queen of the Forest	森林之后	7
+Queen's Decree	威嚴之刃	7
+Quickening Covenant	復甦誓約	7
+Quicksilver Flask	水銀藥劑	7
+Quill Rain	驟雨之弦	7
+Quilted Jacket	菱紋外衣	7
+Rage Support	盛怒輔助	6
+Rage Vortex	盛怒漩渦	6
+Rage Vortex of Berserking	盛怒漩渦．狂暴	6
+Rain Tempter	誘惑之雨	5
+Rain of Arrows	箭雨	6
+Rain of Arrows of Artillery	箭雨．火炮	6
+Rain of Arrows of Saturation	箭雨．飽和	6
+Rain of Chaos	混沌之雨	5
+Rain of Splinters	碎鏃雨	7
+Rainbowstride	虹幕	7
+Raise Spectre	喚醒幽魂	6
+Raise Spectre of Transience	喚醒幽魂．轉瞬	6
+Raise Zombie	殭屍復甦	6
+Raise Zombie of Falling	殭屍復甦．殞落	6
+Raise Zombie of Slamming	殭屍復甦．重擊	6
+Rakiata's Dance	萊基亞塔的舞步	7
+Ralakesh's Impatience	芮勒蓋許的急躁	7
+Rallying Cry	激勵戰吼	6
+Ranger Bow	漫遊之弓	7
+Rashkaldor's Patience	拉什卡德的耐心	7
+Rat's Nest	鼠巢	7
+Ratcheting Ring	荊棘戒指	7
+Rathpith Globe	獻祭之心	7
+Rational Doctrine	理性主義	7
+Rats	鼠輩	5
+Raven Mask	禍鴉之面	7
+Ravenous Parasite	饞癆寄生蟲	4
+Ravenous Passion	貪婪的激情	7
+Rawhide Boots	生皮短靴	7
+Rawhide Gloves	生皮手套	7
+Rawhide Tower Shield	生皮塔盾	7
+Razor of the Seventh Sun	七日鋒	7
+Reach of the Council	議會之觸	7
+Reality Fragment	現實碎片	3
+Realmshaper	創域	7
+Reap	收割	6
+Reaper's Pursuit	死神的取魂器	7
+Rearguard	寒鋒之衛	7
+Reave	衝擊波	6
+Reave of Refraction	衝擊波．折射	6
+Reaver Axe	殘暴之斧	7
+Reaver Helmet	掠奪者之盔	7
+Reaver Sword	殘暴巨劍	7
+Rebirth	重生	5
+Rebirth and Renewal	重生與復興	5
+Rebuke of the Vaal	瓦爾戰刃	7
+Rebuking Blade	鞭策之刃	7
+Reciprocation Staff	鐘擺長杖	7
+Reckless Ambition	魯莽的野心	5
+Reckless Defence	魯莽防禦	7
+Recurve Bow	反曲弓	7
+Redbeak	赤紅短刃	7
+Redblade Band	紅刃之環	7
+Redblade Banner	紅刃旗幟	7
+Redblade Tramplers	紅刃蹂躪靴	7
+Redeemer's Exalted Orb	救贖者的崇高石	1
+Redwood Spiked Shield	紅木刺盾	7
+Refiner's Bargain	精煉廠的講價者	7
+Reflecting Mist	映像迷霧	1
+Reflection of the Heart	心之倒影	5
+Reflective Oil	映像油瓶	1
+Reflex Bow	反射弓	7
+Refracting Fog	折射之霧	8
+Refuge in Isolation	孤寂庇所	7
+Regal Orb	富豪石	1
+Regal Shard	富豪石碎片	1
+Regicide Disguise Kit	弒君偽裝套組	4
+Regicide Mask	弒君之面	7
+Reinforced Greaves	強化脛甲	7
+Reinforced Kite Shield	強化鳶盾	7
+Reinforced Tower Shield	強化塔盾	7
+Rejuvenation Totem	回春圖騰	6
+Relentless Fury	無盡憤怒	7
+Relic of the Pact	古典冥約	7
+Remembrance	我懷念的	5
+Repentance	悔悟之掌	7
+Replica Abyssus	贗品．深淵之喚	7
+Replica Advancing Fortress	贗品．超越壁壘	7
+Replica Alberon's Warpath	贗品．阿爾貝隆的征途	7
+Replica Allelopathy	贗品．相生相剋	7
+Replica Allure	贗品．魅惑	7
+Replica Alpha's Howl	贗品．極地之嗥	7
+Replica Ambu's Charge	贗品．安姆布的戰甲	7
+Replica Atziri's Acuity	贗品．阿茲里的捷思	7
+Replica Atziri's Foible	贗品．阿茲里聖徽	7
+Replica Badge of the Brotherhood	贗品．激情之章	7
+Replica Bated Breath	贗品．凝息	7
+Replica Bitterdream	贗品．苦夢	7
+Replica Blood Thorn	贗品．血棘	7
+Replica Bloodplay	贗品．血謔	7
+Replica Bones of Ullr	贗品．烏勒爾之骨	7
+Replica Cold Iron Point	贗品．寒鋼之刃	7
+Replica Cortex	贗品．深沉記憶	7
+Replica Covenant	贗品．血誓	7
+Replica Doedre's Damning	贗品．德瑞的魔具	7
+Replica Dragonfang's Flight	贗品．龍牙翱翔	7
+Replica Dreamfeather	贗品．幻夢飛羽	7
+Replica Duskdawn	贗品．宵曉	7
+Replica Earendel's Embrace	贗品．伊爾多恩的擁抱	7
+Replica Emberwake	贗品．餘燼之痕	7
+Replica Eternity Shroud	贗品．永恆屍布	7
+Replica Farrul's Fur	贗品．費爾羅羽衣	7
+Replica Fencoil	贗品．綠藤	7
+Replica Fragility	贗品．虛弱	7
+Replica Frostbreath	贗品．霜息	7
+Replica Gifts from Above	贗品．神賜	7
+Replica Grip of the Council	贗品．議會之握	7
+Replica Harvest	贗品．收割者	7
+Replica Headhunter	贗品．獵首	7
+Replica Heartbreaker	贗品．裂心刃	7
+Replica Heatshiver	贗品．寒焰	7
+Replica Hinekora's Sight	贗品．悉妮蔻拉之眼	7
+Replica Hyrri's Ire	贗品．西里的戰衣	7
+Replica Hyrri's Truth	贗品．西里的真理	7
+Replica Infractem	贗品．穿雲	7
+Replica Innsbury Edge	贗品．茵斯布雷之刃	7
+Replica Inya's Epiphany	贗品．茵雅的頓悟	7
+Replica Iron Commander	贗品．鋼鐵指揮	7
+Replica Kalisa's Grace	贗品．卡莉莎的優雅之影	7
+Replica Kaom's Heart	贗品．岡姆的壯志	7
+Replica Karui Ward	贗品．卡魯的戰徽	7
+Replica Kongor's Undying Rage	贗品．康戈的戰炎	7
+Replica Last Resort	贗品．終息	7
+Replica Lavianga's Spirit	贗品．拉維安加之泉	7
+Replica Leer Cast	贗品．共鳴之面	7
+Replica Lioneye's Paws	贗品．獅眼的鬥志	7
+Replica Loreweave	贗品．智者織衫	7
+Replica Malachai's Artifice	贗品．瑪拉凱的巧技	7
+Replica Maloney's Mechanism	贗品．馬洛尼的機關	7
+Replica Midnight Bargain	贗品．冥約	7
+Replica Mistwall	贗品．迷霧之璧	7
+Replica Nebulis	贗品．銀河星雲	7
+Replica Oro's Sacrifice	贗品．歐羅的貢品	7
+Replica Pacifism	贗品．和平主義	7
+Replica Paradoxica	贗品．矛盾對決	7
+Replica Perfect Form	贗品．完美姿態	7
+Replica Pillars of Arun	贗品．艾倫之柱	7
+Replica Poorjoy's Asylum	贗品．沉淪之間	7
+Replica Powerlessness	贗品．無力	7
+Replica Primordial Might	贗品．先祖力量	7
+Replica Prismweave	贗品．幻彩菱織	7
+Replica Quill Rain	贗品．驟雨之弦	7
+Replica Reckless Defence	贗品．魯莽防禦	7
+Replica Red Trail	贗品．赤紅蹤跡	7
+Replica Restless Ward	贗品．無盡之衛	7
+Replica Rumi's Concoction	贗品．魯米的靈藥	7
+Replica Shroud of the Lightless	贗品．晦暗的屍布	7
+Replica Siegebreaker	贗品．突圍	7
+Replica Sorrow of the Divine	贗品．神聖哀悼	7
+Replica Soul Strike	贗品．靈魂打擊	7
+Replica Soul Tether	贗品．靈魂束縛	7
+Replica Stampede	贗品．潰逃之靴	7
+Replica Tasalio's Sign	贗品．塔薩里之印	7
+Replica Tempestuous Steel	贗品．暴風之鋼	7
+Replica Three-step Assault	贗品．三步突擊	7
+Replica Trypanon	贗品．裂顱	7
+Replica Tukohama's Fortress	贗品．圖克哈瑪堡壘	7
+Replica Tulfall	贗品．托沃臥	7
+Replica Twyzel	贗品．峽灣之星	7
+Replica Ungil's Gauche	贗品．恩吉爾的叉刃	7
+Replica Veil of the Night	贗品．夜幕	7
+Replica Victario's Charity	贗品．維多里奧的貢獻	7
+Replica Voideye	贗品．虛空慧眼	7
+Replica Voidwalker	贗品．虛空行者	7
+Replica Volkuur's Guidance	贗品．福庫爾的指引	7
+Replica Windripper	贗品．裂風	7
+Replica Wings of Entropy	贗品．亂世之翼	7
+Replica Winterheart	贗品．冬之心	7
+Replica Witchfire Brew	贗品．巫火秘釀	7
+Retaliation Charm	復仇誘惑	7
+Returning Projectiles Support	投射物返回輔助	6
+Reverberation Rod	混響	7
+Reverent Fragment	敬畏碎片	8
+Reverent Reliquary Key	敬畏遺鑰	8
+Rewritten Distant Memory	遙遠記憶：改寫	7
+Rhoa Mare	雌性恐喙鳥	4
+Righteous Fire	正義之火	6
+Righteous Fire of Arcane Devotion	正義之火．秘能奉獻	6
+Rigwald's Charge	瑞佛的奮戰長劍	7
+Rigwald's Command	瑞佛統帥	7
+Rigwald's Crest	瑞佛之冠	7
+Rigwald's Curse	瑞佛詛咒	7
+Rigwald's Hunt	瑞佛之狩	7
+Rigwald's Quills	瑞佛之羽	7
+Rigwald's Savagery	野性瑞佛	7
+Rime Gaze	酷寒的凝視	7
+Ring	戒指	7
+Ringmail Boots	環甲筒靴	7
+Ringmail Coat	環甲外套	7
+Ringmail Gloves	環甲手套	7
+Rise of the Phoenix	烈炎之翼	7
+Ritual Scarab of Abundance	聖甲蟲：繁榮祭祀	3
+Ritual Scarab of Corpses	聖甲蟲：荒屍祭祀	8
+Ritual Scarab of Selectiveness	聖甲蟲：揀選祭祀	3
+Ritual Scarab of Wisps	聖甲蟲：妖精祭祀	3
+Ritual Sceptre	祭儀權杖	7
+Ritual Splinter	祭祀裂片	1
+Ritual Vessel	祭祀碑器	1
+Rive	裂隙	7
+Riveted Boots	儀式短靴	7
+Riveted Gloves	儀式手套	7
+Rock Breaker	破岩錘	7
+Rock Spitter	噴石爪蟹	4
+Rogue's Marker	盜賊之印	1
+Rolling Magma	熔岩翻騰	6
+Romira's Banquet	羅米拉的潛力之環	7
+Rooster Fiend	邪靈公雞	4
+Rosethorn Tincture	玫瑰刺萃取物	7
+Rot Head Talisman	腐首魔符	7
+Rotblood Promise	敗血承諾	7
+Rotfeather Talisman	死羽魔符	7
+Rotgut	傷胃酒	7
+Roth's Reach	蘿絲之觸	7
+Rotted Round Shield	朽木圓盾	7
+Rotting Vulture	腐敗禿鷹	4
+Rough Sharpening Stone	低階磨刀石	4
+Royal Axe	皇家之斧	7
+Royal Bow	皇家獵弓	7
+Royal Burgonet	皇室堅盔	7
+Royal Plate	皇家之鎧	7
+Royal Sceptre	皇家權杖	7
+Royal Skean	皇家雙刃匕	7
+Royal Staff	皇家長杖	7
+Ruby Amulet	血色護身符	7
+Ruby Flask	紅玉藥劑	7
+Ruby Ring	紅玉戒指	7
+Rugged Quiver	冰晶箭袋	7
+Ruinous Wager	毀滅賭注	7
+Ruins Hellion	毀滅地獄犬	4
+Rumi's Concoction	魯米的靈藥	7
+Runed Bracers	符紋護腕	4
+Runegraft of Bellows	轟鳴符文之結	8
+Runegraft of Blasphemy	瀆神符文之結	8
+Runegraft of Connection	聯繫符文之結	8
+Runegraft of Consecration	奉獻符文之結	8
+Runegraft of Fury	憤怒符文之結	8
+Runegraft of Gemcraft	寶石工藝符文之結	8
+Runegraft of Loyalty	忠誠符文之結	8
+Runegraft of Quaffing	狂飲符文之結	8
+Runegraft of Rallying	召集符文之結	8
+Runegraft of Refraction	折射符文之結	8
+Runegraft of Restitching	重新縫合符文之結	8
+Runegraft of Resurgence	復甦符文之結	8
+Runegraft of Rotblood	腐血符文之結	8
+Runegraft of Stability	穩定符文之結	8
+Runegraft of Suffering	折磨符文之結	8
+Runegraft of Time	時間符文之結	8
+Runegraft of Treachery	背信符文之結	8
+Runegraft of the Agile	迅敏符文之結	8
+Runegraft of the Angler	長竿符文之結	8
+Runegraft of the Bound	緊密符文之結	8
+Runegraft of the Combatant	戰鬥者符文之結	8
+Runegraft of the Fortress	堡壘符文之結	8
+Runegraft of the Imbued	灌注符文之結	8
+Runegraft of the Jeweller	工匠符文之結	8
+Runegraft of the Novamark	星印符文之結	8
+Runegraft of the River	河川符文之結	8
+Runegraft of the Sinistral	左旋符文之結	8
+Runegraft of the Soulwick	魂芯符文之結	8
+Runegraft of the Spellbound	魔縛符文之結	8
+Runegraft of the Warp	扭曲符文之結	8
+Runegraft of the Witchmark	巫印符文之結	8
+Runic Astrolabe	符文星盤	8
+Runic Crest	魔符之冠	7
+Runic Crown	魔符皇冠	7
+Runic Gages	魔符手環	7
+Runic Gauntlets	魔符護手	7
+Runic Gloves	魔符手套	7
+Runic Greaves	魔符脛甲	7
+Runic Hatchet	密文之斧	7
+Runic Helm	魔符頭飾	7
+Runic Luck	符文之運	5
+Runic Sabatons	魔符短靴	7
+Runic Skeleton	符文骷髏	4
+Runic Sollerets	魔符長靴	7
+Rupture Support	殘破輔助	6
+Rusted Coif	鏽鐵鏈盔	7
+Rusted Hatchet	鏽斧	7
+Rusted Spike	鏽刺劍	7
+Rusted Sword	鏽劍	7
+Rustic Sash	素布腰帶	7
+Ruthless Support	殘暴輔助	6
+Ryslatha's Coil	瑞斯拉薩之纏	7
+Sabre	舊軍刀	7
+Sacred Blossom	神聖之花	3
+Sacred Chainmail	神聖鎖甲	7
+Sacred Crystallised Lifeforce	神聖結晶生靈之力	1
+Sacred Hybrid Flask	聖語複合藥劑	7
+Sacred Incubator	神聖的培育器	8
+Sacred Life Flask	聖語生命藥劑	7
+Sacred Mana Flask	聖語魔力藥劑	7
+Sacred Orb	聖玉	1
+Sacred Wisps Support	聖潔妖精輔助	6
+Sacrifice Support	獻祭輔助	6
+Sacrifice at Dawn	黎明的奉獻	3
+Sacrifice at Dusk	黃昏的奉獻	3
+Sacrifice at Midnight	午夜的奉獻	3
+Sacrifice at Noon	正午的奉獻	3
+Sacrificial Garb	祭禮束衣	7
+Sacrificial Heart	犧牲之心	7
+Sadima's Touch	獵寶者的護手	7
+Sadism Support	虐待輔助	6
+Sadist Garb	狂虐者束衣	7
+Saemus' Gift	謝默斯的贈禮	7
+Saffell's Frame	薩費爾的智慧	7
+Sage Gloves	哲人手套	7
+Sage Slippers	哲人便鞋	7
+Sage Wand	賢者法杖	7
+Sage's Robe	賢者之袍	7
+Sai	戰叉	7
+Saint's Hauberk	聖者鏈甲	7
+Saintly Chainmail	聖潔鎖甲	7
+Sallet	輕鐵護盔	7
+Sambar Sceptre	惡魔權杖	7
+Sambodhi's Vow	菩提誓約	5
+Sambodhi's Wisdom	菩提的智慧	5
+Samite Gloves	繡布手套	7
+Samite Slippers	繡布便鞋	7
+Samnite Helmet	薩模柰堅盔	7
+Sanctified Fossil	神聖化石	1
+Sanctified Life Flask	聖化生命藥劑	7
+Sanctified Mana Flask	聖化魔力藥劑	7
+Sand Leaper	沙地突躍獸	4
+Sand Scorpion	沙地毒蠍	4
+Sand Serpent	流沙巨蛇	4
+Sand Skitterer	沙地掠蛛	4
+Sandstorm Visage	沙瀑面紗	7
+Sanguimancer Demon	占血惡魔	4
+Sanguine Raiment	樂觀之衣	7
+Sap of the Seasons	季節樹液	7
+Sapphire Flask	藍玉藥劑	7
+Sapphire Ring	藍玉戒指	7
+Saqawal's Flock	斯卡沃之徒	7
+Saqawal's Nest	斯卡沃之巢	7
+Saqawal's Talons	斯卡沃鷹爪	7
+Saqawal's Winds	斯卡沃之翼	7
+Saqawal, First of the Sky	初始之天斯卡沃	4
+Saqawine Blood Viper	斯卡沃噬血毒蛇	4
+Saqawine Chimeral	斯卡沃龍蜥	4
+Saqawine Cobra	斯卡沃眼鏡蛇	4
+Saqawine Retch	斯卡沃反芻鳥	4
+Saqawine Rhex	斯卡沃雛鳥	4
+Saqawine Rhoa	斯卡沃恐喙鳥	4
+Saqawine Vulture	斯卡沃禿鷹	4
+Saresh's Darkness	薩雷許之闇	7
+Satin Gloves	緞布手套	7
+Satin Slippers	緞布便鞋	7
+Savage Crab	殘暴的蟹	4
+Savant's Robe	智者之袍	7
+Sawblade Horror	奪魂鋸	4
+Scaeva	食蚜	7
+Scalding Arachnid	熾熱蜘蛛	4
+Scale Doublet	合身鱗甲	7
+Scale Vest	細鱗背心	7
+Scarab of Adversaries	聖甲蟲：敵手	3
+Scarab of Divinity	聖甲蟲：神聖	3
+Scarab of Hunted Traitors	聖甲蟲：通緝叛徒	3
+Scarab of Monstrous Lineage	聖甲蟲：畸形血脈	3
+Scarab of Radiant Storms	聖甲蟲：光輝風暴	3
+Scarab of Stability	聖甲蟲：穩定	3
+Scarab of Wisps	聖甲蟲：妖精	3
+Scarab of the Dextral	聖甲蟲：右旋	8
+Scarab of the Sinistral	聖甲蟲：左旋	8
+Scare Mask	幽懼之面	7
+Scarlet Raiment	熾紅之衣	7
+Scarlet Round Shield	熾紅圓盾	7
+Scavenging Vulture	殲滅禿鷹	4
+Scholar Boots	學者長靴	7
+Scholar of the Seas	海洋學者	5
+Scholar's Robe	學者之袍	7
+Scold's Bridle	禁語	7
+Scorched Fossil	暴炎化石	1
+Scorching Ray	熾灼奔流	6
+Scorching Ray of Immolation	熾灼奔流．焚燒	6
+Scornflux	蔑視之流	7
+Scornful Herald Support	輕蔑先鋒輔助	6
+Scorpion's Call	毒蠍之喚	7
+Scourge Arrow	天譴之箭	6
+Scourge Arrow of Menace	天譴之箭．威脅	6
+Scrap Metal	廢金屬	1
+Screaming Essence of Anger	憤怒之咆哮精髓	1
+Screaming Essence of Anguish	煎熬之咆哮精髓	1
+Screaming Essence of Contempt	輕視之咆哮精髓	1
+Screaming Essence of Doubt	疑惑之咆哮精髓	1
+Screaming Essence of Dread	忌憚之咆哮精髓	1
+Screaming Essence of Envy	忌妒之咆哮精髓	1
+Screaming Essence of Fear	恐懼之咆哮精髓	1
+Screaming Essence of Greed	貪婪之咆哮精髓	1
+Screaming Essence of Hatred	憎恨之咆哮精髓	1
+Screaming Essence of Loathing	厭惡之咆哮精髓	1
+Screaming Essence of Misery	悽慘之咆哮精髓	1
+Screaming Essence of Rage	肆虐之咆哮精髓	1
+Screaming Essence of Scorn	傲視之咆哮精髓	1
+Screaming Essence of Sorrow	哀惜之咆哮精髓	1
+Screaming Essence of Spite	刻毒之咆哮精髓	1
+Screaming Essence of Suffering	苦難之咆哮精髓	1
+Screaming Essence of Torment	折磨之咆哮精髓	1
+Screaming Essence of Woe	悲痛之咆哮精髓	1
+Screaming Essence of Wrath	雷霆之咆哮精髓	1
+Screaming Essence of Zeal	熱情之咆哮精髓	1
+Screaming Invitation	尖嘯之邀	4
+Screams of the Desiccated	塵燥之吼	7
+Scroll of Wisdom	知識卷軸	1
+Scum Crawler	汙泥食腐蟲	4
+Seaglass Amulet	海鏡項鍊	7
+Sealed Domain	領域封鎖	7
+Searching Eye Jewel	勘查之眼珠寶	7
+Searing Bond	灼熱連結	6
+Searing Bond of Detonation	灼熱連結．引爆	6
+Second Piece of Brutality	第二暴虐碎片	7
+Second Piece of Directions	第二象限碎片	7
+Second Piece of Focus	第二專注碎片	7
+Second Piece of Storms	第二風暴碎片	7
+Second Piece of Time	第二時空碎片	7
+Second Piece of the Arcane	第二奧術碎片	7
+Second Wind Support	恢復輔助	6
+Secular Focus	世俗目光	7
+Secutor Helm	精兵之盔	7
+Seething Fury	沸騰之怒	7
+Seismic Cry	裂地戰吼	6
+Seismic Trap	地裂陷阱	6
+Seismic Trap of Swells	地裂陷阱．膨脹	6
+Sekhem	威能權杖	7
+Self-Flagellation	殘虐之歡愉	7
+Sentari's Answer	山特立的回應	7
+Sentinel Jacket	哨兵之衣	7
+Sepia Oil	深褐油瓶	1
+Serpent Warrior	蛇靈戰士	4
+Serpentine Staff	蛇紋長杖	7
+Serpentscale Boots	蛇鱗長靴	7
+Serpentscale Gauntlets	蛇鱗手套	7
+Serrated Arrow Quiver	鋸齒箭袋	7
+Serrated Foil	鋸齒細劍	7
+Serrated Fossil	利齒化石	1
+Servant of Decay	腐蝕使徒	7
+Servant of Order	道德審查	7
+Seven Teachings	七大教誨	7
+Seven Years Bad Luck	七年霉運	5
+Seven-League Step	盟誓之跡	7
+Severed in Sleep	離異夢寐	7
+Sewage Crawler	汙穢食腐蟲	4
+Sewer Drifter	下水道漂泊者	4
+Shabby Jerkin	破舊外套	7
+Shackled Boots	縛足長靴	7
+Shackled Hellion	鉤鏈地獄犬	4
+Shackles of the Wretched	悲運之縛	7
+Shade of Solaris	日耀之影	7
+Shadow Axe	幽影巨斧	7
+Shadow Construct	影子創造物	4
+Shadow Fangs	暗影獠牙	7
+Shadow Sceptre	影語權杖	7
+Shadow Shaping	陰影塑造	7
+Shadowed Ring	暗影戒指	7
+Shadows and Dust	沙塵之影	7
+Shadowstitch	縫影	7
+Shaggy Monstrosity	毒息巨獸	4
+Shagreen Boots	粗革短靴	7
+Shagreen Gloves	粗革手套	7
+Shagreen Tower Shield	粗革塔盾	7
+Shaper Guardian Map	塑界守護者地圖	8
+Shaper's Exalted Orb	塑界者的崇高石	8
+Shaper's Seed	塑界者之籽	7
+Shaper's Touch	塑者之觸	7
+Shard of Fate	命運之晶	5
+Sharkskin Boots	鯊皮短靴	7
+Sharkskin Gloves	鯊皮手套	7
+Sharkskin Tunic	鯊皮之衣	7
+Sharktooth Arrow Quiver	鯊齒箭袋	7
+Sharktooth Claw	鯊顎爪	7
+Shattering Steel	鋼之碎擊	6
+Shattering Steel of Ammunition	鋼之碎擊．彈藥	6
+Shattershard	破碎之屑	7
+Shavronne's Pace	薛朗的秘術長靴	7
+Shavronne's Revelation	薛朗的啟示之環	7
+Shavronne's Wrappings	薛朗的護身長袍	7
+Shield Charge	重盾衝鋒	6
+Shield Crush	重盾粉碎	6
+Shield Crush of the Chieftain	重盾粉碎．酋長	6
+Shield of Light	聖光盾擊	6
+Shimmeron	低伏微光	7
+Shining Ward	閃耀法杖	4
+Shiny Reliquary Key	閃耀遺鑰	4
+Shiversting	寒光劍	7
+Shock Nova	閃電新星	6
+Shock Nova of Procession	閃電新星．行進	6
+Shockwave Support	震波輔助	6
+Shockwave Totem	震波圖騰	6
+Shockwave Totem of Authority	震波圖騰．威權	6
+Short Bow	短弓	7
+Shrapnel Ballista	彈片砲塔	6
+Shrapnel Ballista of Steel	彈片砲塔．鋼鐵	6
+Shrieking Essence of Anger	憤怒之尖嘯精髓	1
+Shrieking Essence of Anguish	煎熬之尖嘯精髓	1
+Shrieking Essence of Contempt	輕視之尖嘯精髓	1
+Shrieking Essence of Doubt	疑惑之尖嘯精髓	1
+Shrieking Essence of Dread	忌憚之尖嘯精髓	1
+Shrieking Essence of Envy	忌妒之尖嘯精髓	1
+Shrieking Essence of Fear	恐懼之尖嘯精髓	1
+Shrieking Essence of Greed	貪婪之尖嘯精髓	1
+Shrieking Essence of Hatred	憎恨之尖嘯精髓	1
+Shrieking Essence of Loathing	厭惡之尖嘯精髓	1
+Shrieking Essence of Misery	悽慘之尖嘯精髓	1
+Shrieking Essence of Rage	肆虐之尖嘯精髓	1
+Shrieking Essence of Scorn	傲視之尖嘯精髓	1
+Shrieking Essence of Sorrow	哀惜之尖嘯精髓	1
+Shrieking Essence of Spite	刻毒之尖嘯精髓	1
+Shrieking Essence of Suffering	苦難之尖嘯精髓	1
+Shrieking Essence of Torment	折磨之尖嘯精髓	1
+Shrieking Essence of Woe	悲痛之尖嘯精髓	1
+Shrieking Essence of Wrath	雷霆之尖嘯精髓	1
+Shrieking Essence of Zeal	熱情之尖嘯精髓	1
+Shroud of the Lightless	晦暗的屍布	7
+Shuddering Fossil	顫慄化石	1
+Sibyl's Lament	希比爾之嘆	7
+Sidhebreath	魔靈之符	7
+Siege Axe	破城斧	7
+Siege Ballista	攻城炮台	6
+Siege Ballista of Splintering	攻城炮台．碎片	6
+Siege Ballista of Trarthus	特拉特斯攻城炮台	6
+Siege Helmet	破城之盔	7
+Siegebreaker	突圍	7
+Sigil of Power	咒符之力	6
+Sign of the Sin Eater	罪孽嗜者之示	7
+Silence and Frost	沉默與寒霜	5
+Silk Gloves	絲綢手套	7
+Silk Robe	絲質之袍	7
+Silk Slippers	絲綢便鞋	7
+Silken Garb	絲綢之衣	7
+Silken Hood	綢緞之兜	7
+Silken Vest	綢緞背心	7
+Silken Wrap	絲絨背心	7
+Silkweave Sole	絲織鞋底	4
+Silver Brooch	白銀胸針	4
+Silver Flask	真銀藥劑	7
+Silver Oil	純銀油瓶	1
+Silverbranch	幻銀之弦	7
+Simple Lockpick	簡易鎖撬	4
+Simple Robe	簡易之袍	7
+Simplex Amulet	簡純護身符	7
+Simulacrum	幻像異界	3
+Simulacrum Splinter	幻像斷片	1
+Sin Trek	敏銳思維	7
+Sin's Rebirth	再生的罪惡	7
+Singing Siren	冥曲海妖	4
+Singular Delirium Orb	卓越之譫妄玉	1
+Singular Focus	單一焦點	7
+Singular Incubator	卓越的培育器	4
+Singularity	奇異	7
+Sinistral Catalyst	左旋催化劑	8
+Sinner Tricorne	罪者之帽	7
+Sinvicta's Mettle	辛維塔之毅	7
+Siphoning Trap	虹吸陷阱	6
+Siphoning Trap of Pain	虹吸陷阱．苦痛	6
+Sire of Shards	破碎傳承者	7
+Skean	雙刃匕	7
+Skeletal Beast	枯骨野獸	4
+Skeleton Keyring	專業鑰匙圈	4
+Skin of the Lords	君主之膚	7
+Skin of the Loyal	忠誠之膚	7
+Skinning Knife	剝皮刀	7
+Skirmish	小會戰	7
+Skittering Delirium Orb	飛掠之譫妄玉	1
+Skittering Incubator	飛掠的培育器	4
+Skullhead	光輝之顱	7
+Skyforth	空向	7
+Skysunder	墜天者	7
+Slashing Horror	劈砍幽魂	4
+Slaughter Knife	殘暴短匕	7
+Slavedriver's Hand	奴役之手	7
+Sledgehammer	冷鐵重錘	7
+Sleek Coat	滑布外套	7
+Slimy Nemesis	洞窟海蟲	4
+Slink Boots	迷蹤短靴	7
+Slink Gloves	迷蹤手套	7
+Slitherpinch	蒼蟒之鱗	7
+Slivertongue	裂舌	7
+Slower Projectiles Support	投射物減速輔助	6
+Small Cluster Jewel	小型星團珠寶	7
+Small Hybrid Flask	小型複合藥劑	7
+Small Life Flask	小型生命藥劑	7
+Small Life Flask	生命藥劑（小）	7
+Small Mana Flask	小型魔力藥劑	7
+Smallsword	小劍	7
+Smash and Grab	打砸搶	7
+Smite	雷鳴重擊	6
+Smite of Divine Judgement	雷鳴重擊．聖判	6
+Smoke Mine	煙霧地雷	6
+Snakebite	蝮吻	7
+Snakepit	蛇巢	7
+Snipe	狙擊	6
+Sniper Bow	狙殺弓	7
+Sniper's Mark	狙擊者印記	6
+Snow Wolf	白雪狼	4
+Society's Remorse	社會的懊悔	5
+Solar Maul	日光錘	7
+Solarine Bow	日耀之弓	7
+Solaris Circlet	日耀之冠	7
+Solaris Lorica	烈陽鎧	7
+Soldier Boots	戰士之靴	7
+Soldier Gloves	戰士手套	7
+Soldier Helmet	士兵之盔	7
+Soldier's Brigandine	戰士鎖甲	7
+Solerai's Radiance	索拉萊的輝耀	7
+Solstice Vigil	守夜之至	7
+Somatic Shell	心靈壁壘	6
+Somatic Wand	軀體魔杖	8
+Something Dark	黑暗物質	5
+Sorcerer Boots	術士長靴	7
+Sorcerer Gloves	術士手套	7
+Sorrow Mask	悲鳴面具	7
+Soul Ascension	靈魂昇華	7
+Soul Catcher	追魂者	7
+Soul Link	連結：靈魂	6
+Soul Mantle	祖靈之約	7
+Soul Ripper	碎魂者	7
+Soul Strike	靈魂打擊	7
+Soul Taker	開膛斧	7
+Soul Tether	靈魂束縛	7
+Soulbound	靈魂之絆	7
+Soulless Watcher	無靈之眼	4
+Soulrend	靈體撕裂	6
+Soulrend of Reaping	靈體撕裂．收割	6
+Soulrend of the Spiral	靈體撕裂．螺旋	6
+Soulthirst	嗜魂	7
+Soulwrest	鑄影	7
+Southbound	南方	7
+Sovereign Spiked Shield	王權刺盾	7
+Spark	電球	6
+Spark of Unpredictability	電球．未知	6
+Spark of the Nova	電球．新星	6
+Sparkling Claw	眩目爪刃	7
+Speaker of the Dead	死者之言	7
+Speaker's Wreath	預言家桂冠	7
+Spectral Axe	幽魂之斧	7
+Spectral Helix	靈體旋武	6
+Spectral Helix of Trarthus	特拉特斯靈體旋武	6
+Spectral Shield Throw	盾靈投擲	6
+Spectral Shield Throw of Shattering	盾靈投擲．粉碎	6
+Spectral Shield Throw of Trarthus	特拉特斯盾靈投擲	6
+Spectral Sword	幽魂巨劍	7
+Spectral Throw	靈體投擲	6
+Spectral Throw of Materialising	靈體投擲．具現化	6
+Spectral Throw of Trarthus	特拉特斯靈體投擲	6
+Spell Cascade Support	秘能爆發輔助	6
+Spell Echo Support	施放迴響輔助	6
+Spell Totem Support	法術圖騰輔助	6
+Spellblade Support	魔刃輔助	6
+Spellslinger	法術回音	6
+Spider Matriarch	蜘蛛女族長	4
+Spidersilk Robe	蛛絲之袍	7
+Spike-Point Arrow Quiver	刺鋒箭袋	7
+Spiked Bundle	尖木刺盾	7
+Spiked Club	鈍釘木棒	7
+Spiked Gloves	釦釘手套	7
+Spiked Round Shield	尖刺圓盾	7
+Spindle Spider	長足巨蛛	4
+Spine Bow	脊弓	7
+Spine Serpent	脊刺巨蛇	4
+Spinefuse Talisman	潛能魔符	7
+Spinehail	脊雹	7
+Spiny Maul	凶刺巨錘	7
+Spiny Round Shield	棘刺圓盾	7
+Spiraled Foil	螺紋細劍	7
+Spiraled Wand	螺紋法杖	7
+Spirit Offering	靈魂奉獻	6
+Spirit of Fortune	財富之魂	4
+Spitting Parasite	酸液寄生蟲	4
+Splendid Round Shield	光輝圓盾	7
+Splintered Tower Shield	朽木塔盾	7
+Split Arrow	分裂箭矢	6
+Split Arrow of Splitting	分裂箭矢．分裂	6
+Split Personality	人格分裂	7
+Splitnewt Talisman	斷螈魔符	7
+Splitting Steel	鋼之裂化	6
+Splitting Steel of Ammunition	鋼之裂化．彈藥	6
+Sporebloom Tincture	孢子花萃取物	7
+Sporeguard	毒孢守衛	7
+Springleaf	新生之徽	7
+Squandered Prosperity	失落的繁華	5
+Squirming Terror	扭曲恐懼	7
+Stabilising Sceptre	安定權杖	7
+Stacked Deck	豐裕牌組	1
+Stag Sceptre	靈鹿權杖	7
+Standard Lockpick	標準鎖撬	4
+Standard Sharpening Stone	標準磨刀石	4
+Star of Wraeclast	瓦爾克拉斯之星	7
+Starcaller	喚星者	7
+Starforge	核星	7
+Starkonja's Head	斯塔空加之首	7
+Starlight Chalice	星光聖杯	7
+Stasis Prison	靜止牢籠	7
+Static Strike	充能打擊	6
+Static Strike of Gathering Lightning	充能打擊．聚雷	6
+Stealth Boots	匿蹤短靴	7
+Stealth Gloves	匿蹤手套	7
+Steel Bracers	鋼鐵護腕	4
+Steel Circlet	冷鋼之冠	7
+Steel Drill	鋼鐵鑽頭	4
+Steel Gauntlets	冷鋼護手	7
+Steel Greaves	冷鋼脛甲	7
+Steel Kite Shield	冷鋼鳶盾	7
+Steel Ring	鋼鑄戒指	7
+Steelhead	沉鋼重錘	7
+Steelscale Boots	鋼影長靴	7
+Steelscale Gauntlets	鋼影護手	7
+Steelskin	鋼筋鐵骨	6
+Steelwood Bow	鋼木之弓	7
+Steelworm	鐵幕蟲	7
+Steppan Eard	絕地魔履	7
+Stibnite Flask	迷霧藥劑	7
+Stiletto	銳利刺匕	7
+Stone Axe	石斧	7
+Stone Hammer	石錘	7
+Stone of Lazhwar	拉茲瓦的靈石	7
+Storm Brand	風暴烙印	6
+Storm Brand of Indecision	風暴烙印．躊躇	6
+Storm Burst	風爆	6
+Storm Burst of Repulsion	風爆．排斥	6
+Storm Call	風暴呼喚	6
+Storm Call of Trarthus	特拉特斯風暴呼喚	6
+Storm Cloud	暴雨之弦	7
+Storm Prison	禁錮暴風	7
+Storm Rain	暴風雷雨	6
+Storm Rain of the Conduit	暴風雷雨．導管	6
+Storm Rain of the Fence	暴風雷雨．籬笆	6
+Storm Secret	風暴之密	7
+Storm's Gift	風暴之贈	7
+Stormbind	風暴術符	6
+Stormbind of Teleportation	風暴術符．傳送	6
+Stormblast Mine	風暴地雷	6
+Stormcharger	暴充	7
+Stormfire	烈風暴	7
+Stormrider Boots	風暴者短靴	7
+Stormseeker	風暴千尋	7
+Stormshroud	風暴籠罩	7
+Story of the Vaal	瓦爾之序	7
+Straight and Narrow	筆直窄道	7
+Stranglegasp	扼殺之息	7
+Strapped Boots	扣環短靴	7
+Strapped Leather	扣環皮甲	7
+Strapped Mitts	扣環護手	7
+String of Servitude	奴役之索	7
+Struck by Lightning	雷劈	5
+Studded Belt	扣釘腰帶	7
+Studded Bracers	鉚釘護腕	4
+Studded Round Shield	鉚釘圓盾	7
+Stun Support	擊暈輔助	6
+Stygian Ape	冥渡狂猿	4
+Stygian Silverback	冥界銀背獸	4
+Stygian Vise	冥河腰帶	7
+Sublime Vision	崇高願景	7
+Subsuming Spirit Shield	靈吸魔盾	7
+Succor of the Sinless	無罪救贖	5
+Sudden Dawn	黎明驟起	7
+Sulphite Scarab	聖甲蟲：硫酸	3
+Sulphite Scarab of Fumes	聖甲蟲：煙毒硫酸	3
+Sulphite Scarab of Greed	聖甲蟲：貪婪硫酸	3
+Sulphur Blowtorch	硫酸噴管	4
+Sulphur Flask	硫磺藥劑	7
+Sulphuric Scorpion	強酸毒蠍	4
+Sulphurspawn	磺石爪牙	4
+Summon Carrion Golem	召喚食腐魔像	6
+Summon Carrion Golem of Hordes	召喚食腐魔像．部落	6
+Summon Carrion Golem of Scavenging	召喚食腐魔像．清洗	6
+Summon Chaos Golem	召喚混沌魔像	6
+Summon Chaos Golem of Hordes	召喚混沌魔像．部落	6
+Summon Chaos Golem of the Maelström	召喚混沌魔像．漩渦	6
+Summon Flame Golem	召喚烈焰魔像	6
+Summon Flame Golem of Hordes	召喚烈焰魔像．部落	6
+Summon Flame Golem of the Meteor	召喚烈焰魔像．隕石	6
+Summon Holy Relic	召喚聖物	6
+Summon Holy Relic of Conviction	召喚聖物．信念	6
+Summon Ice Golem	召喚寒冰魔像	6
+Summon Ice Golem of Hordes	召喚寒冰魔像．部落	6
+Summon Ice Golem of Shattering	召喚寒冰魔像．粉碎	6
+Summon Lightning Golem	召喚閃電魔像	6
+Summon Lightning Golem of Hordes	召喚閃電魔像．部落	6
+Summon Phantasm Support	召喚幻影輔助	6
+Summon Raging Spirit	召喚憤怒狂靈	6
+Summon Raging Spirit of Enormity	召喚憤怒狂靈．巨型	6
+Summon Reaper	召喚奪魂鐮	6
+Summon Reaper of Eviscerating	召喚奪魂鐮．剜剖	6
+Summon Reaper of Revenants	召喚奪魂鐮．亡靈	6
+Summon Skeletons	召喚骷髏	6
+Summon Skeletons of Archers	召喚骷髏．箭術	6
+Summon Skeletons of Mages	召喚骷髏．巫術	6
+Summon Skitterbots	召喚探測機獸	6
+Summon Stone Golem	召喚巨石魔像	6
+Summon Stone Golem of Hordes	召喚巨石魔像．部落	6
+Summon Stone Golem of Safeguarding	召喚巨石魔像．保安	6
+Sun Leather	日光皮甲	7
+Sun Plate	日光之鎧	7
+Sunblast	日炎	7
+Sundance	日耀	7
+Sunder	大地震擊	6
+Sunder of Earthbreaking	大地震擊．地破	6
+Sunder of Trarthus	特拉特斯大地震擊	6
+Sundering Axe	裂甲巨斧	7
+Sunfire Circlet	陽炎之冠	7
+Supreme Leather	至高皮甲	7
+Supreme Spiked Shield	霸者刺盾	7
+Surgebinders	浪湧縛者	7
+Survivor's Guilt	倖存者的原罪	7
+Svalinn	史瓦林	7
+Swarthy Mollusc	黑黝軟獸	4
+Swift Affliction Support	極速苦痛輔助	6
+Swift Assembly Support	迅速組裝輔助	6
+Swiftbrand Support	迅速烙印輔助	6
+Swordstorm	劍刃風暴	6
+Synaptic Ring	突觸之戒	8
+Syndicate Medallion	密教獎章	8
+Syndicate's Garb	密教束衣	7
+Synthesising Fragment	追憶碎片	3
+Tabula Rasa	無盡之衣	7
+Tailoring Orb	裁縫石	1
+Tainted Armourer's Scrap	玷污的護甲片	1
+Tainted Blacksmith's Whetstone	玷污的磨刀石	1
+Tainted Catalyst	玷汙催化劑	1
+Tainted Chaos Orb	玷污的混沌石	1
+Tainted Chromatic Orb	玷污的幻色石	1
+Tainted Divine Teardrop	玷污的神聖淚珠	1
+Tainted Exalted Orb	玷污的崇高石	1
+Tainted Jeweller's Orb	玷污的工匠石	1
+Tainted Mythic Orb	玷污的神話石	1
+Tainted Oil	汙染油瓶	1
+Tainted Orb of Fusing	玷污的鏈結石	1
+Tainted Pact	汙穢契約	7
+Talon Archer	射手之爪	4
+Talon Axe	猛禽爪斧	7
+Tangled Fossil	紊亂化石	1
+Tanu Ahi	埋火	7
+Taproot	砥礪深根	7
+Tarnished Spirit Shield	環形魔盾	7
+Taryn's Shiver	塔林的顫慄之語	7
+Tasalio's Sign	塔薩里之印	7
+Taste of Hate	恨意	7
+Tattered Cloak	破損披風	4
+Tattoo of the Arohongui Moonwarden	艾蘿紅薇月護衛的紋身	1
+Tattoo of the Arohongui Scout	艾蘿紅薇哨兵的紋身	1
+Tattoo of the Arohongui Shaman	艾蘿紅薇薩滿的紋身	1
+Tattoo of the Arohongui Warmonger	艾蘿紅薇戰鬥王的紋身	1
+Tattoo of the Arohongui Warrior	艾蘿紅薇戰士的紋身	1
+Tattoo of the Hinekora Deathwarden	悉妮蔻拉死護衛的紋身	1
+Tattoo of the Hinekora Shaman	悉妮蔻拉薩滿的紋身	1
+Tattoo of the Hinekora Storyteller	悉妮蔻拉說書人的紋身	1
+Tattoo of the Hinekora Warmonger	悉妮蔻拉戰鬥王的紋身	1
+Tattoo of the Hinekora Warrior	悉妮蔻拉戰士的紋身	1
+Tattoo of the Kitava Blood Drinker	奇塔弗飲血者的紋身	1
+Tattoo of the Kitava Heart Eater	奇塔弗嗜心者的紋身	1
+Tattoo of the Kitava Rebel	奇塔弗叛亂的紋身	1
+Tattoo of the Kitava Shaman	奇塔弗薩滿的紋身	1
+Tattoo of the Kitava Warrior	奇塔弗戰士的紋身	1
+Tattoo of the Ngamahu Firewalker	拿瑪乎火行者的紋身	1
+Tattoo of the Ngamahu Shaman	拿瑪乎薩滿的紋身	1
+Tattoo of the Ngamahu Warmonger	拿瑪乎戰鬥王的紋身	1
+Tattoo of the Ngamahu Warrior	拿瑪乎戰士的紋身	1
+Tattoo of the Ngamahu Woodcarver	拿瑪乎木工的紋身	1
+Tattoo of the Ramako Archer	雷默科射手的紋身	1
+Tattoo of the Ramako Fleetfoot	雷默科偵瞬步的紋身	1
+Tattoo of the Ramako Scout	雷默科哨兵的紋身	1
+Tattoo of the Ramako Shaman	雷默科薩滿的紋身	1
+Tattoo of the Ramako Sniper	雷默科狙擊手的紋身	1
+Tattoo of the Rongokurai Brute	隆格庫萊暴徒的紋身	1
+Tattoo of the Rongokurai Goliath	隆格庫萊巨獸的紋身	1
+Tattoo of the Rongokurai Guard	隆格庫萊守衛的紋身	1
+Tattoo of the Rongokurai Turtle	隆格庫萊巨龜的紋身	1
+Tattoo of the Rongokurai Warrior	隆格庫萊戰士的紋身	1
+Tattoo of the Tasalio Bladedancer	塔薩里奧舞劍者的紋身	1
+Tattoo of the Tasalio Scout	塔薩里奧哨兵的紋身	1
+Tattoo of the Tasalio Shaman	塔薩里奧薩滿的紋身	1
+Tattoo of the Tasalio Tideshifter	塔薩里奧潮汐變幻者的紋身	1
+Tattoo of the Tasalio Warrior	塔薩里奧戰士的紋身	1
+Tattoo of the Tawhoa Herbalist	塔赫亞藥草師的紋身	1
+Tattoo of the Tawhoa Naturalist	塔赫亞自然的紋身	1
+Tattoo of the Tawhoa Scout	塔赫亞哨兵的紋身	1
+Tattoo of the Tawhoa Shaman	塔赫亞薩滿的紋身	1
+Tattoo of the Tawhoa Warrior	塔赫亞戰士的紋身	1
+Tattoo of the Tukohama Brawler	圖克哈瑪鬥士的紋身	1
+Tattoo of the Tukohama Shaman	圖克哈瑪薩滿的紋身	1
+Tattoo of the Tukohama Warcaller	圖克哈瑪戰爭喚者的紋身	1
+Tattoo of the Tukohama Warmonger	圖克哈瑪戰鬥王的紋身	1
+Tattoo of the Tukohama Warrior	圖克哈瑪戰士的紋身	1
+Tattoo of the Valako Scout	瓦拉庫哨兵的紋身	1
+Tattoo of the Valako Shaman	瓦拉庫薩滿的紋身	1
+Tattoo of the Valako Shieldbearer	瓦拉庫護盾大師的紋身	1
+Tattoo of the Valako Stormrider	瓦拉庫風暴馭者的紋身	1
+Tattoo of the Valako Warrior	瓦拉庫戰士的紋身	1
+Tavukai	狂靈之怒	7
+Tawhanuku's Timing	塔瓦努庫的時機	7
+Tawhoa's Felling	塔赫亞的殞落	7
+Teak Round Shield	柚木圓盾	7
+Teal Oil	清綠油瓶	1
+Tear of Purity	純淨之淚	7
+Tecrod's Gaze	特克羅德的邪眼	7
+Tectonic Slam	破體之擊	6
+Tectonic Slam of Cataclysm	破體之擊．災變	6
+Temperance	自我約束	5
+Tempered Flesh	冶鍊之體	7
+Tempered Foil	強化細劍	7
+Tempered Mind	冶鍊之意	7
+Tempered Spirit	冶鍊之靈	7
+Tempering Catalyst	冶鍊的催化劑	1
+Tempering Orb	淬鍊石	1
+Tempest Shield	暴風之盾	6
+Templar Astrolabe	聖堂星盤	8
+Temporal Chains	時空鎖鏈	6
+Temporal Rift	時空裂隙	6
+Temptation Step	誘惑步伐	7
+Tenderizer	裂肉之錘	7
+Tenebrous Ring	黑暗戒指	7
+Tercel Rhoa	雄性恐喙鳥	4
+Terminus Est	行刑之刃	7
+Terrible Secret of Space	無垠恐懼之密	5
+Terror Claw	恐懼之牙	7
+Terror Maul	懼靈重錘	7
+That Which Was Taken	霸佔	7
+Thaumaturge's Delirium Orb	奇術之譫妄玉	1
+Thaumaturge's Incubator	幻術師的培育器	4
+Thaumaturgical Sensing Charm	奇術感知咒術	4
+Thaumaturgical Ward	奇術法杖	4
+Thaumetic Blowtorch	奇術噴管	4
+Thaumetic Flashpowder	奇術閃光粉	4
+The Academic	學術界	5
+The Admiral	上將	7
+The Admirer	仰慕者	5
+The Adorned	假掰	7
+The Adventuring Spirit	冒險之靈	5
+The Aesthete	大藝術家	5
+The Anima Stone	聚魂石	7
+The Annihilating Light	毀滅白光	7
+The Anticipation	懸念	7
+The Anvil	信念之砧	7
+The Apostate	叛教者	7
+The Apothecary	藥劑師	5
+The Archmage's Right Hand	魔法師的右手	5
+The Arena Champion	競技場冠軍	5
+The Arkhon's Tools	執政官的工具	7
+The Army of Blood	血滴子	5
+The Artist	藝者	5
+The Ascetic	苦行	7
+The Aspirant	捕夢網	5
+The Astromancer	天文巫師	5
+The Avenger	復仇者	5
+The Awakened	覺醒	5
+The Aylardex	艾拉黛絲	7
+The Balance of Terror	恐怖平衡	7
+The Bandit Lord's Band	盜賊頭目的綁帶	7
+The Bane of Hope	希望之終	7
+The Baron	男爵	7
+The Battle Born	戰火鍛造	5
+The Battle Within	不可見之戰	7
+The Bear Woman	熊腰雌背	5
+The Beast	巨獸	5
+The Beast Fur Shawl	獸毛披肩	7
+The Betrayal	背叛	5
+The Bitter Blossom	苦澀綻放	5
+The Black Barya	漆黑巨靈之幣	8
+The Black Cane	黑藤	7
+The Blazing Fire	熊熊大火	5
+The Blessing of Moosh	穆什的祝福	5
+The Blood Dance	血影	7
+The Blood Reaper	竭血之鐮	7
+The Blood Thorn	血棘	7
+The Blood of Innocence	善之血	7
+The Blue Dream	碧影夢境	7
+The Blue Nightmare	碧影夢魘	7
+The Body	血肉之軀	5
+The Bones	識骨尋蹤	5
+The Brass Dome	堅銅戰罩	7
+The Brawny Battle Mage	頑強的戰鬥法	5
+The Breach	裂痕	5
+The Brine Crown	海王冠冕	7
+The Bringer of Rain	祭禮之雨	7
+The Brittle Emperor	碎裂大帝	5
+The Broken Censer	破香爐	7
+The Broken Crown	缺角帝冠	7
+The Broken Elegy	破碎輓歌	7
+The Burden of Shadows	沉重陰影	7
+The Burden of Truth	真理負擔	7
+The Cache	囤積	5
+The Cacophony	不諧之音	5
+The Caged Mammoth	囚籠猛獸	7
+The Calling	傳喚	5
+The Card Sharp	老千	5
+The Carrion Crow	食腐掠鴉	5
+The Cataclysm	巨變	5
+The Catalyst	災變	5
+The Catch	姜太公釣魚	5
+The Celestial Brace	眾星援護	7
+The Celestial Justicar	天堂執法官	5
+The Celestial Stone	璀璨之石	5
+The Chains of Castigation	懲戒鎖鏈	7
+The Chains that Bind	束縛之鍊	5
+The Chosen	天選之人	5
+The Coming Calamity	災難臨頭	7
+The Coming Storm	風暴將至	5
+The Conduit	雷針	5
+The Consuming Dark	蠶食之闇	7
+The Covenant	血誓	7
+The Coward's Trial	懦者的試驗	7
+The Craving	想要	5
+The Crimson Storm	緋紅風暴	7
+The Cursed King	詛咒之王	5
+The Damned	滅世之咒	5
+The Dancing Dervish	狂舞德爾維希	7
+The Dapper Prodigy	極致不凡	5
+The Dark Mage	黑暗術者	5
+The Dark Monarch	黑暗君主	7
+The Dark Seer	黯黑賢者	7
+The Darkest Dream	惡夢	5
+The Deal	買賣	5
+The Deceiver	你這個騙子	5
+The Deep One's Hide	深淵絕壁	7
+The Deep Ones	無盡之淵	5
+The Demon	惡魔	5
+The Demoness	魅魔	5
+The Desecrated Chalice	瀆染髒盃	7
+The Destination	終點站	5
+The Devourer of Minds	心靈吞噬者	7
+The Devouring Diadem	吞噬之冠	7
+The Doctor	瘋醫	5
+The Doppelganger	傀儡	5
+The Dragon	巨龍	5
+The Dragon's Heart	龍之心	5
+The Dreamer	夢想家	5
+The Dreamland	夢之國度	5
+The Druggery	純貨	7
+The Drunken Aristocrat	酒醉貴族	5
+The Dungeon Master	地牢大師	5
+The Easy Stroll	輕鬆漫步	5
+The Eldritch Decay	怪異腐敗	5
+The Embalmer	福馬林	7
+The Emptiness	空虛	5
+The Encroaching Darkness	黑暗來犯	5
+The Endless Darkness	無盡黯黑	5
+The Endurance	忍耐	5
+The Enforcer	執行者	5
+The Enlightened	智慧啟蒙	5
+The Enthusiasts	熱心民眾	5
+The Ephemeral Bond	短期債券	7
+The Escape	逃脫大師	5
+The Eternal Apple	永恆的蘋果	7
+The Eternal Struggle	永恆鬥爭	7
+The Eternal War	永恆戰爭	5
+The Eternity Shroud	永恆屍布	7
+The Ethereal	空靈	5
+The Everlasting	永恆	5
+The Explorer	探險家	5
+The Eye of Terror	恐懼之眼	5
+The Eye of the Dragon	龍眼	5
+The Fathomless Depths	無底深淵	5
+The Feast	盛宴	5
+The Felbog Fang	費爾博格獠牙	7
+The Fiend	魔鬼	5
+The Finishing Touch	點睛之筆	5
+The First Crest	第一頂峰	7
+The Fishmonger	魚販	5
+The Flame of Hope	希望之焰	7
+The Flawed Refuge	瑕疵避難	7
+The Fledgling	幼雛	7
+The Fletcher	製箭者	5
+The Flora's Gift	芙蘿拉的贈禮	5
+The Fool	愚人	5
+The Forbidden Fruit	禁忌之果	5
+The Forgotten Treasure	被遺忘的寶藏	5
+The Formless Flame	無形火炬	7
+The Formless Inferno	無形煉獄	7
+The Formless Sea	莫測之海	5
+The Forsaken	遺棄	5
+The Fortunate	幸運的人	5
+The Forward Gaze	凝視前方	5
+The Fourth Vow	第四誓願	7
+The Fox	狡狐	5
+The Fox in the Brambles	荊棘中的狐狸	5
+The Front Line	前列的線	7
+The Fulcrum	支點	7
+The Gambler	賭徒	5
+The Garish Power	裝飾之力	5
+The Gemcutter	珠寶匠	5
+The Gentleman	紳士之風	5
+The Ghastly Theatre	恐怖劇院	7
+The Gilded Chalice	鍍金聖杯	7
+The Gladiator	鬥士	5
+The Gluttonous Tide	饕餮浪潮	7
+The Goddess Bound	女神的靈縛	7
+The Goddess Scorned	女神的怒炎	7
+The Golden Charlatan	黃金詐術師	7
+The Golden Era	黃金年代	5
+The Golden Rule	黃金守則	7
+The Greatest Intentions	雄偉動機	5
+The Green Dream	青影夢境	7
+The Green Nightmare	青影夢魘	7
+The Grey Spire	斑駁蒼杖	7
+The Grey Wind	灰風	7
+The Gulf	鴻溝	5
+The Gull	鷗喙	7
+The Halcyon	太平	7
+The Hale Heart	心心向榮	5
+The Hallowed Monarch	受祈聖君	7
+The Hand of Phrecia	費西亞之手	7
+The Harvest	收割者	7
+The Harvester	收割者	5
+The Hateful Accuser	憎惡控告者	7
+The Hermit	隱士	5
+The Heroic Shot	英勇射擊	5
+The Hidden Blade	隱藏之劍	7
+The Highwayman	高尚之人	7
+The Hive of Knowledge	蜂巢知識	5
+The Hoarder	寶箱	5
+The Hook	勾鎖	5
+The Hour of Divinity	神聖時刻	7
+The Hunger	飢餓	5
+The Hungry Loop	惡鬼轉世	7
+The Ignomon	烈陽徽記	7
+The Immortal	永恆不朽	5
+The Immortal Will	不朽之意志	7
+The Incantation	咒語	5
+The Infinite Pursuit	無盡之距	7
+The Innocent	善	5
+The Inoculated	移花接木	5
+The Insane Cat	瘋貓	5
+The Insatiable	貪婪	5
+The Interrogation	審問	7
+The Inventor	發明家	5
+The Iron Fortress	鋼鐵壁壘	7
+The Iron Mass	鐵塊	7
+The Ivory Tower	象牙塔	7
+The Jester	小丑	5
+The Jeweller's Boon	珠寶商的施捨	5
+The Jinxed Juju	惡咒護符	7
+The Journalist	記者	5
+The Journey	愛旅行	5
+The King's Blade	王者之刃	5
+The King's Heart	王者之心	5
+The Lake	湖泊	5
+The Last Laugh	最終一笑	5
+The Last One Standing	屹立不敗之人	5
+The Last Supper	最後晚宴	5
+The Leviathan	龐然大物	5
+The Lich	巫妖	5
+The Life Thief	竊命者	5
+The Light of Meaning	意涵之光	7
+The Lion	雄獅	5
+The Living Blade	生者之刃	7
+The Long Con	長期詐騙	5
+The Long Watch	守望特工	5
+The Lord in Black	暗黑之王	5
+The Lord of Celebration	慶典之王	5
+The Lover	情人	5
+The Lunaris Priestess	月影女祭司	5
+The Mad King	瘋癲之王	5
+The Magma Crab	岩漿蟹	5
+The Magnate	堅毅之環	7
+The Master Artisan	工匠大師	5
+The Maven's Writ	釋界之令	3
+The Mayor	市長	5
+The Mercenary	傭兵	5
+The Messenger	傳訊者	5
+The Metalsmith's Gift	鐵匠的贈禮	5
+The Mind's Eyes	心靈之眼	5
+The Miracle	奇蹟	5
+The Monastery Bell	修道院之鐘	7
+The Mountain	神山	5
+The Night Lamp	夜燈	7
+The Nurse	護理師	5
+The Oath	誓言	5
+The Offering	奉獻	5
+The Offspring	後裔	5
+The Old Man	老人與海	5
+The One That Got Away	逃脫	5
+The One With All	完人	5
+The Oppressor	壓迫者	7
+The Opulent	淨白	5
+The Original Scripture	初始經文	7
+The Overflowing Chalice	滿溢聖杯	7
+The Pack Leader	群聚之首	5
+The Pact	協約	5
+The Pandemonius	群魔殿	7
+The Pariah	草民	7
+The Patient	病患	5
+The Penitent	懺悔者	5
+The Perfect Form	完美姿態	7
+The Poet	詩人	5
+The Poet's Pen	學富之筆	7
+The Poised Prism	優雅迷鏡	7
+The Polymath	博學	5
+The Porcupine	刺蝟	5
+The Power and the Promise	權力和誓約	7
+The Price of Devotion	奉獻的代價	5
+The Price of Loyalty	忠誠代價	5
+The Price of Prescience	預知代價	5
+The Price of Protection	守護的代價	5
+The Primordial	先祖之物	5
+The Primordial Chain	先祖羈絆	7
+The Prince of Darkness	黑暗王子	5
+The Princess	女爵	7
+The Professor	專家級	5
+The Progeny of Lunaris	月神後嗣	5
+The Putrid Cloister	腐臭迴廊	7
+The Queen	女王	5
+The Queen's Hunger	女王的渴望	7
+The Queller of Minds	心靈鎮壓者	7
+The Rabbit's Foot	兔腳	5
+The Rabid Rhoa	瘋狂恐喙	5
+The Rat Cage	疫鼠囚籠	7
+The Realm	大平台	5
+The Red Dream	赤影夢境	7
+The Red Nightmare	赤影夢魘	7
+The Red Trail	赤紅蹤跡	7
+The Restless Ward	無盡之衛	7
+The Retch	嘔吐	7
+The Return of the Rat	鼠歸	5
+The Risk	危機	5
+The Rite of Elements	元素之儀	5
+The Road to Power	力量之道	5
+The Rusted Bard	吟遊鏽才	5
+The Ruthless Ceinture	無情的珊芎	5
+The Sacred Chalice	神浸聖盃	7
+The Sacrifice	犧牲	5
+The Saint's Treasure	聖徒之財	5
+The Samurai's Eye	武士之眼	5
+The Sands of Time	時間之砂	7
+The Saviour	救世主	7
+The Scales of Justice	正義天秤	7
+The Scarred Meadow	創痕之原	5
+The Scavenger	清道夫	5
+The Scholar	學者	5
+The Scourge	災害	7
+The Scout	童子軍	5
+The Screaming Eagle	鷹嘯	7
+The Searing Touch	熾炎之使	7
+The Second Sacrament	第二聖事	7
+The Seeker	探尋者	5
+The Selfish Shepherd	自私牧羊人	7
+The Sephirot	生命之樹	5
+The Shattered Divinity	碎裂之神力	7
+The Shepherd's Sandals	牧羊人的草鞋	5
+The Shieldbearer	持盾者	5
+The Shortcut	捷徑	5
+The Side Quest	支線任務	5
+The Siege	圍城	7
+The Sigil	魔符	5
+The Silly Boy	傻男孩	5
+The Siren	海妖	5
+The Skeleton	骷髏頭	5
+The Slumbering Beast	沉眠之獸	5
+The Snowblind Grace	雪盲恩惠	7
+The Sorrow of the Divine	神聖哀悼	7
+The Soul	靈魂	5
+The Spark and the Flame	雷火	5
+The Spoiled Prince	驕縱皇子	5
+The Squire	大地主	7
+The Stampede	潰逃之靴	7
+The Standoff	對峙	5
+The Stormcaller	風暴呼喚者	5
+The Stormheart	風暴之眼	7
+The Strategist	策略家	5
+The Summoner	召喚師	5
+The Sun	烈日	5
+The Sundered Will	破碎之志	7
+The Supreme Truth	無上箴言	7
+The Surgeon	外科醫師	5
+The Surging Thoughts	湧浪之思想	7
+The Surrender	降伏	7
+The Surveyor	勘查員	5
+The Survivalist	求生專家	5
+The Sword King's Salute	劍王之禮	5
+The Taming	元素之章	7
+The Tempest Rising	風暴崛起	7
+The Tempest's Liberation	暴雨之解放	7
+The Tempestuous Steel	暴風之鋼	7
+The Thaumaturgist	大奇術師	5
+The Three Dragons	三龍戰紀	7
+The Throne	王座	5
+The Tides of Time	時間之潮	7
+The Tinkerer's Table	銲匠之桌	5
+The Tireless Extractor	不休萃取器	5
+The Torrent's Reclamation	奔流之開拓	7
+The Tower	塔峰	5
+The Traitor	背叛者	5
+The Transformation	變形	5
+The Trial	遠征	5
+The Trickster's Smile	戲法師的微笑	7
+The Tumbleweed	風滾草	5
+The Twilight Moon	暮光之月	5
+The Twilight Temple	暮色神廟	7
+The Twins	孿生	5
+The Tyrant	暴君	5
+The Undaunted	不怕不怕	5
+The Undisputed	不許你胡說	5
+The Unexpected Prize	飛來橫財	5
+The Union	聯姻	5
+The Unseen Hue	無形之彩	7
+The Untouched Soul	聖潔之魂	7
+The Utmost	竭誠者	7
+The Valkyrie	女武神	5
+The Vast	平壤	5
+The Vertex	謎容	7
+The Vinktar Square	維克塔廣場	7
+The Visionary	空想家	5
+The Void	虛空	5
+The Warden	典獄長	5
+The Warden's Brand	獄使之印	7
+The Warlord	大軍閥	5
+The Wasp Nest	蜂巢浪湧	7
+The Watcher	凝視者	5
+The Web	蛛網	5
+The Wedding Gift	結婚禮物	5
+The Whispering Ice	冰點低語	7
+The White Knight	白騎士	5
+The Whiteout	白化	5
+The Will of Esh	艾許之意志	7
+The Will of Tul	托沃之意志	7
+The Will of Uul-Netol	烏爾尼托之意志	7
+The Will of Xoph	索伏之意志	7
+The Wilted Rose	凋零玫瑰	5
+The Wind	風	5
+The Winds of Fate	命定之風	7
+The Wise Oak	哲櫟	7
+The Witch	女巫	5
+The Wolf	彪狼	5
+The Wolf's Legacy	狼之聖物	5
+The Wolf's Shadow	狼的影子	5
+The Wolven King's Bite	狼咬	5
+The Wolverine	狼獾	5
+The World Eater	噬世士	5
+The Wrath	怨忿	5
+The Wretched	骯髒	5
+The Writhing Jar	扭曲之罐	7
+The Yielding Mortality	屈服之死相	7
+Theatre Disguise Kit	劇場偽裝套組	4
+Thicket Bow	林野獵弓	7
+Thicket Hulk	叢林巨獸	4
+Thief's Garb	竊賊之裝	7
+Thief's Torment	竊罪	7
+Thief's Trinket	盜賊飾品	8
+Third Piece of Brutality	第三暴虐碎片	7
+Third Piece of Directions	第三象限碎片	7
+Third Piece of Focus	第三專注碎片	7
+Third Piece of Storms	第三風暴碎片	7
+Third Piece of the Arcane	第三奧術碎片	7
+Thirst for Knowledge	渴望學識	5
+Thorium Spirit Shield	暗金魔盾	7
+Thorn Rapier	棘刺細劍	7
+Thorough Exploration	整體勘探	7
+Thousand Ribbons	千縷	7
+Thousand Teeth Temu	千齒	7
+Thread of Hope	希望之絃	7
+Three Faces in the Dark	黑暗三面	5
+Three Hands Talisman	三手魔符	7
+Three Rat Talisman	三鼠魔符	7
+Three Voices	三聲道	5
+Three-step Assault	三步突擊	7
+Thresher Claw	撕裂尖爪	7
+Thrillsteel	顫慄之鋼	7
+Throat Stabber	刺喉刃	7
+Thunderfist	轟天雷	7
+Thunderous Skies	怒雷之空	5
+Thundersight	雷視	7
+Thunderstorm	天雷暴雨	6
+Thwarting Gauntlets	阻擾手套	7
+Tidebreaker	破浪者	7
+Tiger Hook	虎鉤	7
+Tiger Sword	虎牙巨劍	7
+Tiger's Paw	虎爪刃	7
+Timber Axe	裂木巨斧	7
+Time-Lost Incubator	時間遺忘的培育器	4
+Time-Lost Relic	失落遺骨	5
+Timeclasp	時光之握	7
+Timeless Astrolabe	永恆星盤	8
+Timeless Conflict	永恆鬥爭	7
+Timeless Delirium Orb	永恆之譫妄玉	1
+Timeless Eternal Emblem	永恆不朽帝國徽印	3
+Timeless Eternal Empire Splinter	永恆不朽帝國裂片	1
+Timeless Jewel	永恆珠寶	7
+Timeless Karui Emblem	永恆卡魯徽印	3
+Timeless Karui Splinter	永恆卡魯裂片	1
+Timeless Maraketh Emblem	永恆馬拉克斯徽印	3
+Timeless Maraketh Splinter	永恆馬拉克斯裂片	1
+Timeless Templar Emblem	永恆聖宗徽印	3
+Timeless Templar Splinter	永恆聖宗裂片	1
+Timeless Vaal Emblem	永恆瓦爾徽印	3
+Timeless Vaal Splinter	永恆瓦爾裂片	1
+Timeworn Claw	遠古戰爪	7
+Timeworn Reliquary Key	古朽遺鑰	4
+Tinker Gloves	修補匠手套	7
+Tinkerskin	焊匠之膚	7
+Titan Gauntlets	巨人護手	7
+Titan Greaves	巨人脛甲	7
+Titan Plate	泰坦之鎧	7
+Titanic Scarab	聖甲蟲：泰坦	3
+Titanic Scarab of Legend	聖甲蟲：傳說泰坦	3
+Titanic Scarab of Treasures	聖甲蟲：珍寶泰坦	3
+Titanium Spirit Shield	巨人魔盾	7
+Titucius' Span	提圖庫斯的堅盾	7
+To Dust	塵埃落定	7
+Tomahawk	征戰之斧	7
+Tombfist	陵拳	7
+Tome Relic	卷冊聖物	7
+Topaz Flask	黃玉藥劑	7
+Topaz Ring	黃玉戒指	7
+Torchoak Step	火柳之步	7
+Torment Scarab	聖甲蟲：苦痛	3
+Torment Scarab of Peculiarity	聖甲蟲：特異苦痛	3
+Torment Scarab of Possession	聖甲蟲：附身苦痛	3
+Torment Scarab of Release	聖甲蟲：釋放苦痛	3
+Torn Cloak	撕裂披風	4
+Tornado	龍捲風	6
+Tornado Shot	龍捲射擊	6
+Tornado Shot of Cloudburst	龍捲射擊．雲爆	6
+Tornado Wand	狂風法杖	7
+Tornado of Elemental Turbulence	龍捲風 ．湍流	6
+Torture Cage	刑罰頭籠	7
+Torturer Garb	刑求束衣	7
+Torturer's Mask	刑求面具	7
+Totemic Idol	圖騰魔偶	8
+Totemic Maul	圖騰巨錘	7
+Touch of Anguish	極度苦痛	7
+Toxic Crawler	劇毒食腐蟲	4
+Toxic Rain	腐蝕毒雨	6
+Toxic Rain of Sporeburst	腐蝕毒雨．爆發	6
+Toxic Rain of Withering	腐蝕毒雨．凋零	6
+Toxic Tidings	毒浪洶湧	5
+Trade Embargo	貿易禁令	7
+Tranquillity	寧靜	5
+Transcendent Flesh	超凡之體	7
+Transcendent Mind	超凡之意	7
+Transcendent Spirit	超凡之靈	7
+Transfer-attuned Spirit Shield	調和魔盾	7
+Transformer Staff	變形長杖	7
+Transfusion Support	輸血輔助	6
+Trap Support	陷阱輔助	6
+Trap and Mine Damage Support	陷阱及地雷傷害輔助	6
+Trapper Boots	獵人之靴	7
+Trapper Mitts	獵人護手	7
+Trapsetter Gloves	設陷者手套	7
+Trarthan Flashpowder	查爾森閃光粉	4
+Trauma Support	創傷輔助	6
+Traumatic Fragment	創傷碎片	8
+Traumatic Reliquary Key	創傷遺鑰	8
+Treasure Hunter	賞金獵手	5
+Tremor Rod	顫抖之杖	7
+Triad Grip	三弦指法	7
+Tribal Circlet	祭儀之冠	7
+Tribal Club	祭儀之杵	7
+Tribal Maul	祭儀巨錘	7
+Tribute to the Goddess	女神獻禮	3
+Tricorne	三角帽	7
+Trinity Support	三體輔助	6
+Triskaidekaphobia	極度癲狂	5
+Trisula	三叉短匕	7
+Triumphant Lamellar	勝利盔甲	7
+Triumvirate Authority	三體權威	7
+Trolltimber Spire	巫木	7
+Trypanon	裂顱	7
+Tukohama's Fortress	圖克哈瑪堡壘	7
+Tulborn	托沃崩	7
+Tulfall	托沃臥	7
+Tunnelfiend	地穴惡靈	4
+Turbulent Catalyst	洶湧的催化劑	1
+Turn the Other Cheek	忍辱	5
+Turquoise Amulet	青玉護身符	7
+Twig Spirit Shield	殘枝魔盾	7
+Twilight Blade	暮光長劍	7
+Twilight Regalia	暮光法衣	7
+Twin Claw	重刃爪	7
+Twist of Fate	命運的轉折	7
+Twisted Distant Memory	遙遠記憶：扭曲	7
+Twisted Wish	扭曲之願	7
+Two-Handed Sword	雙手劍	7
+Two-Point Arrow Quiver	雙鋒箭袋	7
+Two-Stone Ring	雙玉戒指	7
+Two-Toned Boots	異色鞋	7
+Twyzel	峽灣之星	7
+Tyrant's Sekhem	暴君之統	7
+Ulaman's Gaze	烏拉曼的邪眼	7
+Ultimatum Scarab	聖甲蟲：通牒	3
+Ultimatum Scarab of Bribing	聖甲蟲：賄賂通牒	3
+Ultimatum Scarab of Catalysing	聖甲蟲：催化通牒	3
+Ultimatum Scarab of Dueling	聖甲蟲：決鬥通牒	3
+Ultimatum Scarab of Inscription	聖甲蟲：銘文通牒	3
+Umbilicus Immortalis	不朽繫命	7
+Unbound Ailments Support	無邊異能輔助	6
+Unchained	未連鎖	5
+Underground Forest	地底叢林	5
+Undying Flesh Talisman	不朽魔符	7
+Unearth	屍術矢	6
+Unending Hunger	無盡飢餓	7
+Unending Nightmare	無盡惡夢	7
+Ungil's Gauche	恩吉爾的叉刃	7
+Ungil's Harmony	恩吉爾的和諧	7
+Unholy Trinity Support	不潔三體輔助	6
+United in Dream	合流夢寐	7
+Unleash Support	釋放輔助	6
+Unlight Extant	黯光存現	7
+Unnatural Instinct	神感	7
+Unrelenting Timeless Eternal Emblem	無情的永恆不朽帝國徽印	3
+Unrelenting Timeless Karui Emblem	無情的永恆卡魯徽印	3
+Unrelenting Timeless Maraketh Emblem	無情的永恆馬拉克斯徽印	3
+Unrelenting Timeless Templar Emblem	無情的永恆聖宗徽印	3
+Unrelenting Timeless Vaal Emblem	無情的永恆瓦爾徽印	3
+Unrequited Love	單相思	5
+Unset Amulet	夕暮護身符	7
+Unset Ring	潛能之戒	7
+Unstable Catalyst	易變催化劑	1
+Untainted Paradise	純淨樂園	7
+Unyielding Flame	不屈惡火	7
+Urgent Orders Support	緊急詔令輔助	6
+Urn Relic	古甕聖物	7
+Ursine Pelt	熊首皮盔	7
+Usurper's Penance	篡位者的懺悔	7
+Utula's Hunger	烏圖拉的飢餓	7
+Uul-Netol's Embrace	烏爾尼多的擁抱	7
+Uul-Netol's Kiss	烏爾尼多之吻	7
+Uul-Netol's Vow	烏爾尼多之誓	7
+Uzaza's Meadow	尤莎莎的草原	7
+Uzaza's Mountain	尤莎莎的山巒	7
+Uzaza's Valley	尤莎莎的峽谷	7
+Vaal Absolution	瓦爾．赦免	6
+Vaal Ancestral Warchief	瓦爾．先祖戰士長	6
+Vaal Animate Weapon	瓦爾．幻化武器	6
+Vaal Arc	瓦爾．電弧	6
+Vaal Arctic Armour	瓦爾．極地裝甲	6
+Vaal Aspect	瓦爾祝福	8
+Vaal Axe	瓦爾巨斧	7
+Vaal Blade	瓦爾軍刃	7
+Vaal Blade Flurry	瓦爾．刀鋒亂舞	6
+Vaal Blade Vortex	瓦爾．飛刃風暴	6
+Vaal Blight	瓦爾．萎滅	6
+Vaal Breach	瓦爾．裂痕	6
+Vaal Buckler	瓦爾輕盾	7
+Vaal Burning Arrow	瓦爾．燃燒箭矢	6
+Vaal Caress	瓦爾的靈手	7
+Vaal Caustic Arrow	瓦爾．腐蝕箭矢	6
+Vaal Clarity	瓦爾．清晰	6
+Vaal Claw	瓦爾戰爪	7
+Vaal Cleave	瓦爾．劈砍	6
+Vaal Cold Snap	瓦爾．霜暴	6
+Vaal Cyclone	瓦爾．旋風斬	6
+Vaal Detonate Dead	瓦爾．屍體爆破	6
+Vaal Discipline	瓦爾．紀律	6
+Vaal Domination	瓦爾．霸氣	6
+Vaal Double Strike	瓦爾．雙重打擊	6
+Vaal Earthquake	瓦爾．震地	6
+Vaal Fireball	瓦爾．火球	6
+Vaal Firestorm	瓦爾．烈炎風暴	6
+Vaal Flameblast	瓦爾．烈焰爆破	6
+Vaal Flicker Strike	瓦爾．閃現打擊	6
+Vaal Gauntlets	瓦爾護手	7
+Vaal Glacial Hammer	瓦爾．冰霜之錘	6
+Vaal Grace	瓦爾．優雅	6
+Vaal Greatsword	瓦爾巨劍	7
+Vaal Greaves	瓦爾脛甲	7
+Vaal Ground Slam	瓦爾．裂地之擊	6
+Vaal Haste	瓦爾．迅捷	6
+Vaal Hatchet	瓦爾戰斧	7
+Vaal Ice Nova	瓦爾．冰霜新星	6
+Vaal Ice Shot	瓦爾．冰霜射擊	6
+Vaal Immortal Call	瓦爾．不朽怒嚎	6
+Vaal Impurity of Fire	瓦爾．不淨之火	6
+Vaal Impurity of Ice	瓦爾．不淨之冰	6
+Vaal Impurity of Lightning	瓦爾．不淨之雷	6
+Vaal Lightning Arrow	瓦爾．閃電箭矢	6
+Vaal Lightning Strike	瓦爾．閃電打擊	6
+Vaal Lightning Trap	瓦爾．閃電陷阱	6
+Vaal Lightning Warp	瓦爾．閃電傳送	6
+Vaal Mask	瓦爾之面	7
+Vaal Molten Shell	瓦爾．熔岩護盾	6
+Vaal Molten Strike	瓦爾．熔岩之擊	6
+Vaal Orb	瓦爾寶珠	1
+Vaal Power Siphon	瓦爾．力量抽取	6
+Vaal Rain of Arrows	瓦爾．箭雨	6
+Vaal Rapier	瓦爾細劍	7
+Vaal Reap	瓦爾．收割	6
+Vaal Reave	瓦爾．衝擊波	6
+Vaal Recluse	瓦爾遺靈	4
+Vaal Regalia	瓦爾法衣	7
+Vaal Rejuvenation Totem	瓦爾．回春圖騰	6
+Vaal Reliquary Key	瓦爾遺鑰	4
+Vaal Righteous Fire	瓦爾．正義之火	6
+Vaal Sacrifice Support	瓦爾犧牲輔助	6
+Vaal Sceptre	瓦爾權杖	7
+Vaal Smite	瓦爾．雷鳴重擊	6
+Vaal Spark	瓦爾．電球	6
+Vaal Spectral Throw	瓦爾．靈體投擲	6
+Vaal Spirit Shield	瓦爾魔盾	7
+Vaal Storm Call	瓦爾．風暴呼喚	6
+Vaal Summon Skeletons	瓦爾．召喚骷髏	6
+Vaal Temple Map	瓦爾密殿地圖	2
+Vaal Temptation Support	瓦爾誘惑輔助	6
+Vaal Venom Gyre	瓦爾．猛毒迴旋	6
+Vaal Volcanic Fissure	瓦爾．炎火脈動	6
+Valako's Sign	瓦拉庫之印	7
+Valdo Map	瓦爾多的地圖	8
+Valdo's Puzzle Box	瓦爾多的謎盒	1
+Valyrium	戰日	7
+Vampiric Link	連結：吸血	6
+Vanguard Belt	先鋒腰帶	7
+Vanity	虛榮	5
+Variscite Blade	碧銅短劍	7
+Varnished Coat	映彩外套	7
+Varunastra	黑鯊	7
+Vaulting Croaker	寶庫財蛙	4
+Vaults of Atziri	阿茲里的秘寶庫	7
+Veil of the Night	夜幕	7
+Veiled Chaos Orb	隱匿混沌石	8
+Veiled Exalted Orb	隱匿崇高石	8
+Velour Boots	絲絨長靴	7
+Velour Gloves	絲絨手套	7
+Velvet Gloves	絲絨手套	7
+Velvet Slippers	絲絨便鞋	7
+Venarius' Astrolabe	維那利斯的星盤	7
+Vengeful Contract	復仇契約書	4
+Vengeful Cry	復仇之嚎	6
+Venom Gyre	猛毒迴旋	6
+Venomous Spawn	劇毒海蟲	4
+Venopuncture	脈絡針刺	7
+Ventor's Gamble	賭神芬多	7
+Verdant Oil	翠綠油瓶	1
+Veritania's Crest	維羅提尼亞刻紋	3
+Vermillion Ring	朱紅戒指	7
+Versatile Keyring	多功鑰匙圈	4
+Veruso's Ambition	維盧梭的野心	7
+Veruso's Battering Rams	維盧梭攻城槌	7
+Vessel of Vinktar	維克塔血器	7
+Vial of Awakening	覺醒之罈	1
+Vial of Consequence	因果之罈	1
+Vial of Dominance	統御之罈	1
+Vial of Fate	命運之罈	1
+Vial of Sacrifice	獻祭之罈	1
+Vial of Summoning	召喚之罈	1
+Vial of Transcendence	超越之罈	1
+Vial of the Ghost	亡靈之罈	1
+Vial of the Ritual	儀式之罈	1
+Vicious Hound	狠毒獵犬	4
+Vicious Parasite	殘暴寄生蟲	4
+Vicious Projectiles Support	猛毒投射物輔助	6
+Victario's Acuity	維多里奧的捷思	7
+Victario's Charity	維多里奧的貢獻	7
+Victario's Flight	維多里奧的飛昇	7
+Victario's Influence	維多里奧之絕響	7
+Vigilant Strike	戒備打擊	6
+Vigilante Contract	自衛契約書	4
+Vile Arrow Quiver	邪惡箭袋	7
+Vile Power	汙穢之力	5
+Vile Staff	毒牙長杖	7
+Vile Toxins Support	罪惡毒素輔助	6
+Vine Circlet	藤蔓之冠	7
+Vinia's Token	薇妮雅的信物	5
+Violet Oil	奼紫油瓶	1
+Viper Strike	毒蛇打擊	6
+Viper Strike of the Mamba	毒蛇打擊．曼巴	6
+Viridi's Veil	維里迪的薄紗	7
+Viridian Jewel	翠綠珠寶	7
+Virulent Spider	毒牙巨蛛	4
+Vis Mortis	兀鳴	7
+Visceral Reliquary Key	吞噬遺鑰	4
+Visored Sallet	清視護盔	7
+Vitality	活力	6
+Vivid Abberarach	靈現之艾伯拉赫	4
+Vivid Crystallised Lifeforce	靈現結晶生靈之力	1
+Vivid Vulture	靈現之禿鷹	4
+Vivid Watcher	靈現之看守者	4
+Vivinsect	寄生惡魔	7
+Vix Lunaris	波動月影	7
+Vixen's Entrapment	雌狐的圈套	7
+Voice of the Storm	暴風之言	7
+Voices	嗓音	7
+Void Axe	虛影巨斧	7
+Void Battery	潛能魔棒	7
+Void Fangs	虛空獠牙	7
+Void Manipulation Support	虛空操縱輔助	6
+Void Sceptre	虛影權杖	7
+Void Shockwave Support	虛空震波輔助	6
+Void Sphere	虛無玉	6
+Void Sphere of Rending	虛無玉．分裂	6
+Void of the Elements	虛空元素	5
+Voidborn Reliquary Key	虛誕遺鑰	4
+Voidbringer	虛空之力	7
+Voideye	虛空慧眼	7
+Voidfletcher	虛眼箭矢	7
+Voidforge	核虛	7
+Voidhome	逝空之錘	7
+Voidstorm Support	虛空風暴輔助	6
+Voidwalker	虛空行者	7
+Volatile Dead	致命之息	6
+Volatile Dead of Confinement	致命之息．禁閉	6
+Volatile Dead of Seething	致命之息．沸騰	6
+Volatile Power	不穩定的力量	5
+Volatile Vaal Orb	易變瓦爾寶珠	8
+Volatility Support	易變輔助	6
+Volcanic Fissure	炎火脈動	6
+Volcanic Fissure of Snaking	炎火脈動．蜿蜒	6
+Volkuur's Guidance	福庫爾的指引	7
+Voll's Devotion	福爾的忠誠之符	7
+Voll's Protector	福爾的戰鎧	7
+Voll's Vision	福爾的遠見	7
+Volley Support	齊射輔助	6
+Voltaxic Burst	魔痕爆發	6
+Voltaxic Flashpowder	魔暴閃光粉	4
+Voltaxic Rift	魔暴之痕	7
+Vorana's March	沃拉娜的軍隊	7
+Vorana's Preparation	沃拉娜的醞釀	7
+Vortex	漩渦	6
+Vortex of Projection	漩渦．投射	6
+Vulconus	祝融鍛冶	7
+Vulnerability	脆弱	6
+Wailing Essence of Anger	憤怒之哀嚎精髓	1
+Wailing Essence of Anguish	煎熬之哀嚎精髓	1
+Wailing Essence of Contempt	輕視之哀嚎精髓	1
+Wailing Essence of Doubt	疑惑之哀嚎精髓	1
+Wailing Essence of Fear	恐懼之哀嚎精髓	1
+Wailing Essence of Greed	貪婪之哀嚎精髓	1
+Wailing Essence of Hatred	憎恨之哀嚎精髓	1
+Wailing Essence of Loathing	厭惡之哀嚎精髓	1
+Wailing Essence of Rage	肆虐之哀嚎精髓	1
+Wailing Essence of Sorrow	哀惜之哀嚎精髓	1
+Wailing Essence of Spite	刻毒之哀嚎精髓	1
+Wailing Essence of Suffering	苦難之哀嚎精髓	1
+Wailing Essence of Torment	折磨之哀嚎精髓	1
+Wailing Essence of Woe	悲痛之哀嚎精髓	1
+Wailing Essence of Wrath	雷霆之哀嚎精髓	1
+Wailing Essence of Zeal	熱情之哀嚎精髓	1
+Wake of Destruction	覆滅之兆	7
+Wall of Force	力量之壁	6
+Walnut Spirit Shield	桃木魔盾	7
+Wanderlust	苦行之履	7
+War Axe	行軍斧	7
+War Banner	戰爭之旗	6
+War Buckler	戰爭輕盾	7
+War Hammer	戰錘	7
+War Hound	爭戰獵犬	4
+War Plate	戰爭之鎧	7
+War Sword	征戰之劍	7
+Warlock Boots	術士長靴	7
+Warlock Gloves	術士手套	7
+Warlord	督軍	4
+Warlord's Exalted Orb	總督軍的崇高石	1
+Warlord's Mark	督軍印記	6
+Warped Timepiece	扭曲之鐘	7
+Warrior's Legacy	戰士遺物	7
+Waste Lurcher	虐靈蝦獸	4
+Watcher's Eye	看守之眼	7
+Wave of Conviction	信念浪湧	6
+Wave of Conviction of Trarthus	特拉特斯信念浪湧	6
+Waxed Garb	蠟封束衣	7
+Wealth and Power	錢與權	5
+Webbed Spider	網床之母	4
+Weeping Essence of Anger	憤怒之啼泣精髓	1
+Weeping Essence of Contempt	輕視之啼泣精髓	1
+Weeping Essence of Doubt	疑惑之啼泣精髓	1
+Weeping Essence of Fear	恐懼之啼泣精髓	1
+Weeping Essence of Greed	貪婪之啼泣精髓	1
+Weeping Essence of Hatred	憎恨之啼泣精髓	1
+Weeping Essence of Rage	肆虐之啼泣精髓	1
+Weeping Essence of Sorrow	哀惜之啼泣精髓	1
+Weeping Essence of Suffering	苦難之啼泣精髓	1
+Weeping Essence of Torment	折磨之啼泣精髓	1
+Weeping Essence of Woe	悲痛之啼泣精髓	1
+Weeping Essence of Wrath	雷霆之啼泣精髓	1
+Well Supplied	補給充足	7
+Wellspring of Creation	創造之泉	7
+Wellwater Phylactery	井泉魂罐	7
+Wereclaw Talisman	亡爪魔符	7
+Whakawairua Tuahu	禁閉祭壇	7
+Whalebone Rapier	鯨骨細刃	7
+Wheel of the Stormsail	暴雨之舵	7
+When Currents Blaze	熾炎爆發	5
+Whirling Blades	迴旋之刃	6
+Whisper-woven Cloak	細織披風	4
+Whispering Delirium Orb	低語之譫妄玉	1
+Whispering Essence of Contempt	輕視之低語精髓	1
+Whispering Essence of Greed	貪婪之低語精髓	1
+Whispering Essence of Hatred	憎恨之低語精髓	1
+Whispering Essence of Woe	悲痛之低語精髓	1
+Whispering Incubator	低語的培育器	4
+Whispers of Infinity	無盡低語	7
+White Wind	白風	7
+Who Asked	是誰	5
+Wideswing	闊斬	7
+Widowhail	鰥寡之托	7
+Widowmaker	寡婦	7
+Widowsilk Robe	毒蛛絲之袍	7
+Wild Brambleback	野性之叢林巨獸	4
+Wild Bristle Matron	野性之毛刺看守獸	4
+Wild Crystallised Lifeforce	野性結晶生靈之力	1
+Wild Hellion Alpha	野性之地獄犬幻獸	4
+Wild Leather	野性皮甲	7
+Wild Rhex	野雛	4
+Wild Strike	野性打擊	6
+Wild Strike of Extremes	野性打擊．極致	6
+Wildfire Phloem	野火韌皮	7
+Wildslash	野性狂爪	7
+Willclash	意志衝突	7
+Willowgift	柳木之禮	7
+Wilma's Requital	威爾瑪的報復	7
+Windbreak Boots	風帳短靴	7
+Windburst Support	風破輔助	6
+Windripper	裂風	7
+Winds of Change	昇華之風	7
+Windscream	惡風足跡	7
+Wine of the Prophet	預言家之酒	7
+Wing of the Wyvern	飛龍之翼	7
+Winged Sole	羽翅鞋底	4
+Wings of Entropy	亂世之翼	7
+Winter Crown	凜冬之冠	7
+Winter Orb	凜冬之球	6
+Winter's Embrace	冬擁	5
+Winterheart	冬之心	7
+Wintertide Brand	冬潮烙印	6
+Winterweave	冬織	7
+Witchbane	禍星女巫	7
+Witchfire Brew	巫火秘釀	7
+Witchhunter's Judgment	獵巫者的審判	7
+Wither	死亡凋零	6
+Withering Step	凋零之步	6
+Withering Touch Support	凋零之觸輔助	6
+Woespike	悲嘆之刺	7
+Wolf Pelt	狼首皮盔	7
+Wondertrap	迴光之跡	7
+Woodful Staff	堅木長杖	7
+Woods Ursa	綠蔭之爪	4
+Woodsplitter	柴斧	7
+Wool Gloves	羊毛手套	7
+Wool Shoes	羊毛之鞋	7
+Wraith Axe	凶靈之斧	7
+Wraith Sword	凶靈巨劍	7
+Wraithlord	憤靈郡主	7
+Wrapped Boots	裹趾涼鞋	7
+Wrapped Mitts	裹趾護手	7
+Wrath	雷霆	6
+Wrath of the Cosmos	宇宙之怒	7
+Wreath of Phrecia	費西亞之環	7
+Wrist Chopper	斷腕之刃	7
+Writhing Invitation	纏繞之邀	4
+Writhing Talisman	狂癲魔符	7
+Wurm's Molt	龍蛻之帶	7
+Wyrm Mace	古龍之錘	7
+Wyrmbone Rapier	龍骨細劍	7
+Wyrmscale Boots	地蝮鱗長靴	7
+Wyrmscale Doublet	龍鱗戰甲	7
+Wyrmscale Gauntlets	蝮鱗手套	7
+Wyrmsign	龍族印記	7
+Wyvernscale Boots	飛龍鱗長靴	7
+Wyvernscale Gauntlets	飛龍鱗護手	7
+Xirgil's Crank	舍吉的手柄	7
+Xoph's Blood	索伏之血	7
+Xoph's Heart	索伏之心	7
+Xoph's Inception	索伏的始源	7
+Xoph's Nurture	索伏的愛撫	7
+Yaomac's Accord	堯馬克之權	7
+Yew Spirit Shield	紫衫魔盾	7
+Ylfeban's Trickery	伊芙班的詭計	7
+Ynda's Stand	英達的小販	7
+Yoke of Suffering	磨難之軛	7
+Yriel's Fostering	伊瑞的栽培	7
+Zahndethus' Cassock	札德圖斯的聖衣	7
+Zealot Boots	狂熱者長靴	7
+Zealot Gloves	狂熱者手套	7
+Zealot Helmet	熱戰之盔	7
+Zealotry	狂熱	6
+Zeel's Amplifier	薩爾的揚音	7
+Zerphi's Heart	澤佛伊之心	7
+Zerphi's Last Breath	澤佛伊的終息	7
+Zodiac Leather	星辰皮甲	7</script>
+<script>
+/* ======================================================================
+   1. 譯名資料
+   ---------------------------------------------------------------------
+   NAMES：台服官方繁中物品名（英文 refName → 繁中），共 4627 筆，
+          取自 Awakened PoE Trade 的 cmn-Hant 資料集（圖檔來自 webtw.poecdn.com，
+          即台服客戶端字串）。第三欄是分類代碼。
+   CLASSES：物品種類（Class）名稱表。GGG 沒有公開的對照檔，這份是人工整理，
+          其中多數以台服底子名稱的共同字尾交叉驗證過；沒把握的一律留英文，
+          可在「譯名」對話框自行補上。
+   ================================================================== */
+const NAMES={}, NAMECAT={};
+(function(){
+  const raw=document.getElementById('namedata').textContent;
+  for(const line of raw.split('\n')){
+    if(!line) continue;
+    const p=line.split('\t');
+    NAMES[p[0]]=p[1]; NAMECAT[p[0]]=p[2];
+  }
+})();
+
+const CLASSES={
+  'Life Flasks':'生命藥劑','Mana Flasks':'魔力藥劑','Hybrid Flasks':'複合藥劑','Utility Flasks':'功能藥劑',
+  'Flasks':'藥劑','Flask':'藥劑','Tinctures':'萃取物','Charms':'咒符',
+  'Amulets':'項鍊','Amulet':'項鍊','Rings':'戒指','Belts':'腰帶','Belt':'腰帶',
+  'Claws':'爪','Claw':'爪','Daggers':'匕首','Dagger':'匕首','Rune Daggers':'符文匕首',
+  'Wands':'法杖','Wand':'法杖','Sceptres':'權杖','Sceptre':'權杖',
+  'One Hand Swords':'單手劍','Thrusting One Hand Swords':'細劍','One Hand Axes':'單手斧','One Hand Maces':'單手錘',
+  'Two Hand Swords':'雙手劍','Two Hand Axes':'雙手斧','Two Hand Axe':'雙手斧','Two Hand Maces':'雙手錘',
+  'Bows':'弓','Bow':'弓','Staves':'長杖','Warstaves':'戰杖','Fishing Rods':'釣竿',
+  'Quivers':'箭袋','Quiver':'箭袋','Shields':'盾','Shield':'盾',
+  'Body Armours':'胸甲','Body Armour':'胸甲','Boots':'鞋子','Gloves':'手套','Helmets':'頭盔','Helmet':'頭盔',
+  'Stackable Currency':'堆疊通貨','Currency':'通貨',
+  'Delve Stackable Socketable Currency':'煉金鑄新儀','Divination Cards':'命運卡',
+  'Maps':'輿圖','Map Fragments':'輿圖碎片','Map Fragment':'輿圖碎片','Misc Map Items':'其他輿圖物品',
+  'Breachstone':'裂痕之石','Jewels':'珠寶','Jewel':'珠寶','Abyss Jewels':'深淵珠寶','Abyss Jewel':'深淵珠寶',
+  'Skill Gems':'技能寶石','Support Gems':'輔助寶石','Gems':'寶石',
+  'Contracts':'契約書','Contract':'契約書','Blueprints':'藍圖','Blueprint':'藍圖',
+  'Expedition Logbook':'遠征日誌','Relics':'聖物','Relic':'聖物',
+  'Incubators':'培育器','Corpses':'屍體','Vault Keys':'遺鑰','Quest Items':'任務物品','Gold':'金幣'
+};
+
+/* 簡→繁字元表（依這批檔案實際用到的字產生，等同 OpenCC s2tw） */
+const TW_C="专專丝絲丢丟个個丰豐临臨丽麗义義乌烏书書买買乱亂争爭于於亚亞产產仆僕从從仪儀价價优優会會伟偉传傳伤傷体體余餘佣傭侦偵兰蘭兹茲内內冈岡军軍冲衝净淨准準减減击擊刚剛创創删刪别別制製剂劑剑劍剥剝务務动動励勵势勢勋勳区區华華单單卖賣卢盧卧臥卫衛厅廳厨廚双雙发髮变變叠疊后後启啟唤喚团團园園国國图圖圣聖场場块塊坚堅坟墳声聲备備复複头頭夺奪奋奮奖獎学學宝寶实實审審宫宮将將尔爾尘塵尽盡层層属屬岩巖巅巔币幣师師帜幟带帶庄莊庙廟废廢开開异異弃棄弹彈强強归歸忆憶志誌总總恒恆恳懇恶惡愤憤战戰托託扣釦扩擴抛拋护護报報拟擬拥擁挡擋捡撿换換掳擄敌敵断斷无無时時显顯晓曉术術朱硃机機杀殺权權来來杯盃极極标標样樣档檔梦夢棱稜欧歐残殘殒殞毁毀污汙泪淚洁潔涂塗涩澀渊淵渔漁温溫游遊溃潰溅濺滤濾潜潛灭滅灵靈灾災炉爐点點炼鍊炽熾烧燒烫燙烬燼热熱爱愛独獨狮獅狱獄猎獵猫貓献獻玛瑪环環现現电電监監盖蓋盘盤矫矯砖磚础礎礼禮离離种種称稱秽穢稳穩笔筆筑築类類纠糾红紅约約级級纪紀纯純纹紋线線组組细細经經绑綁结結绞絞统統续續绯緋绸綢绿綠缀綴缓緩缚縛缠纏罗羅肤膚脉脈脑腦脚腳腾騰致緻苍蒼药藥莱萊蓝藍虚虛虫蟲蚀蝕蜕蛻装裝见見视視觉覺认認记記许許论論设設证證诅詛识識诈詐词詞试試诚誠语語诱誘说說请請谒謁谜謎贝貝负負贡貢贤賢败敗货貨质質贪貪购購贵貴贷貸费費贼賊赋賦赎贖赏賞赛賽踪蹤转轉轮輪辅輔辩辯边邊达達过過运運还還这這远遠连連遗遺酿釀里裡鉴鑑针針钉釘钢鋼钥鑰钴鈷钻鑽铁鐵铠鎧银銀铸鑄链鍊锋鋒错錯锢錮锤錘锯鋸锻鍛镂鏤镜鏡镶鑲长長门門闪閃间間阳陽阶階险險随隨隐隱雏雛雾霧顶頂项項顿頓预預颅顱额額颤顫风風飞飛饰飾马馬驱驅验驗魇魘鱼魚鲁魯鲨鯊鸟鳥鸥鷗麦麥黄黃齿齒";
+const TW_W=[["炉炼化","爐煉化"],["飞升手","飛昇手"],["西里衣","西里衣"],["形炼狱","形煉獄"],["意志戒","意志戒"],["贵链接","貴鏈接"],["飞升）","飛昇）"],["轮回长","輪迴長"],["之链）","之鏈）"],["的链接","的鏈接"],["意志石","意志石"],["盘链","盤鏈"],["扣钉","扣釘"],["扣链","扣鏈"],["链接","鏈接"]];
+const TWMAP={}; for(let i=0;i<TW_C.length;i+=2) TWMAP[TW_C[i]]=TW_C[i+1];
+function twConv(s){
+  if(!s) return s;
+  const held=[]; let out=s;
+  for(const p of TW_W){
+    if(out.indexOf(p[0])<0) continue;
+    out=out.split(p[0]).join('\u0001'+held.length+'\u0001');
+    held.push(p[1]);
+  }
+  let r=''; for(const ch of out) r+=(TWMAP[ch]||ch);
+  return held.length ? r.replace(/\u0001(\d+)\u0001/g,(m,i)=>held[+i]) : r;
+}
+function T(s){ return state.tw ? twConv(s) : s; }
+
+/* 譯名查詢：自訂 > 物品名 > 物品種類 */
+function tr(en){
+  if(!en) return null;
+  if(state.custom[en]) return state.custom[en];
+  return NAMES[en] || CLASSES[en] || null;
+}
+
+/* ======================================================================
+   2. 標準分類：直接沿用文子過濾器的九大類
+   ================================================================== */
+const TAX=[
+  {id:'1',name:'通貨',cls:['Stackable Currency','Currency','Delve Stackable Socketable Currency','Delve Socketable Currency']},
+  {id:'2',name:'輿圖類',cls:['Maps']},
+  {id:'3',name:'輿圖碎片',cls:['Map Fragment','Misc Map Items','Breachstone','Atlas Upgrade Item','Chart']},
+  {id:'4',name:'輿圖額外類',cls:['Contract','Blueprint','Expedition Logbook','Heist','Sanctum Research','Incursion Item',
+        'Labyrinth','Leaguestone','Vault Keys','Idol','Sentinel Drone','Incubators','Corpses','Pantheon Souls',
+        'Quest Items','Trinket','Piece','Wombgift','Memory Line','Zana Memory']},
+  {id:'5',name:'命運卡類',cls:['Divination Cards']},
+  {id:'6',name:'技能類',cls:['Skill Gems','Support Gems','Gems']},
+  {id:'7',name:'裝備類',cls:['Amulet','Ring','Belt','Claw','Dagger','Wand','Sceptre','Bow','Staves','Warstaves',
+        'One Hand','Two Hand','Thrusting','Fishing Rods','Quiver','Shield','Body Armour','Boots','Gloves','Helmet',
+        'Flask','Tincture','Jewel','Relic','Charms']},
+  {id:'8',name:'其他類',cls:['Gold']},
+  {id:'9',name:'全域設定',cls:[]},
+  {id:'0',name:'未分類',cls:[]}
+];
+function ruleValues(b,key){ const r=findRule(b,key); return r?r.values.map(v=>v.v):[]; }
+function classify(b){
+  if(b._cat) return b._cat;
+  const cats=state.userCats;
+  const hay=[...ruleValues(b,'Class'),...ruleValues(b,'BaseType'),(b.headComment||'')].join(' ').toLowerCase();
+  for(const c of cats){
+    if(c.keys.some(k=>k && hay.includes(k.toLowerCase()))) return (b._cat=c.id);
+  }
+  const clsv=ruleValues(b,'Class');
+  if(clsv.length){
+    for(const t of TAX){
+      if(t.cls.some(p=>clsv.some(v=>{
+        const a=v.toLowerCase(), c=p.toLowerCase();
+        return a.includes(c)||c.includes(a);
+      }))) return (b._cat=t.id);
+    }
+    return (b._cat='8');
+  }
+  const bts=ruleValues(b,'BaseType');
+  if(bts.length){
+    const codes=bts.map(v=>NAMECAT[v]).filter(Boolean);
+    if(codes.length){
+      const n={}; codes.forEach(c=>n[c]=(n[c]||0)+1);
+      return (b._cat=Object.keys(n).sort((x,y)=>n[y]-n[x])[0]);
+    }
+    return (b._cat='0');
+  }
+  const rar=findRule(b,'Rarity');
+  if(rar||findRule(b,'HasExplicitMod')||findRule(b,'Sockets')||findRule(b,'LinkedSockets')) return (b._cat='7');
+  return (b._cat='9');
+}
+function catName(id){
+  const u=state.userCats.find(c=>c.id===id); if(u) return u.name;
+  const t=TAX.find(c=>c.id===id); return t?t.name:'未分類';
+}
+
+/* ======================================================================
+   3. 解析與輸出
+   ================================================================== */
+const OPS=['','=','==','!','!=','<','<=','>','>='];
+const STRINGY=new Set(['class','basetype','hasexplicitmod','hasimplicitmod','hasenchantment','hasinfluence',
+  'enchantmentpassivenode','socketgroup','customalertsound','archnemesismod','prophecy','hascruciblepassivetree']);
+const KNOWN=new Set(('show hide continue import class basetype rarity itemlevel dropleveled droplevel quality sockets linkedsockets '+
+ 'socketgroup height width hasexplicitmod hasimplicitmod hasenchantment anyenchantment enchantmentpassivenode '+
+ 'enchantmentpassivenum stacksize gemlevel gemqualitytype maptier areaLevel arealevel corrupted corruptedmods identified '+
+ 'shapermap elderitem shaperitem elder map fracturedItem fractureditem synthesiseditem shapedmap blightedmap uberblightedmap '+
+ 'hasinfluence hassearingexarchimplicit haseaterofworldsimplicit basearmour baseevasion baseenergyshield basedefencepercentile '+
+ 'baseward replica scourged mirrored transfiguredgem memorystrands zanamemory hascruciblepassivetree alternatequality '+
+ 'imbued vestigial foulborn settextcolor setbackgroundcolor setbordercolor setfontsize playalertsound playalertsoundpositional '+
+ 'customalertsound customalertsoundoptional disabledropsound enabledropsound disabledropsoundifalertsound enabledropsoundifalertsound '+
+ 'minimapicon playeffect').split(' '));
+
+function splitComment(s){
+  let q=false;
+  for(let i=0;i<s.length;i++){
+    const c=s[i];
+    if(c==='"') q=!q;
+    else if(c==='#'&&!q) return {code:s.slice(0,i),comment:s.slice(i+1)};
+  }
+  return {code:s,comment:null};
+}
+function tokenize(s){
+  const out=[]; let i=0;
+  while(i<s.length){
+    const c=s[i];
+    if(/\s/.test(c)){i++;continue;}
+    if(c==='"'){ let j=i+1,buf=''; while(j<s.length&&s[j]!=='"'){buf+=s[j];j++;} out.push({v:buf,q:true}); i=j+1; continue; }
+    let j=i,buf=''; while(j<s.length&&!/\s/.test(s[j])){buf+=s[j];j++;} out.push({v:buf,q:false}); i=j;
+  }
+  return out;
+}
+function parseRule(raw){
+  const indent=(raw.match(/^[ \t]*/)||[''])[0];
+  const {code,comment}=splitComment(raw);
+  const body=code.trim();
+  if(!body) return {raw,unknown:true};
+  const toks=tokenize(body);
+  if(!toks.length) return {raw,unknown:true};
+  const key=toks[0].v;
+  let idx=1,op='';
+  const t1=toks[1];
+  if(t1&&!t1.q){
+    if(/^(==|!=|<=|>=|=|<|>|!)$/.test(t1.v)){op=t1.v;idx=2;}
+    else{ const m=t1.v.match(/^(==|!=|<=|>=|=|<|>|!)(.+)$/); if(m){op=m[1];toks[1]={v:m[2],q:false};idx=1;} }
+  }
+  return {raw,indent:indent||'    ',key,op,values:toks.slice(idx),comment,unknown:false,dirty:false};
+}
+function quoteVal(key,val){
+  if(/^-?\d+$/.test(val.v)) return false;
+  if(val.q) return true;
+  if(/\s/.test(val.v)) return true;
+  return STRINGY.has(key.toLowerCase());
+}
+function serializeRule(r){
+  if(r.unknown) return r.raw;
+  if(!r.dirty&&r.raw!=null) return r.raw;
+  let s=(r.indent||'    ')+r.key;
+  if(r.op) s+=' '+r.op;
+  for(const v of r.values) s+=' '+(quoteVal(r.key,v)?'"'+v.v+'"':v.v);
+  if(r.comment!=null&&r.comment!=='') s+=' #'+r.comment;
+  return s;
+}
+function parseDoc(text,name){
+  const eol=text.indexOf('\r\n')>=0?'\r\n':'\n';
+  const lines=text.replace(/\r\n/g,'\n').split('\n');
+  const nodes=[],blocks=[],sections=[];
+  let cur=null,i=0,uid=0;
+  while(i<lines.length){
+    const line=lines[i];
+    const m=line.match(/^([ \t]*)(Show|Hide)\b(.*)$/);
+    if(m){
+      const {comment}=splitComment(m[3]);
+      const b={kind:'block',id:'b'+(uid++),type:m[2],indent:m[1],headComment:comment,headRaw:line,
+               rules:[],section:cur?cur.id:null,dirty:false};
+      i++;
+      while(i<lines.length){
+        const c=lines[i];
+        if(c.trim()===''||!/^[ \t]/.test(c)) break;
+        b.rules.push(parseRule(c)); i++;
+      }
+      nodes.push(b); blocks.push(b);
+      if(cur) cur.count++;
+      continue;
+    }
+    /* 章節標題：支援「# 1.1 標題」與 NeverSink 的「# [[0200]] 標題」／「#   [0301] 標題」 */
+    let num=null,title=null,depth=1;
+    let sm=line.match(/^#\s*([0-9]+(?:\.[0-9]+)*)\s+(.+)$/);
+    if(sm && !/^#\s*\[/.test(line)){ num=sm[1]; title=sm[2]; depth=Math.min(4,num.split('.').length); }
+    else{
+      sm=line.match(/^#\s*\[\[([0-9A-Za-z]+)\]\]\s*(.+)$/);
+      if(sm){ num=sm[1]; title=sm[2]; depth=1; }
+      else{
+        sm=line.match(/^#\s+\[([0-9A-Za-z]+)\]\s*(.+)$/);
+        if(sm){ num=sm[1]; title=sm[2]; depth=2; }
+      }
+    }
+    if(num!==null && !/^[-=]+$/.test(title)){
+      cur={kind:'section',id:'s'+(uid++),num,title:title.trim(),depth,count:0};
+      sections.push(cur);
+    }
+    nodes.push({kind:'raw',text:line});
+    i++;
+  }
+  /* NeverSink 前面的目錄會重複列出所有章節編號，只保留第一個 Show/Hide 之後真正用到的 */
+  const used=new Set(blocks.map(b=>b.section));
+  const trimmed=sections.filter(s=>used.has(s.id)||s.count>0);
+  return {name,eol,nodes,blocks,sections:trimmed.length?trimmed:sections,dirty:false};
+}
+function serializeDoc(doc,toTW){
+  const out=[];
+  for(const n of doc.nodes){
+    if(n.kind==='raw'){ out.push(n.text); continue; }
+    if(!n.dirty&&n.headRaw!=null) out.push(n.headRaw);
+    else out.push(n.indent+n.type+(n.headComment!=null&&n.headComment!==''?' #'+n.headComment:''));
+    for(const r of n.rules) out.push(serializeRule(r));
+  }
+  const lines = toTW ? out.map(l=>{
+    const s=splitComment(l);
+    if(s.comment==null) return l;
+    return s.code+'#'+s.comment.split(/("[^"]*")/).map((p,i)=>i%2?p:twConv(p)).join('');
+  }) : out;
+  return lines.join(doc.eol);
+}
+
+/* ======================================================================
+   4. 區塊工具
+   ================================================================== */
+function findRule(b,key){ const k=key.toLowerCase(); return b.rules.find(r=>!r.unknown&&r.key.toLowerCase()===k); }
+function dropRule(b,key){ const k=key.toLowerCase(); b.rules=b.rules.filter(r=>r.unknown||r.key.toLowerCase()!==k); touch(b); }
+function putRule(b,key,vals,op){
+  let r=findRule(b,key);
+  const values=vals.map(v=>({v:String(v),q:false}));
+  if(r){ r.values=values; r.op=op||''; r.dirty=true; r.raw=null; }
+  else b.rules.push({indent:b.indent==='\t'?'\t':'    ',key,op:op||'',values,comment:null,unknown:false,dirty:true,raw:null});
+  touch(b);
+}
+function getColor(b,key){
+  const r=findRule(b,key); if(!r) return null;
+  const n=r.values.map(v=>parseInt(v.v,10)).filter(x=>!isNaN(x));
+  if(n.length<3) return null;
+  return {r:n[0],g:n[1],b:n[2],a:n.length>3?n[3]:255};
+}
+function css(c,f){ return c?`rgba(${c.r},${c.g},${c.b},${(c.a/255).toFixed(3)})`:f; }
+function getNum(b,k){ const r=findRule(b,k); if(!r) return null; const n=parseInt(r.values[0]?.v,10); return isNaN(n)?null:n; }
+function getBool(b,k){ const r=findRule(b,k); if(!r) return null; return String(r.values[0]?.v).toLowerCase()!=='false'; }
+function getMinimap(b){ const r=findRule(b,'MinimapIcon'); if(!r||r.values.length<3) return null;
+  return {size:parseInt(r.values[0].v,10)||0,color:r.values[1].v,shape:r.values[2].v}; }
+function getBeam(b){ const r=findRule(b,'PlayEffect'); if(!r||!r.values.length) return null;
+  return {color:r.values[0].v,temp:r.values.some(v=>v.v.toLowerCase()==='temp')}; }
+function getSound(b){
+  const c=findRule(b,'CustomAlertSound'); if(c&&c.values.length) return c.values[0].v;
+  const p=findRule(b,'PlayAlertSound'); if(p&&p.values.length) return 'AlertSound '+p.values.map(v=>v.v).join(' ');
+  return null;
+}
+function touch(b){ b.dirty=true; b._t=null; b._cat=null; if(state.doc) state.doc.dirty=true; }
+
+/* 名稱：官方譯名優先，找不到才用作者註解 */
+function nameSource(b){
+  const bt=findRule(b,'BaseType'), cl=findRule(b,'Class');
+  const r=(bt&&bt.values.length)?bt:((cl&&cl.values.length)?cl:null);
+  if(!r) return null;
+  return {key:r.key,vals:r.values.map(v=>v.v)};
+}
+function officialName(b){
+  const s=nameSource(b); if(!s) return null;
+  const out=s.vals.map(v=>tr(v)||v.trim());
+  if(!out.length) return null;
+  if(out.length<=2) return out.join('、');
+  return out[0]+'、'+out[1]+' 等 '+out.length+' 項';
+}
+function tagsOf(b){
+  return [...String(b.headComment||'').matchAll(/\$(\w+)->(\S+)/g)].map(m=>({k:m[1],v:m[2]}));
+}
+function authorName(b){
+  const c=(b.headComment||'').trim();
+  if(!c) return null;
+  const clean=c.replace(/%\w+\s*/g,'').replace(/\$\w+->\S+/g,'').trim();
+  if(clean){ const p=clean.split(/\s*-\s*/); return T(p[p.length-1]||clean); }
+  const tags=tagsOf(b);
+  if(tags.length){
+    const tier=tags.find(t=>t.k==='tier')||tags[tags.length-1];
+    return tier.v.replace(/->/g,' · ');
+  }
+  const p=c.split(/\s*-\s*/);
+  return T(p[p.length-1]||c);
+}
+function displayName(b){
+  const a=state.nameMode==='official'?(officialName(b)||authorName(b)):(authorName(b)||officialName(b));
+  return a||'（無條件的區塊）';
+}
+function pathName(b){
+  const c=(b.headComment||'').trim();
+  const tags=tagsOf(b);
+  if(tags.length) return tags.map(t=>t.k+'→'+t.v.replace(/->/g,'·')).join('   ');
+  if(!c) return '';
+  return T(c.split(/\s*-\s*/).slice(0,-1).join(' › '));
+}
+function blockText(b){
+  if(b._t) return b._t;
+  const t=[b.headComment||'',twConv(b.headComment||'')];
+  for(const r of b.rules){
+    if(r.unknown){ t.push(r.raw); continue; }
+    t.push(r.key);
+    for(const v of r.values){ t.push(v.v); const x=tr(v.v); if(x) t.push(x); }
+  }
+  return (b._t=t.join(' ').toLowerCase());
+}
+
+/* ======================================================================
+   5. 防呆：語法與設定檢查
+   ================================================================== */
+const MM_SIZES=['0','1','2'];
+const NAMED={Red:'#d13a33',Green:'#3fb54a',Blue:'#3f6fe0',Brown:'#a3673a',White:'#f2f0ea',Yellow:'#e6cf3c',
+  Cyan:'#3ed0d6',Grey:'#9a958c',Orange:'#ef8a2a',Pink:'#f07cb6',Purple:'#a755d8'};
+const MM_COLORS=Object.keys(NAMED);
+const MM_SHAPES=['Circle','Diamond','Hexagon','Square','Star','Triangle','Cross','Moon','Raindrop','Kite','Pentagon','UpsideDownHouse'];
+
+function lint(b){
+  const out=[];
+  const conds=b.rules.filter(r=>!r.unknown&&!/^(Set|Play|Minimap|Custom|Disable|Enable|Continue)/i.test(r.key));
+  if(!conds.length&&!findRule(b,'Continue')){
+    out.push(b.type==='Hide'
+      ? {lv:'w',msg:'沒有任何條件的 Hide：會擋掉所有沒被上面規則攔截的物品。放在檔尾是正常收尾，放在中間會吃掉後面的規則'}
+      : {lv:'e',msg:'沒有任何條件的 Show：會顯示所有沒被上面規則攔截的物品'});
+  }
+  const fs=getNum(b,'SetFontSize');
+  if(fs!=null&&(fs<18||fs>45)) out.push({lv:'w',msg:`字級 ${fs} 超出遊戲可用範圍 18–45，實際會被夾到 ${fs<18?18:45}`});
+  for(const k of ['SetTextColor','SetBackgroundColor','SetBorderColor']){
+    const r=findRule(b,k); if(!r) continue;
+    if(r.values.length<3){ out.push({lv:'e',msg:`${k} 少於 3 個數值`}); continue; }
+    if(r.values.some(v=>{const n=+v.v;return isNaN(n)||n<0||n>255;})) out.push({lv:'e',msg:`${k} 有數值不在 0–255 之間`});
+  }
+  const mm=getMinimap(b);
+  if(mm){
+    if(!MM_SIZES.includes(String(mm.size))) out.push({lv:'e',msg:'MinimapIcon 尺寸只能是 0、1、2'});
+    if(!MM_COLORS.includes(mm.color)) out.push({lv:'e',msg:`MinimapIcon 顏色「${mm.color}」不是合法值`});
+    if(!MM_SHAPES.includes(mm.shape)) out.push({lv:'e',msg:`MinimapIcon 形狀「${mm.shape}」不是合法值`});
+  }
+  const bm=getBeam(b);
+  if(bm&&!MM_COLORS.includes(bm.color)) out.push({lv:'e',msg:`PlayEffect 顏色「${bm.color}」不是合法值`});
+  if(b.type==='Hide'){
+    const wasted=['PlayEffect','MinimapIcon','CustomAlertSound','PlayAlertSound'].filter(k=>findRule(b,k));
+    if(wasted.length) out.push({lv:'w',msg:`Hide 區塊上的 ${wasted.join('、')} 不會生效`});
+  }
+  for(const r of b.rules){
+    if(r.unknown) continue;
+    if(!KNOWN.has(r.key.toLowerCase())) out.push({lv:'w',msg:`不認得的關鍵字 ${r.key}`});
+    if(STRINGY.has(r.key.toLowerCase())){
+      const seen=new Set();
+      for(const v of r.values){ if(seen.has(v.v)){ out.push({lv:'w',msg:`${r.key} 有重複的值「${v.v}」`}); break; } seen.add(v.v); }
+    }
+  }
+  return out;
+}
+function lintAll(){
+  const res=[];
+  for(const b of state.doc.blocks){ const p=lint(b); if(p.length) res.push({b,issues:p}); }
+  return res;
+}
+/* 同類問題合併成一組，避免 600 條「字級超出範圍」洗版 */
+function lintGroups(){
+  const map=new Map();
+  for(const b of state.doc.blocks){
+    for(const i of lint(b)){
+      const key=i.lv+'|'+i.msg.replace(/「[^」]*」/g,'「…」').replace(/\b\d+\b/g,'N');
+      let g=map.get(key);
+      if(!g){ g={lv:i.lv,msg:i.msg,n:0,blocks:[]}; map.set(key,g); }
+      g.n++; if(g.blocks.length<12) g.blocks.push(b);
+    }
+  }
+  return [...map.values()].sort((a,b)=>(a.lv===b.lv?b.n-a.n:(a.lv==='e'?-1:1)));
+}
+
+/* ======================================================================
+   6. 狀態
+   ================================================================== */
+const state={docs:[],doc:null,sel:null,section:null,cat:null,query:'',tab:'props',open:new Set(),
+  shown:0,tw:true,nameMode:'official',view:'taxonomy',vis:'all',custom:{},userCats:[],undo:[],redo:[],lastSnap:0};
+const $=s=>document.querySelector(s);
+
+function snap(blocks,label){
+  const now=Date.now();
+  if(now-state.lastSnap<700&&state.undo.length&&label==='edit') return;
+  state.lastSnap=now;
+  state.undo.push({label,items:blocks.map(b=>({b,type:b.type,headComment:b.headComment,rules:JSON.parse(JSON.stringify(b.rules))}))});
+  if(state.undo.length>80) state.undo.shift();
+  state.redo=[]; syncUndo();
+}
+function applySnap(entry){
+  const inv={label:entry.label,items:entry.items.map(it=>({b:it.b,type:it.b.type,headComment:it.b.headComment,
+    rules:JSON.parse(JSON.stringify(it.b.rules))}))};
+  for(const it of entry.items){ it.b.type=it.type; it.b.headComment=it.headComment; it.b.rules=it.rules; it.b._t=null; it.b._cat=null; }
+  return inv;
+}
+function doUndo(){ if(!state.undo.length) return; state.redo.push(applySnap(state.undo.pop())); syncUndo(); renderAll(); toast('已復原'); }
+function doRedo(){ if(!state.redo.length) return; state.undo.push(applySnap(state.redo.pop())); syncUndo(); renderAll(); toast('已重做'); }
+function syncUndo(){ $('#undoBtn').disabled=!state.undo.length; $('#redoBtn').disabled=!state.redo.length; }
+
+/* ======================================================================
+   7. 繪製
+   ================================================================== */
+function shapeSVG(shape,color,px){
+  const f=NAMED[color]||'#bbb';
+  const P=p=>`<polygon points="${p}" fill="${f}"/>`;
+  let inner;
+  switch(shape){
+    case 'Circle': inner=`<circle cx="50" cy="50" r="40" fill="${f}"/>`; break;
+    case 'Diamond': inner=P('50,6 94,50 50,94 6,50'); break;
+    case 'Hexagon': inner=P('50,6 90,28 90,72 50,94 10,72 10,28'); break;
+    case 'Square': inner=`<rect x="12" y="12" width="76" height="76" fill="${f}"/>`; break;
+    case 'Star': inner=P('50,4 61,36 96,36 68,57 78,92 50,71 22,92 32,57 4,36 39,36'); break;
+    case 'Triangle': inner=P('50,8 93,88 7,88'); break;
+    case 'Cross': inner=P('36,6 64,6 64,36 94,36 94,64 64,64 64,94 36,94 36,64 6,64 6,36 36,36'); break;
+    case 'Moon': inner=`<path d="M70 12a44 44 0 1 0 0 76 46 46 0 0 1 0-76z" fill="${f}"/>`; break;
+    case 'Raindrop': inner=`<path d="M50 4c18 26 34 40 34 58a34 34 0 0 1-68 0c0-18 16-32 34-58z" fill="${f}"/>`; break;
+    case 'Kite': inner=P('50,4 88,40 50,96 12,40'); break;
+    case 'Pentagon': inner=P('50,5 95,38 78,92 22,92 5,38'); break;
+    case 'UpsideDownHouse': inner=P('12,8 88,8 88,52 50,95 12,52'); break;
+    default: inner=`<circle cx="50" cy="50" r="30" fill="none" stroke="${f}" stroke-width="8"/>`;
+  }
+  return `<svg width="${px}" height="${px}" viewBox="0 0 100 100">${inner}</svg>`;
+}
+const DEF_FG='rgba(200,200,200,1)', DEF_BG='rgba(0,0,0,0.745)';
+function labelStyle(b,px){
+  return `color:${css(getColor(b,'SetTextColor'),DEF_FG)};background:${css(getColor(b,'SetBackgroundColor'),DEF_BG)};`+
+         `border-color:${css(getColor(b,'SetBorderColor'),'transparent')};font-size:${px}px`;
+}
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function renderFiles(){
+  $('#files').innerHTML=state.docs.map((d,i)=>
+    `<button class="ftab ${d===state.doc?'on':''} ${d.dirty?'dirty':''}" data-i="${i}">${esc(d.name)} <i>${d.blocks.length}</i></button>`).join('');
+}
+function renderOutline(){
+  const d=state.doc,rows=[];
+  if(state.view==='taxonomy'){
+    const counts={};
+    for(const b of d.blocks){ const c=classify(b); counts[c]=(counts[c]||0)+1; }
+    rows.push(`<button class="olrow ${state.cat===null?'on':''}" data-cat="">
+      <span class="n">全部</span><span class="t">所有區塊</span><span class="c">${d.blocks.length}</span></button>`);
+    const all=[...state.userCats,...TAX];
+    for(const t of all){
+      const n=counts[t.id]||0;
+      rows.push(`<button class="olrow ${n?'':'empty0'} ${state.cat===t.id?'on':''}" data-cat="${t.id}">
+        <span class="n">${t.id}</span><span class="t">${esc(t.name)}</span><span class="c">${n||'—'}</span></button>`);
+    }
+    $('#outline').innerHTML=rows.join('');
+    $('#addcat').style.display='';
+    return;
+  }
+  $('#addcat').style.display='none';
+  if(!d.sections.length){
+    $('#outline').innerHTML=`<div class="empty">這個檔案沒有章節標題<br><span style="font-size:11.5px">切到「標準分類」就能照物品類型瀏覽</span></div>`;
+    return;
+  }
+  rows.push(`<button class="olrow ${state.section===null?'on':''}" data-sec="">
+    <span class="caret"></span><span class="n">全部</span><span class="t">所有區塊</span><span class="c">${d.blocks.length}</span></button>`);
+  let group=null;
+  for(const s of d.sections){
+    if(s.depth===1){
+      group=s.num;
+      const open=state.open.has(group);
+      rows.push(`<button class="olrow g ${state.section===s.id?'on':''}" data-sec="${s.id}" data-grp="${group}">
+        <span class="caret ${open?'open':''}">▶</span><span class="n">${s.num}</span>
+        <span class="t">${esc(T(s.title))}</span><span class="c">${s.count||''}</span></button>`);
+    }else{
+      if(group&&!state.open.has(group)) continue;
+      rows.push(`<button class="olrow d${s.depth} ${state.section===s.id?'on':''}" data-sec="${s.id}">
+        <span class="n">${s.num}</span><span class="t">${esc(T(s.title))}</span><span class="c">${s.count||''}</span></button>`);
+    }
+  }
+  $('#outline').innerHTML=rows.join('');
+}
+function visibleBlocks(){
+  const d=state.doc,q=state.query.trim().toLowerCase();
+  let arr=d.blocks;
+  if(q) arr=arr.filter(b=>blockText(b).includes(q));
+  else if(state.view==='taxonomy'&&state.cat) arr=arr.filter(b=>classify(b)===state.cat);
+  else if(state.view==='native'&&state.section) arr=arr.filter(b=>b.section===state.section);
+  if(state.vis==='show') arr=arr.filter(b=>b.type==='Show');
+  else if(state.vis==='hide') arr=arr.filter(b=>b.type==='Hide');
+  return arr;
+}
+function rowHTML(b){
+  const fs=getNum(b,'SetFontSize')||32;
+  const px=Math.max(11,Math.min(20,fs*0.36+7));
+  const mm=getMinimap(b),beam=getBeam(b),snd=getSound(b),p=pathName(b);
+  const bad=lint(b);
+  return `<button class="row ${b.type==='Show'?'s':'h'} ${state.sel===b.id?'on':''}" data-id="${b.id}">
+    <span class="state">${b.type==='Show'?'SHOW':'HIDE'}</span>
+    <span class="body">
+      ${p?`<span class="path">${esc(p)}</span>`:''}
+      <span class="rl"><span class="gl" style="${labelStyle(b,px)}">${esc(displayName(b))}</span></span>
+    </span>
+    <span class="tags">
+      ${bad.length?`<span class="bad" title="${esc(bad[0].msg)}">⚠</span>`:''}
+      ${snd?'<span title="音效">♪</span>':''}
+      ${beam?`<span class="beamdot" style="background:${NAMED[beam.color]||'#ccc'}"></span>`:''}
+      ${mm?`<span class="dot" style="background:${NAMED[mm.color]||'#ccc'}"></span>`:''}
+      <span>${fs}</span>
+    </span>
+  </button>`;
+}
+function renderList(reset){
+  const arr=visibleBlocks(),el=$('#list');
+  if(reset!==false){ state.shown=0; el.innerHTML=''; }
+  if(!arr.length){ el.innerHTML='<div class="empty">這裡沒有符合的區塊</div>'; updateCount(0); return; }
+  const next=Math.min(arr.length,state.shown+150);
+  el.insertAdjacentHTML('beforeend',arr.slice(state.shown,next).map(rowHTML).join(''));
+  state.shown=next;
+  updateCount(arr.length);
+}
+function updateCount(total){
+  const arr=visibleBlocks();
+  const s=arr.filter(b=>b.type==='Show').length;
+  const scope = state.query ? '搜尋結果'
+    : state.view==='taxonomy' ? (state.cat?catName(state.cat):'全部')
+    : (state.section?(state.doc.sections.find(x=>x.id===state.section)||{}).title:'全部');
+  $('#count').textContent=`${T(scope||'')} · ${total} 個區塊（${s} Show / ${total-s} Hide）`+
+    (state.shown<total?` · 已載入 ${state.shown}`:'');
+}
+function curBlock(){ return state.doc?state.doc.blocks.find(b=>b.id===state.sel):null; }
+function renderFloor(){
+  const b=curBlock(),el=$('#floor');
+  if(!b){ el.innerHTML=''; return; }
+  const fs=getNum(b,'SetFontSize')||32;
+  const px=Math.max(13,Math.min(40,fs*0.62));
+  const beam=getBeam(b),mm=getMinimap(b),snd=getSound(b);
+  const bc=beam?(NAMED[beam.color]||'#ccc'):null;
+  const hidden=b.type==='Hide';
+  el.innerHTML=`
+    ${bc&&!hidden?`<div class="beam" style="background:linear-gradient(to top,${bc},transparent)"></div>
+      <div class="beamcore" style="background:${bc}"></div><div class="glow" style="background:${bc}"></div>`:''}
+    <div class="previewlabel">${hidden
+      ?`<span style="color:#6b6355;font-size:11px;font-family:var(--mono);letter-spacing:.14em">HIDE · 地上不顯示</span>`
+      :`<span class="gl" style="${labelStyle(b,px)}">${esc(displayName(b))}</span>`}</div>
+    <div class="minimapchip ${mm?'':'off'}">${mm?shapeSVG(mm.shape,mm.color,[26,20,15][mm.size]||18):'<span style="color:#3a3428;font-size:9.5px">無圖示</span>'}</div>
+    ${snd?`<div class="soundchip">♪ ${esc(snd.split(/[\\/]/).pop())}</div>`:''}`;
+}
+function colorCell(b,key,label){
+  const c=getColor(b,key);
+  const hex=c?('#'+[c.r,c.g,c.b].map(x=>x.toString(16).padStart(2,'0')).join('')):'';
+  return `<div class="ci" data-ckey="${key}">
+    <label>${label}</label>
+    <div class="swwrap"><i style="background:${css(c,'transparent')}"></i>
+      <input type="color" class="cpick" value="${hex||'#ffffff'}"><
+      ${c?'':'<span class="none">未設定</span>'}</div>
+    <input type="text" class="chex" value="${hex}" placeholder="未設定" maxlength="7" spellcheck="false">
+    <input type="range" class="calpha" min="0" max="255" value="${c?c.a:255}">
+    ${c?'<button class="x" title="移除">✕</button>':''}
+  </div>`;
+}
+function paletteOf(doc){
+  const map=new Map();
+  for(const b of doc.blocks){
+    const fg=getColor(b,'SetTextColor'),bg=getColor(b,'SetBackgroundColor'),bd=getColor(b,'SetBorderColor');
+    if(!fg&&!bg&&!bd) continue;
+    const k=[fg,bg,bd].map(c=>c?`${c.r},${c.g},${c.b},${c.a}`:'-').join('|');
+    let e=map.get(k);
+    if(!e){ e={k,fg,bg,bd,count:0,labels:new Map()}; map.set(k,e); }
+    e.count++;
+    const r=findRule(b,'SetTextColor')||findRule(b,'SetBackgroundColor');
+    const l=((r&&r.comment)||'').trim();
+    if(l&&l.length<14) e.labels.set(l,(e.labels.get(l)||0)+1);
+  }
+  const arr=[...map.values()];
+  for(const e of arr){ let best='',n=0; for(const [l,c] of e.labels) if(c>n){best=l;n=c;} e.label=T(best)||('配色 '+e.count); }
+  arr.sort((a,b)=>b.count-a.count);
+  return arr.slice(0,60);
+}
+function palStyle(p){ return `color:${css(p.fg,DEF_FG)};background:${css(p.bg,DEF_BG)};border-color:${css(p.bd,'transparent')}`; }
+function applyPalette(b,p){
+  [['SetTextColor',p.fg],['SetBackgroundColor',p.bg],['SetBorderColor',p.bd]].forEach(([k,c])=>{
+    if(!c) dropRule(b,k); else putRule(b,k,c.a>=255?[c.r,c.g,c.b]:[c.r,c.g,c.b,c.a]);
+  });
+}
+function curPalette(b){ return {fg:getColor(b,'SetTextColor'),bg:getColor(b,'SetBackgroundColor'),bd:getColor(b,'SetBorderColor')}; }
+
+function renderInspector(){
+  const b=curBlock(),el=$('#inspector');
+  if(!b){ el.innerHTML='<div class="nosel">從中間的清單選一個區塊<br>右側會顯示它的樣式、條件與檢查結果</div>'; return; }
+  if(state.tab==='src'){
+    const src=[(b.headRaw&&!b.dirty)?b.headRaw:(b.indent+b.type+(b.headComment?' #'+b.headComment:''))]
+      .concat(b.rules.map(serializeRule)).join('\n');
+    el.innerHTML=`<div class="sec"><h3>原始碼<span>改完按套用</span></h3>
+      <textarea class="srcbox" id="srcbox" spellcheck="false">${esc(src)}</textarea>
+      <button class="btn primary" id="applysrc" style="width:100%;margin-top:9px">套用這段原始碼</button>
+      <div class="hintline">套用前會先檢查：第一行必須是 Show 或 Hide，否則不會寫入。</div></div>`;
+    return;
+  }
+  const fs=getNum(b,'SetFontSize'), mm=getMinimap(b), beam=getBeam(b);
+  const snd=(findRule(b,'CustomAlertSound')||{values:[]}).values[0]?.v||'';
+  const noDrop=getBool(b,'DisableDropSound');
+  const conds=b.rules.filter(r=>!r.unknown&&!/^(Set|Play|Minimap|Custom|Disable|Enable)/i.test(r.key));
+  const palSrc=state.docs.find(d=>d.name===state.palFrom)||state.doc;
+  const pal=paletteOf(palSrc);
+  const cp=curPalette(b);
+  const curKey=[cp.fg,cp.bg,cp.bd].map(c=>c?`${c.r},${c.g},${c.b},${c.a}`:'-').join('|');
+  const scopeName=state.view==='taxonomy'?catName(classify(b)):'這一節';
+  const scopeList=state.view==='taxonomy'
+    ? state.doc.blocks.filter(x=>classify(x)===classify(b))
+    : state.doc.blocks.filter(x=>x.section===b.section);
+  const issues=lint(b);
+  const ns=nameSource(b);
+
+  el.innerHTML=`
+  ${issues.length?`<div class="sec"><h3>檢查<span>${issues.length} 項</span></h3>
+    <ul class="lintlist">${issues.map(i=>`<li class="${i.lv==='e'?'err':''}">${esc(i.msg)}</li>`).join('')}</ul></div>`:''}
+
+  <div class="sec">
+    <h3>區塊<span>${esc(catName(classify(b)))}</span></h3>
+    <div class="seg" id="showhide">
+      <button class="${b.type==='Show'?'on':''}" data-t="Show">SHOW 顯示</button>
+      <button class="${b.type==='Hide'?'on h':''}" data-t="Hide">HIDE 隱藏</button>
+    </div>
+    ${ns?`<div class="hintline">名稱取自 ${ns.key}：${esc(ns.vals.slice(0,3).map(v=>(tr(v)?tr(v)+'（'+v+'）':v)).join('、'))}${ns.vals.length>3?' …':''}</div>`:''}
+    <div class="field" style="margin-top:10px">
+      <label>作者註解</label>
+      <input class="inp" id="hc" value="${esc(T(b.headComment||''))}">
+    </div>
+  </div>
+
+  <div class="sec">
+    <h3>顏色<span>點色塊開調色盤</span></h3>
+    <div class="trio">${colorCell(b,'SetTextColor','文字')}${colorCell(b,'SetBackgroundColor','背景')}${colorCell(b,'SetBorderColor','邊框')}</div>
+    <div class="quick">
+      <button class="chip" id="bdText">邊框＝文字色</button>
+      <button class="chip" id="bdBg">邊框＝背景色</button>
+      <button class="chip" id="bdOff">移除邊框</button>
+    </div>
+    <div class="field" style="margin-top:12px">
+      <label>字級 <b style="color:var(--gold-hi);font-family:var(--mono)">${fs==null?'預設 32':fs}</b></label>
+      <input type="range" id="fsr" min="18" max="70" step="1" value="${fs||32}" style="width:100%">
+    </div>
+  </div>
+
+  <div class="sec">
+    <h3>配色盤<span>${pal.length} 組</span></h3>
+    ${state.docs.length>1?`<select class="inp" id="palFrom" style="margin-bottom:9px">
+      ${state.docs.map(d=>`<option ${d===palSrc?'selected':''}>${esc(d.name)}</option>`).join('')}</select>`:''}
+    <div class="palette">${pal.map((p,i)=>`<button class="pchip ${p.k===curKey?'on':''}" data-p="${i}" title="${esc(p.label)} · ${p.count} 個區塊">
+      <span class="gl" style="${palStyle(p)}">${esc(p.label)}</span></button>`).join('')}</div>
+    <div class="scope"><button class="chip" id="scopeCat">套用目前顏色到「${esc(scopeName)}」（${scopeList.length}）</button>
+      <button class="chip" id="scopeList">套用到目前清單（${visibleBlocks().length}）</button></div>
+  </div>
+
+  <div class="sec">
+    <h3>小地圖圖示</h3>
+    <button class="toggle ${mm?'on':''}" id="mmToggle"><span class="box">${mm?'✕':''}</span>顯示小地圖圖示</button>
+    ${mm?`<div style="display:grid;grid-template-columns:70px 1fr 1fr;gap:7px;margin-top:8px">
+      <select class="inp" id="mmSize">${[0,1,2].map(s=>`<option value="${s}" ${mm.size===s?'selected':''}>${['大','中','小'][s]}</option>`).join('')}</select>
+      <select class="inp" id="mmColor">${MM_COLORS.map(c=>`<option ${mm.color===c?'selected':''}>${c}</option>`).join('')}</select>
+      <select class="inp" id="mmShape">${MM_SHAPES.map(s=>`<option ${mm.shape===s?'selected':''}>${s}</option>`).join('')}</select>
+    </div>`:''}
+  </div>
+
+  <div class="sec">
+    <h3>光柱與音效</h3>
+    <button class="toggle ${beam?'on':''}" id="beamToggle"><span class="box">${beam?'✕':''}</span>掉落光柱 PlayEffect</button>
+    ${beam?`<div style="display:flex;gap:7px;margin-top:8px">
+      <select class="inp" id="beamColor">${MM_COLORS.map(c=>`<option ${beam.color===c?'selected':''}>${c}</option>`).join('')}</select>
+      <button class="toggle ${beam.temp?'on':''}" id="beamTemp" style="flex:0 0 auto;width:94px"><span class="box">${beam.temp?'✕':''}</span>Temp</button>
+    </div>`:''}
+    <div class="field" style="margin-top:12px"><label>自訂音效檔</label>
+      <input class="inp" id="snd" value="${esc(snd)}" placeholder="例如 文子过滤音效\\崇神石.mp3"></div>
+    <button class="toggle ${noDrop?'on':''}" id="ddsToggle"><span class="box">${noDrop?'✕':''}</span>關閉預設掉落音</button>
+  </div>
+
+  <div class="sec">
+    <h3>條件<span>${conds.length}</span></h3>
+    ${conds.map(r=>{
+      const ri=b.rules.indexOf(r);
+      const trs=r.values.map(v=>tr(v.v)).filter(Boolean);
+      return `<div class="cond" data-ri="${ri}">
+        <div class="hd"><input class="k" value="${esc(r.key)}" spellcheck="false">
+          <select>${OPS.map(o=>`<option value="${o}" ${r.op===o?'selected':''}>${o||'—'}</option>`).join('')}</select>
+          <button class="x" title="刪除條件">✕</button></div>
+        <textarea rows="${Math.min(9,r.values.length||1)}" spellcheck="false">${esc(r.values.map(v=>v.v).join('\n'))}</textarea>
+        ${trs.length?`<div class="tr">${esc(trs.slice(0,8).join('、'))}${trs.length>8?' …':''}</div>`:''}
+      </div>`;
+    }).join('')}
+    <button class="addcond" id="addcond">＋ 新增條件</button>
+    <div class="hintline">一行一個值。下面灰字是查到的官方繁中譯名。</div>
+  </div>`;
+}
+function renderAll(){
+  renderFiles(); renderOutline(); renderList(true); renderInspector(); renderFloor(); syncLint();
+}
+function refreshSelected(){
+  const b=curBlock(); if(!b) return;
+  const row=document.querySelector(`.row[data-id="${b.id}"]`);
+  if(row) row.outerHTML=rowHTML(b);
+  renderFloor(); renderFiles(); syncLint();
+}
+function syncLint(){
+  if(!state.doc) return;
+  const n=lintAll().reduce((a,x)=>a+x.issues.length,0);
+  $('#lintN').textContent=n?n:'';
+}
+
+/* ======================================================================
+   8. 事件
+   ================================================================== */
+document.querySelectorAll('.viewsw button').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.viewsw button').forEach(x=>x.classList.remove('on'));
+  btn.classList.add('on'); state.view=btn.dataset.v; state.cat=null; state.section=null;
+  renderOutline(); renderList(true); renderInspector();
+}));
+document.querySelectorAll('#vissw button').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('#vissw button').forEach(x=>x.classList.remove('on','s','h'));
+  btn.classList.add('on'); if(btn.dataset.v==='show') btn.classList.add('s');
+  if(btn.dataset.v==='hide') btn.classList.add('h');
+  state.vis=btn.dataset.v; renderList(true); $('#list').scrollTop=0;
+}));
+$('#outline').addEventListener('click',e=>{
+  const btn=e.target.closest('.olrow'); if(!btn) return;
+  if(state.view==='taxonomy'){ state.cat=btn.dataset.cat||null; }
+  else{
+    const grp=btn.dataset.grp;
+    if(grp&&e.target.closest('.caret')){ state.open.has(grp)?state.open.delete(grp):state.open.add(grp); renderOutline(); return; }
+    state.section=btn.dataset.sec||null; if(grp) state.open.add(grp);
+  }
+  $('#q').value=''; state.query='';
+  renderOutline(); renderList(true); $('#list').scrollTop=0;
+});
+$('#list').addEventListener('click',e=>{
+  const row=e.target.closest('.row'); if(!row) return;
+  state.sel=row.dataset.id;
+  document.querySelectorAll('.row.on').forEach(r=>r.classList.remove('on'));
+  row.classList.add('on');
+  renderInspector(); renderFloor();
+  if(window.innerWidth<=960) $('#bench').classList.add('open');
+});
+$('#list').addEventListener('scroll',()=>{
+  const el=$('#list');
+  if(el.scrollTop+el.clientHeight>el.scrollHeight-400) renderList(false);
+});
+let qt;
+$('#q').addEventListener('input',e=>{ clearTimeout(qt); qt=setTimeout(()=>{ state.query=e.target.value; renderList(true); $('#list').scrollTop=0; },160); });
+document.querySelectorAll('.tabs button').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('on'));
+  btn.classList.add('on'); state.tab=btn.dataset.tab; renderInspector();
+}));
+$('#files').addEventListener('click',e=>{ const t=e.target.closest('.ftab'); if(t) selectDoc(state.docs[+t.dataset.i]); });
+
+$('#inspector').addEventListener('click',e=>{
+  const b=curBlock(); if(!b) return;
+  const sh=e.target.closest('#showhide button');
+  if(sh){ if(b.type!==sh.dataset.t){ snap([b],'showhide'); b.type=sh.dataset.t; touch(b); } renderInspector(); refreshSelected(); return; }
+  const cx=e.target.closest('.ci .x');
+  if(cx){ snap([b],'color'); dropRule(b,cx.closest('.ci').dataset.ckey); renderInspector(); refreshSelected(); return; }
+  const pc=e.target.closest('.pchip');
+  if(pc){ const src=state.docs.find(d=>d.name===state.palFrom)||state.doc;
+    snap([b],'palette'); applyPalette(b,paletteOf(src)[+pc.dataset.p]); renderInspector(); refreshSelected(); return; }
+  if(e.target.closest('#bdText')||e.target.closest('#bdBg')){
+    const src=getColor(b,e.target.closest('#bdText')?'SetTextColor':'SetBackgroundColor');
+    if(!src){ toast('來源顏色還沒設定'); return; }
+    snap([b],'border'); putRule(b,'SetBorderColor',src.a>=255?[src.r,src.g,src.b]:[src.r,src.g,src.b,src.a]);
+    renderInspector(); refreshSelected(); return;
+  }
+  if(e.target.closest('#bdOff')){ snap([b],'border'); dropRule(b,'SetBorderColor'); renderInspector(); refreshSelected(); return; }
+  const sc=e.target.closest('#scopeCat')||e.target.closest('#scopeList');
+  if(sc){
+    const list = sc.id==='scopeList' ? visibleBlocks()
+      : (state.view==='taxonomy'?state.doc.blocks.filter(x=>classify(x)===classify(b)):state.doc.blocks.filter(x=>x.section===b.section));
+    if(!list.length) return;
+    const p=curPalette(b);
+    confirmBox('批次套用顏色',
+      `<p style="margin:0 0 10px;color:var(--muted)">要把目前這組文字／背景／邊框顏色，套用到 <b style="color:var(--gold-hi)">${list.length}</b> 個區塊嗎？</p>
+       <p style="margin:0 0 10px;color:var(--faint);font-size:11.5px">這個動作可以用「復原」還原。前 8 個受影響的區塊：</p>
+       <div style="display:flex;flex-wrap:wrap;gap:5px">${list.slice(0,8).map(x=>
+         `<span class="gl" style="${labelStyle(x,12)}">${esc(displayName(x))}</span>`).join('')}</div>`,
+      ()=>{ snap(list,'batch'); for(const x of list) applyPalette(x,p);
+            renderList(true); renderFiles(); syncLint(); toast(`已套用到 ${list.length} 個區塊`); });
+    return;
+  }
+  if(e.target.closest('#mmToggle')){ snap([b],'mm');
+    if(getMinimap(b)) dropRule(b,'MinimapIcon'); else putRule(b,'MinimapIcon',[0,'Yellow','Circle']);
+    renderInspector(); refreshSelected(); return; }
+  if(e.target.closest('#beamToggle')){ snap([b],'beam');
+    if(getBeam(b)) dropRule(b,'PlayEffect'); else putRule(b,'PlayEffect',['Yellow']);
+    renderInspector(); refreshSelected(); return; }
+  if(e.target.closest('#beamTemp')){ const bm=getBeam(b); if(!bm) return; snap([b],'beam');
+    putRule(b,'PlayEffect',bm.temp?[bm.color]:[bm.color,'Temp']); renderInspector(); refreshSelected(); return; }
+  if(e.target.closest('#ddsToggle')){ snap([b],'sound');
+    if(getBool(b,'DisableDropSound')) dropRule(b,'DisableDropSound'); else putRule(b,'DisableDropSound',['True']);
+    renderInspector(); refreshSelected(); return; }
+  const rx=e.target.closest('.cond .x');
+  if(rx){ snap([b],'cond'); b.rules.splice(+rx.closest('.cond').dataset.ri,1); touch(b); renderInspector(); refreshSelected(); return; }
+  if(e.target.closest('#addcond')){ snap([b],'cond');
+    b.rules.unshift({indent:b.indent==='\t'?'\t':'    ',key:'BaseType',op:'',values:[],comment:null,unknown:false,dirty:true,raw:null});
+    touch(b); renderInspector(); refreshSelected(); return; }
+  if(e.target.closest('#applysrc')){
+    const txt=$('#srcbox').value.replace(/\r\n/g,'\n').split('\n');
+    const head=txt[0].match(/^([ \t]*)(Show|Hide)\b(.*)$/);
+    if(!head){ toast('第一行必須是 Show 或 Hide，沒有寫入'); return; }
+    snap([b],'src');
+    b.indent=head[1]; b.type=head[2]; b.headComment=splitComment(head[3]).comment;
+    b.rules=txt.slice(1).filter(l=>l.trim()!=='').map(l=>{
+      const r=parseRule(/^[ \t]/.test(l)?l:'    '+l); r.dirty=true; r.raw=null; return r; });
+    touch(b); state.tab='props';
+    document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x.dataset.tab==='props'));
+    renderInspector(); refreshSelected(); toast('已套用'); return;
+  }
+});
+$('#inspector').addEventListener('input',e=>{
+  const b=curBlock(); if(!b) return;
+  const t=e.target;
+  if(t.id==='hc'){ snap([b],'edit'); b.headComment=t.value; touch(b); refreshSelected(); return; }
+  if(t.id==='fsr'){ snap([b],'edit'); putRule(b,'SetFontSize',[t.value]);
+    const lab=t.closest('.field').querySelector('label b'); if(lab) lab.textContent=t.value;
+    refreshSelected(); return; }
+  if(t.id==='snd'){ snap([b],'edit');
+    if(t.value.trim()){ putRule(b,'CustomAlertSound',[t.value.trim()]); const r=findRule(b,'CustomAlertSound'); if(r) r.values[0].q=true; }
+    else dropRule(b,'CustomAlertSound');
+    refreshSelected(); return; }
+  const ci=t.closest('.ci');
+  if(ci){
+    const key=ci.dataset.ckey, hexIn=ci.querySelector('.chex');
+    if(t.classList.contains('cpick')) hexIn.value=t.value;
+    const hex=hexIn.value.trim(), a=+ci.querySelector('.calpha').value;
+    const m=hex.match(/^#?([0-9a-f]{6})$/i);
+    if(!m){ if(!hex){ snap([b],'color'); dropRule(b,key); renderInspector(); refreshSelected(); } return; }
+    snap([b],'edit');
+    const rgb=[0,2,4].map(i=>parseInt(m[1].substr(i,2),16));
+    putRule(b,key,a>=255?rgb:rgb.concat([a]));
+    ci.querySelector('.swwrap i').style.background=`rgba(${rgb.join(',')},${(a/255).toFixed(3)})`;
+    const none=ci.querySelector('.none'); if(none) none.remove();
+    refreshSelected(); return;
+  }
+  const cond=t.closest('.cond');
+  if(cond){
+    const r=b.rules[+cond.dataset.ri]; if(!r) return;
+    snap([b],'edit');
+    if(t.classList.contains('k')) r.key=t.value.trim()||'BaseType';
+    else if(t.tagName==='TEXTAREA') r.values=t.value.split('\n').map(s=>s.trim()).filter(Boolean).map(v=>({v,q:false}));
+    r.dirty=true; r.raw=null; touch(b); refreshSelected();
+  }
+});
+$('#inspector').addEventListener('change',e=>{
+  const b=curBlock(); if(!b) return;
+  const t=e.target;
+  if(t.id==='palFrom'){ state.palFrom=t.value; renderInspector(); return; }
+  if(['mmSize','mmColor','mmShape'].includes(t.id)){ snap([b],'mm');
+    putRule(b,'MinimapIcon',[$('#mmSize').value,$('#mmColor').value,$('#mmShape').value]); refreshSelected(); return; }
+  if(t.id==='beamColor'){ const bm=getBeam(b); snap([b],'beam');
+    putRule(b,'PlayEffect',bm&&bm.temp?[t.value,'Temp']:[t.value]); refreshSelected(); return; }
+  const cond=t.closest('.cond');
+  if(cond&&t.tagName==='SELECT'){ const r=b.rules[+cond.dataset.ri]; if(!r) return;
+    snap([b],'cond'); r.op=t.value; r.dirty=true; r.raw=null; touch(b); refreshSelected(); }
+});
+
+/* 工具列 */
+$('#nameMode').addEventListener('click',()=>{
+  state.nameMode = state.nameMode==='official'?'author':'official';
+  $('#nameMode').textContent = state.nameMode==='official'?'官方譯名':'作者註解';
+  renderList(true); renderInspector(); renderFloor();
+});
+$('#undoBtn').addEventListener('click',doUndo);
+$('#redoBtn').addEventListener('click',doRedo);
+$('#lintBtn').addEventListener('click',()=>{
+  const gs=lintGroups();
+  const total=gs.reduce((a,g)=>a+g.n,0);
+  $('#modalTitle').textContent=total?`檢查結果 · ${total} 項，${gs.length} 類`:'檢查結果';
+  $('#modalBody').innerHTML= total
+    ? gs.map(g=>`<div style="padding:9px 0;border-bottom:1px solid #ffffff0d">
+        <div style="display:flex;gap:9px;align-items:flex-start">
+          <span class="lv ${g.lv}" style="flex:0 0 42px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;padding:2px 0;text-align:center;border:1px solid;${g.lv==='e'?'color:#e2a89e;border-color:#b0574a55':'color:#dcb87f;border-color:#d0934155'}">${g.lv==='e'?'錯誤':'注意'}</span>
+          <span style="flex:1 1 auto;font-size:12.5px">${esc(g.msg)}
+            <b style="color:var(--gold-hi);font-family:var(--mono);font-size:11px;margin-left:6px">×${g.n}</b></span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin:7px 0 0 51px">${g.blocks.map(b=>
+          `<button class="chip" data-jump="${b.id}" style="padding:3px 7px;font-size:10.5px">${esc(displayName(b))}</button>`).join('')}
+          ${g.n>g.blocks.length?`<span style="color:var(--faint);font-size:10.5px;align-self:center">…還有 ${g.n-g.blocks.length} 個</span>`:''}</div>
+        </div>`).join('')
+    : '<p style="color:var(--muted)">沒有發現問題。字級、顏色範圍、小地圖與光柱參數、關鍵字拼字都通過了。</p>';
+  $('#modalFoot').innerHTML='';
+  $('#modal').classList.add('on');
+});
+$('#modalBody').addEventListener('click',e=>{
+  const j=e.target.closest('[data-jump]'); if(!j) return;
+  $('#modal').classList.remove('on');
+  state.query=''; $('#q').value=''; state.cat=null; state.section=null; state.vis='all';
+  document.querySelectorAll('#vissw button').forEach(x=>x.classList.toggle('on',x.dataset.v==='all'));
+  state.sel=j.dataset.jump;
+  renderOutline(); renderList(true);
+  const arr=visibleBlocks(); const i=arr.findIndex(b=>b.id===state.sel);
+  let g=0; while(state.shown<=i&&g++<300) renderList(false);
+  const row=document.querySelector(`.row[data-id="${state.sel}"]`);
+  if(row) row.scrollIntoView({block:'center'});
+  renderInspector(); renderFloor();
+});
+$('#modalClose').addEventListener('click',()=>$('#modal').classList.remove('on'));
+$('#modal').addEventListener('click',e=>{ if(e.target.id==='modal') $('#modal').classList.remove('on'); });
+
+function confirmBox(title,html,onYes){
+  $('#modalTitle').textContent=title;
+  $('#modalBody').innerHTML=html;
+  $('#modalFoot').innerHTML='<button class="btn" id="cbNo">取消</button><button class="btn primary" id="cbYes">確定套用</button>';
+  $('#modal').classList.add('on');
+  $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
+  $('#cbYes').onclick=()=>{ $('#modal').classList.remove('on'); onYes(); };
+}
+$('#addcat').addEventListener('click',()=>{
+  $('#modalTitle').textContent='自訂分類';
+  $('#modalBody').innerHTML=`
+    <div class="field"><label>分類名稱</label><input class="inp" id="ncName" placeholder="例如 精華與化石"></div>
+    <div class="field"><label>比對關鍵字（半形逗號分隔，會比對 Class、BaseType 與作者註解）</label>
+      <input class="inp" id="ncKeys" placeholder="Essence,Fossil,Resonator"></div>
+    <div class="hintline">自訂分類排在標準分類前面，優先比對。只存在這次操作期間。</div>
+    ${state.userCats.length?'<div style="margin-top:14px">'+state.userCats.map((c,i)=>
+      `<div style="display:flex;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid #ffffff08">
+        <span style="flex:1 1 auto">${esc(c.name)} <span style="color:var(--faint);font-size:11px">${esc(c.keys.join(', '))}</span></span>
+        <button class="btn" data-delcat="${i}">刪除</button></div>`).join('')+'</div>':''}`;
+  $('#modalFoot').innerHTML='<button class="btn" id="cbNo">關閉</button><button class="btn primary" id="cbYes">新增</button>';
+  $('#modal').classList.add('on');
+  $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
+  $('#cbYes').onclick=()=>{
+    const n=$('#ncName').value.trim(), k=$('#ncKeys').value.split(',').map(s=>s.trim()).filter(Boolean);
+    if(!n||!k.length){ toast('名稱和關鍵字都要填'); return; }
+    state.userCats.push({id:'u'+state.userCats.length,name:n,keys:k});
+    for(const b of state.doc.blocks) b._cat=null;
+    $('#modal').classList.remove('on'); renderOutline(); renderList(true); toast('已新增分類「'+n+'」');
+  };
+  $('#modalBody').querySelectorAll('[data-delcat]').forEach(btn=>btn.onclick=()=>{
+    state.userCats.splice(+btn.dataset.delcat,1);
+    for(const b of state.doc.blocks) b._cat=null;
+    $('#modal').classList.remove('on'); renderOutline(); renderList(true);
+  });
+});
+
+/* 檔案 */
+function addDoc(text,name){
+  const d=parseDoc(text,name);
+  state.docs.push(d); selectDoc(d);
+  $('#gate').classList.add('off'); $('#app').classList.add('on');
+}
+function selectDoc(d){
+  state.doc=d; state.sel=null; state.section=null; state.cat=null; state.query=''; state.open=new Set();
+  state.undo=[]; state.redo=[]; state.palFrom=d.name;
+  const first=d.sections.find(s=>s.depth===1); if(first) state.open.add(first.num);
+  $('#q').value=''; syncUndo(); renderAll();
+}
+function loadFiles(list){
+  [...list].forEach(f=>{ const rd=new FileReader(); rd.onload=()=>addDoc(rd.result,f.name); rd.readAsText(f,'utf-8'); });
+}
+$('#fileinput').addEventListener('change',e=>{ loadFiles(e.target.files); e.target.value=''; });
+$('#pick').addEventListener('click',()=>$('#fileinput').click());
+$('#gatePick').addEventListener('click',()=>$('#fileinput').click());
+const dz=$('#dz');
+['dragenter','dragover'].forEach(t=>document.addEventListener(t,e=>{ e.preventDefault(); if(dz) dz.classList.add('hot'); }));
+['dragleave','drop'].forEach(t=>document.addEventListener(t,e=>{ e.preventDefault(); if(dz) dz.classList.remove('hot'); }));
+document.addEventListener('drop',e=>{ if(e.dataTransfer.files.length) loadFiles(e.dataTransfer.files); });
+
+function download(toTW){
+  const d=state.doc; if(!d) return;
+  const blob=new Blob([serializeDoc(d,toTW)],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=d.name.replace(/(\.filter)?$/i,'')+(toTW?'_繁體':'_edited')+'.filter';
+  a.click(); URL.revokeObjectURL(a.href);
+  d.dirty=false; renderFiles(); toast('已匯出 '+a.download);
+}
+$('#save').addEventListener('click',()=>download(false));
+$('#saveTW').addEventListener('click',()=>download(true));
+
+window.addEventListener('beforeunload',e=>{
+  if(state.docs.some(d=>d.dirty)){ e.preventDefault(); e.returnValue=''; }
+});
+document.addEventListener('keydown',e=>{
+  if(!state.doc) return;
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){ e.preventDefault(); e.shiftKey?doRedo():doUndo(); return; }
+  const tag=(e.target.tagName||'').toLowerCase();
+  if(tag==='input'||tag==='textarea'||tag==='select') return;
+  if(e.key!=='ArrowDown'&&e.key!=='ArrowUp') return;
+  const arr=visibleBlocks(); if(!arr.length) return;
+  e.preventDefault();
+  let i=arr.findIndex(x=>x.id===state.sel);
+  i = e.key==='ArrowDown'?Math.min(arr.length-1,i+1):Math.max(0,i-1);
+  if(i<0) i=0;
+  state.sel=arr[i].id;
+  let g=0; while(state.shown<=i&&g++<300) renderList(false);
+  document.querySelectorAll('.row.on').forEach(r=>r.classList.remove('on'));
+  const row=document.querySelector(`.row[data-id="${state.sel}"]`);
+  if(row){ row.classList.add('on'); row.scrollIntoView({block:'nearest'}); }
+  renderInspector(); renderFloor();
+});
+let tt;
+function toast(msg){ const el=$('#toast'); el.textContent=msg; el.classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>el.classList.remove('on'),2200); }
+</script>
