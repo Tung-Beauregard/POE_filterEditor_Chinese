@@ -223,6 +223,7 @@ input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--gold
 .gitem input{margin-top:3px;accent-color:var(--gold)}
 .gitem b{display:block;color:var(--text);font-weight:500}
 .gitem small{display:block;color:var(--faint);font-family:var(--mono);font-size:9.5px;word-break:break-word}
+.gitem .cardrw{display:block;color:var(--gold-dim);font-style:normal;font-size:10.5px;margin-top:2px}
 .tierrows{display:flex;flex-direction:column;gap:8px;margin:10px 0}
 .tierrow{display:grid;grid-template-columns:104px repeat(3,minmax(84px,1fr)) 34px;gap:8px;align-items:end;padding:10px;border:1px solid var(--rule);background:#00000035}
 .tierrow label{display:block;color:var(--muted);font-size:10.5px}
@@ -242,6 +243,7 @@ input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--gold
 .presetitem input{accent-color:var(--gold)}
 .presetitem b{font-weight:500}
 .presetitem small{color:var(--faint);font-size:9.5px;font-family:var(--mono)}
+.presetitem small.cardrw{color:var(--gold-dim);font-family:var(--ui);font-size:10px}
 .presetitem em{font-style:normal;color:var(--gold-dim);font-size:10px;white-space:nowrap}
 .warn{font-size:11px;color:var(--warn);margin-top:5px}
 .hintline{font-size:11px;color:var(--faint);margin-top:6px;line-height:1.7}
@@ -7191,10 +7193,13 @@ function openGroupManager(source){
     <div style="display:flex;gap:6px;margin-top:10px">
       <button class="chip" id="groupAll">全選</button><button class="chip" id="groupNone">取消全選</button>
     </div>
-    <div class="gitems">${br.values.map((v,i)=>`<label class="gitem">
+    <div class="gitems">${br.values.map((v,i)=>{
+      const ci=cardInfo(v.v);
+      return `<label class="gitem">
       <input type="checkbox" data-i="${i}">
-      <span><b>${esc(tr(v.v)||v.v)}</b>${tr(v.v)?`<small>${esc(v.v)}</small>`:''}</span>
-    </label>`).join('')}</div>
+      <span><b>${esc(tr(v.v)||v.v)}</b>${tr(v.v)?`<small>${esc(v.v)}</small>`:''}${
+        ci?`<em class="cardrw">集 ${ci.stack} 張 → ${esc(ci.reward||'—')}</em>`:''}</span>
+    </label>`;}).join('')}</div>
     <div class="field"><label>拆分後的新群組註解（可留空，名稱仍會取自物品）</label>
       <input class="inp" id="splitName" placeholder="例如 高價碎片／凡人的無知"></div>
     <div class="field"><label>移動到其他群組</label>
@@ -7336,12 +7341,19 @@ function styleTierPreview(t){
 }
 function renderPresetItemList(items,query){
   const q=String(query||'').trim().toLowerCase();
-  const shown=items.filter(x=>!q||[x.v,tr(x.v)||'',x.cat].join(' ').toLowerCase().includes(q));
-  $('#presetItems').innerHTML=shown.length?shown.map(x=>`<label class="presetitem">
+  const shown=items.filter(x=>{
+    if(!q) return true;
+    const ci=cardInfo(x.v);
+    return [x.v,tr(x.v)||'',x.cat,ci?ci.reward:''].join(' ').toLowerCase().includes(q);
+  });
+  $('#presetItems').innerHTML=shown.length?shown.map(x=>{
+    const ci=cardInfo(x.v);
+    return `<label class="presetitem">
     <input type="checkbox" data-item="${esc(x.v)}">
-    <span><b>${esc(tr(x.v)||x.v)}</b>${tr(x.v)?` <small>${esc(x.v)}</small>`:''}</span>
+    <span><b>${esc(tr(x.v)||x.v)}</b>${tr(x.v)?` <small>${esc(x.v)}</small>`:''}${
+      ci?` <small class="cardrw">集 ${ci.stack} → ${esc(ci.reward||'—')}</small>`:''}</span>
     <em>${x.hidden?'<span style="color:#dd9d92">目前隱藏</span> · ':''}${esc(x.cat)}</em>
-  </label>`).join(''):'<div class="empty" style="padding:28px">找不到符合的物品</div>';
+  </label>`;}).join(''):'<div class="empty" style="padding:28px">找不到符合的物品</div>';
   return shown.length;
 }
 function presetSelectedValues(){
