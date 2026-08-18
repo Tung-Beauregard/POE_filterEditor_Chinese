@@ -230,6 +230,29 @@ input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--gold
 .cardtbl tr.uq .cr::after{content:' ◆傳奇';font-size:8.5px;color:#a4672c;letter-spacing:.05em}
 .addcond{width:100%;padding:7px;border:1px dashed var(--rule-lit);color:var(--muted);font-size:11.5px}
 .addcond:hover{border-color:var(--gold-dim);color:var(--gold-hi)}
+
+.irlist{display:flex;flex-direction:column;gap:7px}
+.irow{border:1px solid var(--rule);background:#00000038;padding:9px 10px;border-left:4px solid transparent}
+.irow.s{border-left-color:var(--show)}
+.irow.h{border-left-color:var(--hide);background:repeating-linear-gradient(135deg,#00000038 0 6px,#b0574a0d 6px 12px)}
+.irhead{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.irn{flex:0 0 auto;width:18px;height:18px;line-height:17px;text-align:center;font-family:var(--mono);
+  font-size:10px;color:var(--faint);border:1px solid var(--rule-lit)}
+.irseg{flex:0 0 auto;width:118px}
+.irseg button{padding:4px 0;font-size:10px;letter-spacing:.08em}
+.irhead .gl{font-size:13px;max-width:220px}
+.irshared{flex:1 1 auto;text-align:right;font-size:10.5px;color:var(--faint);white-space:nowrap}
+.irbody{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:8px}
+.irbody > label{flex:0 0 auto;font-size:11px;color:var(--muted)}
+.irbody input[type=number]{width:70px;background:#00000059;border:1px solid var(--rule-lit);
+  padding:4px 6px;font-family:var(--mono);font-size:12px;color:var(--gold-hi);outline:none;text-align:center}
+.irbody input[type=number]:focus{border-color:var(--gold)}
+.irbody input::placeholder{color:var(--faint);font-size:10.5px}
+.irbody .tilde{color:var(--gold-dim)}
+.irbody .unit{font-size:11px;color:var(--muted)}
+.ireff{flex:1 1 auto;font-size:11px;color:var(--gold-dim);min-width:0}
+.irweird{font-family:var(--mono);font-size:11px;color:var(--warn)}
+.irother{margin-top:6px;font-size:10.5px;color:var(--faint);font-family:var(--mono);line-height:1.6}
 .groupchips{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 10px}
 .stackedit{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:2px 0 10px;
   padding:9px 10px;border:1px solid var(--gold-dim);background:#c8aa6e0f}
@@ -252,6 +275,7 @@ input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--gold
 .groupchip{padding:3px 7px;border:1px solid var(--rule-lit);background:#00000038;color:var(--text);font-size:11px}
 .groupchip small{color:var(--faint);margin-left:4px;font-family:var(--mono)}
 .groupactions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.groupactions .btn{padding:7px 6px;font-size:11.5px;text-align:center}
 .groupactions .btn{width:100%}
 .gitems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 0 14px}
 .gitem{display:flex;align-items:flex-start;gap:9px;padding:9px;border:1px solid var(--rule);background:#00000035;cursor:pointer}
@@ -5522,7 +5546,7 @@ Winter's Embrace	2	恐懼之環 三個固定詞綴 追憶之	1</script>
    更新偵測會重新抓取這個頁面、用正規式讀出上面那行的版本字串來比對，
    所以這兩個常數必須放在整份程式的最前面。
    ================================================================== */
-const APP_VERSION='1.2.0';
+const APP_VERSION='1.3.0';
 const APP_BUILD='2026-08-18';
 
 /* ======================================================================
@@ -6557,6 +6581,7 @@ function renderInspector(){
       groupOpen?'收合物品清單':`顯示全部 ${bt.values.length} 項`}</button>`:''}
     <div class="groupactions">
       <button class="btn primary" id="manageGroup">拆分／移動物品</button>
+      <button class="btn" id="itemRules">這些物品的所有規則</button>
       ${stackAction}
     </div>
     <div class="hintline">${stackHint}</div>
@@ -6691,6 +6716,7 @@ $('#files').addEventListener('click',e=>{
 $('#inspector').addEventListener('click',e=>{
   const b=curBlock(); if(!b) return;
   if(e.target.closest('#manageGroup')){ openGroupManager(b); return; }
+  if(e.target.closest('#itemRules')){ openItemRulesFor(b); return; }
   if(e.target.closest('#openPal')){ openPalettePicker(b); return; }
   if(e.target.closest('#openScope')){ openScopePicker(b); return; }
   if(e.target.closest('#stackTiers')){ openStackTierManager(b); return; }
@@ -7105,6 +7131,143 @@ function openScopePicker(b){
          `<span class="gl" style="${labelStyle(x,12)}">${esc(displayName(x))}</span>`).join('')}</div>`,
       ()=>{ snap(list,'batch'); for(const x of list) applyPalette(x,p);
             renderList(true); renderFiles(); syncLint(); toast(`已套用到 ${list.length} 個區塊`); });
+  };
+}
+
+/* ======================================================================
+   單一物品的所有規則總覽
+   ---------------------------------------------------------------------
+   同一個物品常常散在多條規則裡（不同數量門檻、不同區域等級）。
+   這裡把它們依檔案順序列出來，可以直接改 Show／Hide、改數量範圍，
+   或把這個物品從共用群組裡拆成獨立規則。
+   ================================================================== */
+function blocksWithItem(v){
+  return state.doc.blocks.filter(b=>{
+    const r=positiveBaseRule(b);
+    return r&&r.values.some(x=>x.v===v);
+  });
+}
+/* 這條規則除了 BaseType 與 StackSize 之外的其他條件，用來提醒為什麼可能不會命中 */
+function otherCondText(b){
+  const out=[];
+  for(const r of b.rules){
+    if(r.unknown||isActionRule(r)) continue;
+    const k=r.key.toLowerCase();
+    if(k==='basetype'||k==='stacksize'||k==='class') continue;
+    out.push(r.key+' '+(r.op?r.op+' ':'')+r.values.map(v=>v.v).join(' '));
+  }
+  return out.join('　');
+}
+function itemRulesRow(b,v,idx){
+  const r=positiveBaseRule(b);
+  const shared=r?r.values.length:1;
+  const fs=getNum(b,'SetFontSize')||32;
+  const s=stackRules(b);
+  const lo=stackNum(s.lo), hi=stackNum(s.hi);
+  const weird=s.other.length||s.all.length>2;
+  const other=otherCondText(b);
+  return `<div class="irow ${b.type==='Show'?'s':'h'}" data-id="${b.id}">
+    <div class="irhead">
+      <span class="irn">${idx+1}</span>
+      <div class="seg irseg">
+        <button class="${b.type==='Show'?'on':''}" data-ir-type="Show">SHOW</button>
+        <button class="${b.type==='Hide'?'on h':''}" data-ir-type="Hide">HIDE</button>
+      </div>
+      <span class="gl" style="${labelStyle(b,Math.max(12,Math.min(17,fs*0.34+6)))}">${esc(displayName(b))}</span>
+      <span class="irshared">${shared>1?`與其他 ${shared-1} 項共用`:'獨立規則'}</span>
+    </div>
+    <div class="irbody">
+      <label>數量</label>
+      ${weird?`<span class="irweird">${esc(s.all.map(x=>(x.op||'=')+' '+x.values.map(v=>v.v).join(' ')).join('　'))}</span>`
+      :`<input type="number" class="irlo" min="1" placeholder="不限" value="${lo===null?'':lo}">
+        <span class="tilde">～</span>
+        <input type="number" class="irhi" min="1" placeholder="不限" value="${hi===null?'':hi}">
+        <span class="unit">個</span>`}
+      <span class="ireff">${esc(rangeText(b)||'全部數量')}</span>
+      ${shared>1?`<button class="chip" data-ir-split="1">拆成獨立規則</button>`:''}
+    </div>
+    ${other?`<div class="irother">其他條件：${esc(other)}</div>`:''}
+  </div>`;
+}
+function openItemRules(v){
+  const list=blocksWithItem(v);
+  const zh=tr(v)||v;
+  $('#modalTitle').textContent=`${zh} · 共 ${list.length} 條規則`;
+  const render=()=>{
+    const cur=blocksWithItem(v);
+    $('#modalBody').innerHTML= cur.length?`
+      <p style="margin:0 0 4px;color:var(--muted)">依檔案順序由上而下，<b style="color:var(--gold-hi)">上面的規則先生效</b>。
+      可以直接改 SHOW／HIDE 與數量範圍。</p>
+      <p style="margin:0 0 12px;color:var(--faint);font-size:11.5px">「與其他 N 項共用」代表這條規則同時管著別的物品，改顏色會一起變；按「拆成獨立規則」可以只讓 ${esc(zh)} 用自己的樣式。</p>
+      <div class="irlist">${cur.map((b,i)=>itemRulesRow(b,v,i)).join('')}</div>`
+      : `<p style="color:var(--muted)">目前沒有任何規則包含 ${esc(zh)}。</p>`;
+    $('#modalTitle').textContent=`${zh} · 共 ${cur.length} 條規則`;
+  };
+  render();
+  $('#modalFoot').innerHTML='';
+  $('#modal').classList.add('on');
+
+  $('#modalBody').onclick=e=>{
+    const row=e.target.closest('.irow'); if(!row) return;
+    const b=state.doc.blocks.find(x=>x.id===row.dataset.id); if(!b) return;
+    const t=e.target.closest('[data-ir-type]');
+    if(t){ if(b.type!==t.dataset.irType){ snap([b],'ir-type'); b.type=t.dataset.irType; touch(b); }
+      render(); renderList(true); renderInspector(); return; }
+    if(e.target.closest('[data-ir-split]')){
+      snapDoc('ir-split');
+      const src=positiveBaseRule(b);
+      const solo=cloneBlock(b);
+      putRule(solo,'BaseType',[v],src.op||'==');
+      solo.headComment=(tr(v)||v)+((b.headComment||'').trim()?' · 由「'+T((b.headComment||'').trim()).slice(0,20)+'」拆出':'');
+      putRule(b,'BaseType',src.values.filter(x=>x.v!==v).map(x=>x.v),src.op||'==');
+      insertBlockBefore(b,solo);
+      state.sel=solo.id;
+      render(); renderAll(); toast(`已把「${tr(v)||v}」拆成獨立規則`);
+      return;
+    }
+  };
+  $('#modalBody').oninput=e=>{
+    const row=e.target.closest('.irow'); if(!row) return;
+    const b=state.doc.blocks.find(x=>x.id===row.dataset.id); if(!b) return;
+    const isLo=e.target.classList.contains('irlo'), isHi=e.target.classList.contains('irhi');
+    if(!isLo&&!isHi) return;
+    const raw=e.target.value.trim();
+    snap([b],'ir-stack');
+    const s=stackRules(b), target=isLo?s.lo:s.hi;
+    if(raw===''){ if(target){ b.rules=b.rules.filter(r=>r!==target); touch(b); } }
+    else{
+      const n=parseInt(raw,10); if(!Number.isFinite(n)||n<1) return;
+      if(target) patchRule(b,b.rules.indexOf(target),{values:[{v:String(n),q:false}],op:isLo?'>=':'<='});
+      else{ b.rules=b.rules.concat([{indent:b.indent==='\t'?'\t':'    ',key:'StackSize',
+        op:isLo?'>=':'<=',values:[{v:String(n),q:false}],comment:null,unknown:false,dirty:true,raw:null}]); touch(b); }
+    }
+    /* 只更新受影響的「實際攔截」文字，避免輸入中重繪讓游標跳掉 */
+    for(const el of $('#modalBody').querySelectorAll('.irow')){
+      const bb=state.doc.blocks.find(x=>x.id===el.dataset.id);
+      const eff=el.querySelector('.ireff');
+      if(bb&&eff) eff.textContent=rangeText(bb)||'全部數量';
+    }
+    renderList(true); renderInspector();
+  };
+}
+/* 進入點：只有一項就直接開，多項先讓使用者選 */
+function openItemRulesFor(b){
+  const r=positiveBaseRule(b); if(!r||!r.values.length) return;
+  if(r.values.length===1){ openItemRules(r.values[0].v); return; }
+  $('#modalTitle').textContent='選一個物品查看它的所有規則';
+  $('#modalBody').innerHTML=`
+    <p style="margin:0 0 10px;color:var(--muted)">這條規則同時管著 ${r.values.length} 個物品，選一個看它散在哪些規則裡。</p>
+    <div class="gitems">${r.values.map(v=>{
+      const n=blocksWithItem(v.v).length;
+      return `<button class="gitem" data-pick="${esc(v.v)}" style="cursor:pointer">
+        <span><b>${esc(tr(v.v)||v.v)}</b>${tr(v.v)?`<small>${esc(v.v)}</small>`:''}
+        <em class="cardrw">${n} 條規則</em></span></button>`;
+    }).join('')}</div>`;
+  $('#modalFoot').innerHTML='';
+  $('#modal').classList.add('on');
+  $('#modalBody').onclick=e=>{
+    const p=e.target.closest('[data-pick]'); if(!p) return;
+    openItemRules(p.dataset.pick);
   };
 }
 function existingTier(base,n){
