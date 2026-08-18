@@ -228,6 +228,20 @@ input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--gold
 .addcond{width:100%;padding:7px;border:1px dashed var(--rule-lit);color:var(--muted);font-size:11.5px}
 .addcond:hover{border-color:var(--gold-dim);color:var(--gold-hi)}
 .groupchips{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 10px}
+.stackedit{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:2px 0 10px;
+  padding:9px 10px;border:1px solid var(--gold-dim);background:#c8aa6e0f}
+.stackedit > label{flex:0 0 auto;font-size:11.5px;color:var(--gold-hi)}
+.stackedit select{background:#00000059;border:1px solid var(--rule-lit);font-family:var(--mono);
+  font-size:12px;padding:4px 6px;outline:none;color:var(--text)}
+.stackedit input[type=number]{width:88px;background:#00000059;border:1px solid var(--rule-lit);
+  padding:4px 7px;font-family:var(--mono);font-size:12.5px;color:var(--gold-hi);outline:none}
+.stackedit input[type=number]:focus,.stackedit select:focus{border-color:var(--gold)}
+.stackedit > span{flex:1 1 auto;font-size:11px;color:var(--muted);min-width:0}
+.stackedit .x{flex:0 0 auto;color:var(--faint);padding:2px 6px;font-size:12px}
+.stackedit .x:hover{color:var(--hide)}
+.stackedit.ro{color:var(--muted);font-size:11.5px;display:block}
+.stackedit.ro b{color:var(--gold-hi);font-family:var(--mono)}
+.stackedit.ro small{display:block;color:var(--faint);margin-top:3px}
 .groupchip{padding:3px 7px;border:1px solid var(--rule-lit);background:#00000038;color:var(--text);font-size:11px}
 .groupchip small{color:var(--faint);margin-left:4px;font-family:var(--mono)}
 .groupactions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
@@ -5501,7 +5515,7 @@ Winter's Embrace	2	恐懼之環 三個固定詞綴 追憶之	1</script>
    更新偵測會重新抓取這個頁面、用正規式讀出上面那行的版本字串來比對，
    所以這兩個常數必須放在整份程式的最前面。
    ================================================================== */
-const APP_VERSION='1.0.0';
+const APP_VERSION='1.1.0';
 const APP_BUILD='2026-08-18';
 
 /* ======================================================================
@@ -6482,6 +6496,21 @@ function renderInspector(){
   const bt=positiveBaseRule(b);
   const isCurrency=classify(b)==='1';
   const stackRule=findRule(b,'StackSize');
+  const groupOpen=state.groupOpen===b.id;
+  /* 有 StackSize 的區塊，找出同群組但沒有數量條件的「基準規則」，
+     這樣站在門檻規則上也能管理整組門檻，不會只看到一顆用不了的按鈕 */
+  const stackBase=stackRule?findStackBase(b):null;
+  let stackAction='', stackHint='拆分會複製目前規則與配色；移動只會列出 SHOW／HIDE、Class、其他條件和堆疊條件都相同的安全目標群組。';
+  if(!stackRule&&isCurrency){
+    stackAction='<button class="btn" id="stackTiers">依掉落數量分色</button>';
+  }else if(stackRule&&stackBase){
+    stackAction='<button class="btn" id="stackTiersBase">管理整組數量門檻</button>';
+    stackHint='這是一條數量門檻規則。上面可以直接改門檻，或按「管理整組數量門檻」一次調整同群組的所有門檻與配色。';
+  }else if(stackRule){
+    stackHint='這是一條數量門檻規則，上面可以直接修改門檻。同群組找不到沒有數量條件的基準規則，所以無法一次管理整組。';
+  }else if(!isCurrency){
+    stackHint='拆分會複製目前規則與配色；移動只會列出條件相同的安全目標群組。數量分色只適用於通貨群組。';
+  }
 
   el.innerHTML=`
   ${issues.length?`<div class="sec"><h3>檢查<span>${issues.length} 項</span></h3>
@@ -6493,23 +6522,12 @@ function renderInspector(){
       <button class="${b.type==='Show'?'on':''}" data-t="Show">SHOW 顯示</button>
       <button class="${b.type==='Hide'?'on h':''}" data-t="Hide">HIDE 隱藏</button>
     </div>
-    ${ns?`<div class="hintline">名稱取自 ${ns.key}：${esc(ns.vals.slice(0,3).map(v=>(tr(v)?tr(v)+'（'+v+'）':v)).join('、'))}${ns.vals.length>3?' …':''}</div>`:''}
+    ${(ns&&!bt)?`<div class="hintline">名稱取自 ${ns.key}：${esc(ns.vals.slice(0,3).map(v=>(tr(v)?tr(v)+'（'+v+'）':v)).join('、'))}${ns.vals.length>3?' …':''}</div>`:''}
     <div class="field" style="margin-top:10px">
       <label>作者註解</label>
       <input class="inp" id="hc" value="${esc(T(b.headComment||''))}">
     </div>
   </div>
-
-  ${bt?`<div class="sec">
-    <h3>物品群組<span>${bt.values.length} 項${stackRule?' · StackSize '+esc(stackRule.op||'=')+' '+esc(stackRule.values.map(v=>v.v).join(' ')):''}</span></h3>
-    <div class="groupchips">${bt.values.slice(0,12).map(v=>`<span class="groupchip">${esc(tr(v.v)||v.v)}${tr(v.v)?`<small>${esc(v.v)}</small>`:''}</span>`).join('')}
-      ${bt.values.length>12?`<span class="groupchip">…還有 ${bt.values.length-12} 項</span>`:''}</div>
-    <div class="groupactions">
-      <button class="btn primary" id="manageGroup">拆分／移動物品</button>
-      ${isCurrency&&!stackRule?'<button class="btn" id="stackTiers">依掉落數量分色</button>':'<button class="btn" disabled title="只適用於沒有 StackSize 條件的通貨群組">依掉落數量分色</button>'}
-    </div>
-    <div class="hintline">拆分會複製目前規則與配色；移動只會列出 SHOW／HIDE、Class、其他條件和堆疊條件都相同的安全目標群組。</div>
-  </div>`:''}
 
   <div class="sec">
     <h3>顏色<span>點色塊開調色盤</span></h3>
@@ -6534,6 +6552,20 @@ function renderInspector(){
     <div class="scope"><button class="chip" id="scopeCat">套用目前顏色到「${esc(scopeName)}」（${scopeList.length}）</button>
       <button class="chip" id="scopeList">套用到目前清單（${visibleBlocks().length}）</button></div>
   </div>
+
+  ${bt?`<div class="sec">
+    <h3>物品群組<span>${bt.values.length} 項</span></h3>
+    ${stackEditorHTML(b,stackRule)}
+    <div class="groupchips">${bt.values.slice(0,groupOpen?bt.values.length:6).map(v=>
+        `<span class="groupchip">${esc(tr(v.v)||v.v)}${tr(v.v)?`<small>${esc(v.v)}</small>`:''}</span>`).join('')}</div>
+    ${bt.values.length>6?`<button class="chip" id="groupToggle" style="width:100%;margin-bottom:9px">${
+      groupOpen?'收合物品清單':`顯示全部 ${bt.values.length} 項`}</button>`:''}
+    <div class="groupactions">
+      <button class="btn primary" id="manageGroup">拆分／移動物品</button>
+      ${stackAction}
+    </div>
+    <div class="hintline">${stackHint}</div>
+  </div>`:''}
 
   <div class="sec">
     <h3>小地圖圖示</h3>
@@ -6665,6 +6697,20 @@ $('#inspector').addEventListener('click',e=>{
   const b=curBlock(); if(!b) return;
   if(e.target.closest('#manageGroup')){ openGroupManager(b); return; }
   if(e.target.closest('#stackTiers')){ openStackTierManager(b); return; }
+  if(e.target.closest('#stackTiersBase')){
+    const base=findStackBase(b);
+    if(base){ state.sel=base.id; renderList(true); openStackTierManager(base); }
+    return;
+  }
+  if(e.target.closest('#groupToggle')){
+    state.groupOpen = state.groupOpen===b.id ? null : b.id;
+    renderInspector(); return;
+  }
+  if(e.target.closest('#stackDel')){
+    snapDoc('stack-remove');
+    dropRule(b,'StackSize');
+    renderInspector(); refreshSelected(); toast('已移除數量條件'); return;
+  }
   const sh=e.target.closest('#showhide button');
   if(sh){ if(b.type!==sh.dataset.t){ snap([b],'showhide'); b.type=sh.dataset.t; touch(b); } renderInspector(); refreshSelected(); return; }
   const cx=e.target.closest('.ci .x');
@@ -6728,6 +6774,13 @@ $('#inspector').addEventListener('input',e=>{
   const b=curBlock(); if(!b) return;
   const t=e.target;
   if(t.id==='hc'){ snap([b],'edit'); b.headComment=t.value; touch(b); refreshSelected(); return; }
+  if(t.id==='stackNum'){
+    const n=parseInt(t.value,10);
+    if(!Number.isFinite(n)||n<1) return;
+    snap([b],'edit');
+    putRule(b,'StackSize',[n],$('#stackOp')?$('#stackOp').value:'>=');
+    refreshSelected(); return;
+  }
   if(t.id==='fsr'){ snap([b],'edit'); putRule(b,'SetFontSize',[t.value]);
     const lab=t.closest('.field').querySelector('label b'); if(lab) lab.textContent=t.value;
     refreshSelected(); return; }
@@ -6766,6 +6819,11 @@ $('#inspector').addEventListener('change',e=>{
   if(t.id==='palFrom'){ state.palFrom=t.value; renderInspector(); return; }
   if(['mmSize','mmColor','mmShape'].includes(t.id)){ snap([b],'mm');
     putRule(b,'MinimapIcon',[$('#mmSize').value,$('#mmColor').value,$('#mmShape').value]); refreshSelected(); return; }
+  if(t.id==='stackOp'){
+    const r=findRule(b,'StackSize'); if(!r||!r.values.length) return;
+    snap([b],'stack'); putRule(b,'StackSize',[r.values[0].v],t.value);
+    refreshSelected(); return;
+  }
   if(t.id==='beamColor'){ const bm=getBeam(b); snap([b],'beam');
     putRule(b,'PlayEffect',bm&&bm.temp?[t.value,'Temp']:[t.value]); refreshSelected(); return; }
   const cond=t.closest('.cond');
@@ -6920,6 +6978,28 @@ function tierRowHTML(n,fg,bg,bd){
     <label>背景色<input class="tiercolor tierbg" type="color" value="${bg}"></label>
     <label>邊框色<input class="tiercolor tierbd" type="color" value="${bd}"></label>
     <button class="tierremove" title="移除此門檻">✕</button>
+  </div>`;
+}
+/* 同群組但沒有 StackSize 條件的基準規則（數量門檻都是從它複製出來的） */
+function findStackBase(b){
+  if(!findRule(b,'StackSize')) return null;
+  return state.doc.blocks.find(x=>x!==b&&x.type===b.type&&x.section===b.section&&
+    baseTypeKey(x)===baseTypeKey(b)&&selectorKey(x)===selectorKey(b)&&!findRule(x,'StackSize'))||null;
+}
+/* 數量門檻的行內編輯器：直接改運算子與數字，不用跑去「條件」區找 */
+const STACK_OPS=['>=','>','=','<=','<'];
+function stackEditorHTML(b,rule){
+  if(!rule) return '';
+  if(rule.values.length!==1)
+    return `<div class="stackedit ro">掉落數量　<b>${esc((rule.op||'=')+' '+rule.values.map(v=>v.v).join(' '))}</b>
+      <small>多重數值請到下方「條件」修改</small></div>`;
+  const op=rule.op||'=';
+  return `<div class="stackedit">
+    <label>掉落數量門檻</label>
+    <select id="stackOp">${STACK_OPS.map(o=>`<option ${o===op?'selected':''}>${o}</option>`).join('')}</select>
+    <input type="number" id="stackNum" min="1" step="1" value="${esc(rule.values[0].v)}">
+    <span>個以上才套用這條規則</span>
+    <button class="x" id="stackDel" title="移除數量條件">✕</button>
   </div>`;
 }
 function existingTier(base,n){
