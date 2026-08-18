@@ -199,6 +199,9 @@ input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--gold
 .chip{padding:5px 9px;border:1px solid var(--rule-lit);font-size:11px;color:var(--muted);transition:.12s}
 .chip:hover{border-color:var(--gold-dim);color:var(--gold-hi);background:#c8aa6e14}
 .palette{display:flex;flex-wrap:wrap;gap:5px;max-height:184px;overflow-y:auto;padding:2px 1px}
+.palette.big{max-height:none;gap:7px}
+.palette.big .gl{font-size:13px;max-width:200px}
+.chip.lit{color:var(--gold-hi);border-color:var(--gold-dim);background:#c8aa6e14}
 .pchip{border:1px solid transparent;padding:1px;line-height:0}
 .pchip:hover{border-color:var(--gold-dim)}
 .pchip.on{border-color:var(--gold)}
@@ -231,12 +234,16 @@ input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--gold
 .stackedit{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:2px 0 10px;
   padding:9px 10px;border:1px solid var(--gold-dim);background:#c8aa6e0f}
 .stackedit > label{flex:0 0 auto;font-size:11.5px;color:var(--gold-hi)}
-.stackedit select{background:#00000059;border:1px solid var(--rule-lit);font-family:var(--mono);
-  font-size:12px;padding:4px 6px;outline:none;color:var(--text)}
-.stackedit input[type=number]{width:88px;background:#00000059;border:1px solid var(--rule-lit);
-  padding:4px 7px;font-family:var(--mono);font-size:12.5px;color:var(--gold-hi);outline:none}
-.stackedit input[type=number]:focus,.stackedit select:focus{border-color:var(--gold)}
-.stackedit > span{flex:1 1 auto;font-size:11px;color:var(--muted);min-width:0}
+.stackrange{flex:1 1 auto;display:flex;align-items:center;gap:6px;min-width:0}
+.stackrange input[type=number]{width:0;flex:1 1 0;min-width:56px;background:#00000059;
+  border:1px solid var(--rule-lit);padding:5px 7px;font-family:var(--mono);font-size:12.5px;
+  color:var(--gold-hi);outline:none;text-align:center}
+.stackrange input[type=number]:focus{border-color:var(--gold)}
+.stackrange input::placeholder{color:var(--faint);font-size:11px}
+.stackrange .tilde{flex:0 0 auto;color:var(--gold-dim)}
+.stackrange .unit{flex:0 0 auto;font-size:11px;color:var(--muted)}
+.stackeff{flex:0 0 100%;font-size:11px;color:var(--muted);margin-top:2px}
+.stackeff b{color:var(--gold-hi);font-weight:500}
 .stackedit .x{flex:0 0 auto;color:var(--faint);padding:2px 6px;font-size:12px}
 .stackedit .x:hover{color:var(--hide)}
 .stackedit.ro{color:var(--muted);font-size:11.5px;display:block}
@@ -5515,7 +5522,7 @@ Winter's Embrace	2	恐懼之環 三個固定詞綴 追憶之	1</script>
    更新偵測會重新抓取這個頁面、用正規式讀出上面那行的版本字串來比對，
    所以這兩個常數必須放在整份程式的最前面。
    ================================================================== */
-const APP_VERSION='1.1.0';
+const APP_VERSION='1.2.0';
 const APP_BUILD='2026-08-18';
 
 /* ======================================================================
@@ -6485,12 +6492,6 @@ function renderInspector(){
   const conds=b.rules.filter(r=>!r.unknown&&!/^(Set|Play|Minimap|Custom|Disable|Enable)/i.test(r.key));
   const palSrc=state.docs.find(d=>d.name===state.palFrom)||state.doc;
   const pal=paletteOf(palSrc);
-  const cp=curPalette(b);
-  const curKey=[cp.fg,cp.bg,cp.bd].map(c=>c?`${c.r},${c.g},${c.b},${c.a}`:'-').join('|');
-  const scopeName=state.view==='taxonomy'?catName(classify(b)):'這一節';
-  const scopeList=state.view==='taxonomy'
-    ? state.doc.blocks.filter(x=>classify(x)===classify(b))
-    : state.doc.blocks.filter(x=>x.section===b.section);
   const issues=lint(b);
   const ns=nameSource(b);
   const bt=positiveBaseRule(b);
@@ -6537,25 +6538,19 @@ function renderInspector(){
       <button class="chip" id="bdBg">邊框＝背景色</button>
       <button class="chip" id="bdOff">移除邊框</button>
     </div>
+    <div class="quick" style="margin-top:7px">
+      <button class="chip lit" id="openPal">配色盤（${pal.length} 組）</button>
+      <button class="chip" id="openScope">批次套用顏色…</button>
+    </div>
     <div class="field" style="margin-top:12px">
       <label>字級 <b style="color:var(--gold-hi);font-family:var(--mono)">${fs==null?'預設 32':fs}</b></label>
       <input type="range" id="fsr" min="18" max="70" step="1" value="${fs||32}" style="width:100%">
     </div>
   </div>
 
-  <div class="sec">
-    <h3>配色盤<span>${pal.length} 組</span></h3>
-    ${state.docs.length>1?`<select class="inp" id="palFrom" style="margin-bottom:9px">
-      ${state.docs.map(d=>`<option ${d===palSrc?'selected':''}>${esc(d.name)}</option>`).join('')}</select>`:''}
-    <div class="palette">${pal.map((p,i)=>`<button class="pchip ${p.k===curKey?'on':''}" data-p="${i}" title="${esc(p.label)} · ${p.count} 個區塊">
-      <span class="gl" style="${palStyle(p)}">${esc(p.label)}</span></button>`).join('')}</div>
-    <div class="scope"><button class="chip" id="scopeCat">套用目前顏色到「${esc(scopeName)}」（${scopeList.length}）</button>
-      <button class="chip" id="scopeList">套用到目前清單（${visibleBlocks().length}）</button></div>
-  </div>
-
   ${bt?`<div class="sec">
     <h3>物品群組<span>${bt.values.length} 項</span></h3>
-    ${stackEditorHTML(b,stackRule)}
+    ${stackEditorHTML(b)}
     <div class="groupchips">${bt.values.slice(0,groupOpen?bt.values.length:6).map(v=>
         `<span class="groupchip">${esc(tr(v.v)||v.v)}${tr(v.v)?`<small>${esc(v.v)}</small>`:''}</span>`).join('')}</div>
     ${bt.values.length>6?`<button class="chip" id="groupToggle" style="width:100%;margin-bottom:9px">${
@@ -6696,6 +6691,8 @@ $('#files').addEventListener('click',e=>{
 $('#inspector').addEventListener('click',e=>{
   const b=curBlock(); if(!b) return;
   if(e.target.closest('#manageGroup')){ openGroupManager(b); return; }
+  if(e.target.closest('#openPal')){ openPalettePicker(b); return; }
+  if(e.target.closest('#openScope')){ openScopePicker(b); return; }
   if(e.target.closest('#stackTiers')){ openStackTierManager(b); return; }
   if(e.target.closest('#stackTiersBase')){
     const base=findStackBase(b);
@@ -6708,16 +6705,13 @@ $('#inspector').addEventListener('click',e=>{
   }
   if(e.target.closest('#stackDel')){
     snapDoc('stack-remove');
-    dropRule(b,'StackSize');
+    b.rules=b.rules.filter(r=>r.unknown||r.key.toLowerCase()!=='stacksize'); touch(b);
     renderInspector(); refreshSelected(); toast('已移除數量條件'); return;
   }
   const sh=e.target.closest('#showhide button');
   if(sh){ if(b.type!==sh.dataset.t){ snap([b],'showhide'); b.type=sh.dataset.t; touch(b); } renderInspector(); refreshSelected(); return; }
   const cx=e.target.closest('.ci .x');
   if(cx){ snap([b],'color'); dropRule(b,cx.closest('.ci').dataset.ckey); renderInspector(); refreshSelected(); return; }
-  const pc=e.target.closest('.pchip');
-  if(pc){ const src=state.docs.find(d=>d.name===state.palFrom)||state.doc;
-    snap([b],'palette'); applyPalette(b,paletteOf(src)[+pc.dataset.p]); renderInspector(); refreshSelected(); return; }
   if(e.target.closest('#bdText')||e.target.closest('#bdBg')){
     const src=getColor(b,e.target.closest('#bdText')?'SetTextColor':'SetBackgroundColor');
     if(!src){ toast('來源顏色還沒設定'); return; }
@@ -6725,21 +6719,6 @@ $('#inspector').addEventListener('click',e=>{
     renderInspector(); refreshSelected(); return;
   }
   if(e.target.closest('#bdOff')){ snap([b],'border'); dropRule(b,'SetBorderColor'); renderInspector(); refreshSelected(); return; }
-  const sc=e.target.closest('#scopeCat')||e.target.closest('#scopeList');
-  if(sc){
-    const list = sc.id==='scopeList' ? visibleBlocks()
-      : (state.view==='taxonomy'?state.doc.blocks.filter(x=>classify(x)===classify(b)):state.doc.blocks.filter(x=>x.section===b.section));
-    if(!list.length) return;
-    const p=curPalette(b);
-    confirmBox('批次套用顏色',
-      `<p style="margin:0 0 10px;color:var(--muted)">要把目前這組文字／背景／邊框顏色，套用到 <b style="color:var(--gold-hi)">${list.length}</b> 個區塊嗎？</p>
-       <p style="margin:0 0 10px;color:var(--faint);font-size:11.5px">這個動作可以用「復原」還原。前 8 個受影響的區塊：</p>
-       <div style="display:flex;flex-wrap:wrap;gap:5px">${list.slice(0,8).map(x=>
-         `<span class="gl" style="${labelStyle(x,12)}">${esc(displayName(x))}</span>`).join('')}</div>`,
-      ()=>{ snap(list,'batch'); for(const x of list) applyPalette(x,p);
-            renderList(true); renderFiles(); syncLint(); toast(`已套用到 ${list.length} 個區塊`); });
-    return;
-  }
   if(e.target.closest('#mmToggle')){ snap([b],'mm');
     if(getMinimap(b)) dropRule(b,'MinimapIcon'); else putRule(b,'MinimapIcon',[0,'Yellow','Circle']);
     renderInspector(); refreshSelected(); return; }
@@ -6774,11 +6753,30 @@ $('#inspector').addEventListener('input',e=>{
   const b=curBlock(); if(!b) return;
   const t=e.target;
   if(t.id==='hc'){ snap([b],'edit'); b.headComment=t.value; touch(b); refreshSelected(); return; }
-  if(t.id==='stackNum'){
-    const n=parseInt(t.value,10);
-    if(!Number.isFinite(n)||n<1) return;
-    snap([b],'edit');
-    putRule(b,'StackSize',[n],$('#stackOp')?$('#stackOp').value:'>=');
+  if(t.id==='stackLo'||t.id==='stackHi'){
+    const isLo=t.id==='stackLo';
+    const raw=t.value.trim();
+    snap([b],'stack');
+    if(raw===''){
+      /* 清空＝移除這一側的限制，另一側保留 */
+      const s=stackRules(b), drop=isLo?s.lo:s.hi;
+      if(drop) b.rules=b.rules.filter(r=>r!==drop);
+      touch(b);
+    }else{
+      const n=parseInt(raw,10);
+      if(!Number.isFinite(n)||n<1) return;
+      const s=stackRules(b), target=isLo?s.lo:s.hi;
+      if(target){
+        patchRule(b,b.rules.indexOf(target),{values:[{v:String(n),q:false}],op:isLo?'>=':'<='});
+      }else{
+        b.rules=b.rules.concat([{indent:b.indent==='\t'?'\t':'    ',key:'StackSize',
+          op:isLo?'>=':'<=',values:[{v:String(n),q:false}],comment:null,unknown:false,dirty:true,raw:null}]);
+        touch(b);
+      }
+    }
+    /* 只更新有效區間文字，不整段重繪，免得輸入游標跳掉 */
+    const eff=document.querySelector('.stackeff b');
+    if(eff) eff.textContent=rangeText(b)||'未設定';
     refreshSelected(); return;
   }
   if(t.id==='fsr'){ snap([b],'edit'); putRule(b,'SetFontSize',[t.value]);
@@ -6816,14 +6814,8 @@ $('#inspector').addEventListener('input',e=>{
 $('#inspector').addEventListener('change',e=>{
   const b=curBlock(); if(!b) return;
   const t=e.target;
-  if(t.id==='palFrom'){ state.palFrom=t.value; renderInspector(); return; }
   if(['mmSize','mmColor','mmShape'].includes(t.id)){ snap([b],'mm');
     putRule(b,'MinimapIcon',[$('#mmSize').value,$('#mmColor').value,$('#mmShape').value]); refreshSelected(); return; }
-  if(t.id==='stackOp'){
-    const r=findRule(b,'StackSize'); if(!r||!r.values.length) return;
-    snap([b],'stack'); putRule(b,'StackSize',[r.values[0].v],t.value);
-    refreshSelected(); return;
-  }
   if(t.id==='beamColor'){ const bm=getBeam(b); snap([b],'beam');
     putRule(b,'PlayEffect',bm&&bm.temp?[t.value,'Temp']:[t.value]); refreshSelected(); return; }
   const cond=t.closest('.cond');
@@ -6987,20 +6979,133 @@ function findStackBase(b){
     baseTypeKey(x)===baseTypeKey(b)&&selectorKey(x)===selectorKey(b)&&!findRule(x,'StackSize'))||null;
 }
 /* 數量門檻的行內編輯器：直接改運算子與數字，不用跑去「條件」區找 */
-const STACK_OPS=['>=','>','=','<=','<'];
-function stackEditorHTML(b,rule){
-  if(!rule) return '';
-  if(rule.values.length!==1)
-    return `<div class="stackedit ro">掉落數量　<b>${esc((rule.op||'=')+' '+rule.values.map(v=>v.v).join(' '))}</b>
-      <small>多重數值請到下方「條件」修改</small></div>`;
-  const op=rule.op||'=';
+/* 掉落數量：讀出下限與上限。PoE 允許同一區塊寫兩條 StackSize 形成範圍
+   （NeverSink 對 ItemLevel／AreaLevel 就是這樣用），所以這裡支援 3000~2000 這種區間。 */
+function stackRules(b){
+  const all=b.rules.filter(r=>!r.unknown&&r.key.toLowerCase()==='stacksize');
+  let lo=null,hi=null,other=[];
+  for(const r of all){
+    const op=r.op||'=';
+    if(r.values.length!==1){ other.push(r); continue; }
+    if(op==='>='||op==='>') lo=lo||r;
+    else if(op==='<='||op==='<') hi=hi||r;
+    else other.push(r);
+  }
+  return {all,lo,hi,other};
+}
+function stackNum(r){ return r?parseInt(r.values[0].v,10):null; }
+/* 這條規則實際攔得到的數量區間。因為先匹配先贏，同群組排在前面的門檻會先吃掉，
+   所以顯示「有效區間」比只顯示 >=N 更貼近實際行為。 */
+function effectiveStackRange(b){
+  const s=stackRules(b);
+  let lo=stackNum(s.lo), hi=stackNum(s.hi);
+  if(s.lo&&s.lo.op==='>') lo=lo+1;
+  if(s.hi&&s.hi.op==='<') hi=hi-1;
+  /* 找出同群組、排在這條前面、下限更高的門檻，它會先攔截 */
+  const d=state.doc, me=d.blocks.indexOf(b);
+  let cap=null;
+  for(let i=0;i<me;i++){
+    const x=d.blocks[i];
+    if(x.type!==b.type||x.section!==b.section) continue;
+    if(baseTypeKey(x)!==baseTypeKey(b)||selectorKey(x)!==selectorKey(b)) continue;
+    const xs=stackRules(x);
+    if(!xs.lo||xs.hi) continue;
+    let xl=stackNum(xs.lo); if(xs.lo.op==='>') xl=xl+1;
+    if(!Number.isFinite(xl)) continue;
+    if(cap===null||xl<cap) cap=xl;
+  }
+  if(cap!==null&&(hi===null||cap-1<hi)) hi=cap-1;
+  return {lo,hi,capped:cap!==null&&!s.hi};
+}
+function rangeText(b){
+  const {lo,hi,capped}=effectiveStackRange(b);
+  if(lo===null&&hi===null) return '';
+  if(lo!==null&&hi!==null) return `${lo} ~ ${hi} 個`+(capped?'（上限由前面的門檻決定）':'');
+  if(lo!==null) return `${lo} 個以上`;
+  return `${hi} 個以下`;
+}
+function stackEditorHTML(b){
+  const s=stackRules(b);
+  if(!s.all.length) return '';
+  if(s.other.length||s.all.length>2)
+    return `<div class="stackedit ro">掉落數量　<b>${esc(s.all.map(r=>(r.op||'=')+' '+r.values.map(v=>v.v).join(' ')).join('　'))}</b>
+      <small>這組條件比較特殊，請到下方「條件」直接修改</small></div>`;
+  const lo=stackNum(s.lo), hi=stackNum(s.hi);
   return `<div class="stackedit">
-    <label>掉落數量門檻</label>
-    <select id="stackOp">${STACK_OPS.map(o=>`<option ${o===op?'selected':''}>${o}</option>`).join('')}</select>
-    <input type="number" id="stackNum" min="1" step="1" value="${esc(rule.values[0].v)}">
-    <span>個以上才套用這條規則</span>
+    <label>掉落數量</label>
+    <div class="stackrange">
+      <input type="number" id="stackLo" min="1" step="1" placeholder="不限" value="${lo===null?'':lo}">
+      <span class="tilde">～</span>
+      <input type="number" id="stackHi" min="1" step="1" placeholder="不限" value="${hi===null?'':hi}">
+      <span class="unit">個</span>
+    </div>
     <button class="x" id="stackDel" title="移除數量條件">✕</button>
+    <div class="stackeff">實際攔截：<b>${esc(rangeText(b)||'未設定')}</b></div>
   </div>`;
+}
+
+/* 配色盤（彈出式）：選一組配色套到目前區塊 */
+function openPalettePicker(b){
+  const src=state.docs.find(d=>d.name===state.palFrom)||state.doc;
+  const pal=paletteOf(src);
+  const cp=curPalette(b);
+  const curKey=[cp.fg,cp.bg,cp.bd].map(c=>c?`${c.r},${c.g},${c.b},${c.a}`:'-').join('|');
+  $('#modalTitle').textContent='配色盤';
+  $('#modalBody').innerHTML=`
+    <p style="margin:0 0 10px;color:var(--muted)">這是目前檔案裡用過的配色，點一下就套用到選取的區塊。</p>
+    ${state.docs.length>1?`<div class="field"><label>配色來源檔案</label>
+      <select class="inp" id="palFrom">${state.docs.map(d=>`<option ${d===src?'selected':''}>${esc(d.name)}</option>`).join('')}</select></div>`:''}
+    ${pal.length?`<div class="palette big">${pal.map((x,i)=>`<button class="pchip ${x.k===curKey?'on':''}" data-p="${i}" title="${esc(x.label)} · ${x.count} 個區塊">
+      <span class="gl" style="${palStyle(x)}">${esc(x.label)}</span></button>`).join('')}</div>`
+      :'<p style="color:var(--faint)">這個檔案還沒有任何配色可以參考。</p>'}`;
+  $('#modalFoot').innerHTML='';
+  $('#modal').classList.add('on');
+  const sel=$('#palFrom');
+  if(sel) sel.onchange=()=>{ state.palFrom=sel.value; openPalettePicker(b); };
+  $('#modalBody').onclick=e=>{
+    const pc=e.target.closest('.pchip'); if(!pc) return;
+    snap([b],'palette');
+    applyPalette(b,paletteOf(state.docs.find(d=>d.name===state.palFrom)||state.doc)[+pc.dataset.p]);
+    $('#modal').classList.remove('on');
+    renderInspector(); refreshSelected(); toast('已套用配色');
+  };
+}
+/* 批次套用：先選範圍再確認 */
+function openScopePicker(b){
+  const catList=state.view==='taxonomy'
+    ? state.doc.blocks.filter(x=>classify(x)===classify(b))
+    : state.doc.blocks.filter(x=>x.section===b.section);
+  const listNow=visibleBlocks();
+  const scopeName=state.view==='taxonomy'?catName(classify(b)):'這一節';
+  const p=curPalette(b);
+  $('#modalTitle').textContent='批次套用顏色';
+  $('#modalBody').innerHTML=`
+    <p style="margin:0 0 6px;color:var(--muted)">把目前區塊的文字／背景／邊框顏色套用到一整批區塊。</p>
+    <div style="display:flex;gap:6px;align-items:center;margin:0 0 12px">
+      <span style="color:var(--faint);font-size:11.5px">目前顏色</span>
+      <span class="gl" style="${labelStyle(b,14)}">${esc(displayName(b))}</span>
+    </div>
+    <div class="nslist">
+      <button class="nsrow" data-scope="cat"><span class="nsn">同分類</span>
+        <span class="nsd">${esc(scopeName)}</span><span class="nsf">${catList.length} 個</span></button>
+      <button class="nsrow" data-scope="list"><span class="nsn">目前清單</span>
+        <span class="nsd">中間欄目前篩選出來的區塊</span><span class="nsf">${listNow.length} 個</span></button>
+    </div>
+    <div class="hintline">套用後可以用「復原」還原。</div>`;
+  $('#modalFoot').innerHTML='';
+  $('#modal').classList.add('on');
+  $('#modalBody').onclick=e=>{
+    const row=e.target.closest('[data-scope]'); if(!row) return;
+    const list=row.dataset.scope==='cat'?catList:listNow;
+    if(!list.length){ toast('這個範圍沒有區塊'); return; }
+    confirmBox('批次套用顏色',
+      `<p style="margin:0 0 10px;color:var(--muted)">要把目前這組顏色套用到 <b style="color:var(--gold-hi)">${list.length}</b> 個區塊嗎？</p>
+       <p style="margin:0 0 10px;color:var(--faint);font-size:11.5px">前 8 個受影響的區塊：</p>
+       <div style="display:flex;flex-wrap:wrap;gap:5px">${list.slice(0,8).map(x=>
+         `<span class="gl" style="${labelStyle(x,12)}">${esc(displayName(x))}</span>`).join('')}</div>`,
+      ()=>{ snap(list,'batch'); for(const x of list) applyPalette(x,p);
+            renderList(true); renderFiles(); syncLint(); toast(`已套用到 ${list.length} 個區塊`); });
+  };
 }
 function existingTier(base,n){
   return state.doc.blocks.find(b=>b!==base&&b.type===base.type&&b.section===base.section&&
