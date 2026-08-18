@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Filter Forge · PoE1 過濾器編輯器</title>
+<title>POE 過濾器編輯器 · 流亡黯道 1 繁體中文</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Alegreya:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -34,8 +34,18 @@ button{cursor:pointer;background:none;border:none}
 .topbar{display:flex;align-items:center;gap:14px;padding:0 14px;height:54px;flex:0 0 auto;
   border-bottom:1px solid var(--rule);background:linear-gradient(#151109,#0d0b07)}
 .brand{display:flex;align-items:baseline;gap:8px;flex:0 0 auto}
-.brand b{font-family:var(--display);font-size:16px;color:var(--gold-hi);font-weight:400;letter-spacing:.06em}
+.brand b{font-family:var(--ui);font-size:15px;color:var(--gold-hi);font-weight:500;letter-spacing:.04em}
 .brand span{font-family:var(--mono);font-size:9px;color:var(--faint);letter-spacing:.16em}
+#verChip{font-family:var(--mono);font-size:9px;color:var(--faint);letter-spacing:.14em;
+  padding:2px 5px;border:1px solid transparent;transition:.12s;white-space:nowrap}
+#verChip:hover{color:var(--gold-dim);border-color:var(--rule-lit)}
+.updbar{position:fixed;left:50%;bottom:20px;transform:translate(-50%,14px);z-index:120;
+  display:none;align-items:center;gap:12px;padding:10px 14px;
+  background:#171208;border:1px solid var(--gold-dim);box-shadow:0 6px 28px #000a;
+  font-size:12.5px;color:var(--text);opacity:0;transition:opacity .2s,transform .2s}
+.updbar.on{display:flex;opacity:1;transform:translate(-50%,0)}
+.updbar b{color:var(--gold-hi);font-weight:500}
+.updbar .btn{padding:5px 11px;font-size:11.5px}
 .files{display:flex;gap:2px;align-items:center;overflow-x:auto;flex:1 1 auto;min-width:0;height:100%}
 .ftab{flex:0 0 auto;max-width:230px;height:100%;padding:0 6px 0 12px;display:flex;align-items:center;gap:7px;
   border-bottom:2px solid transparent;color:var(--muted);font-size:12px;white-space:nowrap}
@@ -254,6 +264,16 @@ input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--gold
 .presetitem em{font-style:normal;color:var(--gold-dim);font-size:10px;white-space:nowrap}
 .warn{font-size:11px;color:var(--warn);margin-top:5px}
 .hintline{font-size:11px;color:var(--faint);margin-top:6px;line-height:1.7}
+.nslist{display:flex;flex-direction:column;gap:5px}
+.nsrow{display:flex;align-items:baseline;gap:11px;width:100%;text-align:left;padding:10px 12px;
+  border:1px solid var(--rule);background:#00000035;transition:.12s}
+.nsrow:hover:not(:disabled){border-color:var(--gold-dim);background:#c8aa6e0f}
+.nsrow:disabled{opacity:.4;cursor:default}
+.nsrow.loading{border-color:var(--gold);background:#c8aa6e1a;opacity:1}
+.nsrow.loading .nsn::after{content:' …';color:var(--gold)}
+.nsn{flex:0 0 78px;color:var(--gold-hi);font-size:13px}
+.nsd{flex:1 1 auto;color:var(--muted);font-size:11.5px;min-width:0}
+.nsf{flex:0 0 auto;font-family:var(--mono);font-size:9px;color:var(--faint);letter-spacing:.04em}
 .lintlist{margin:0;padding:0;list-style:none}
 .lintlist li{padding:6px 8px;border-left:2px solid var(--warn);background:#d093410d;margin-bottom:5px;font-size:11.5px;color:#dcb87f}
 .lintlist li.err{border-left-color:var(--hide);background:#b0574a12;color:#e2a89e}
@@ -270,7 +290,7 @@ input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--gold
 .gatemark{position:relative;width:200px;height:150px}
 .gatemark .b{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);width:34px;height:116px;filter:blur(9px);opacity:.6;background:linear-gradient(to top,#c8aa6e,transparent)}
 .gatemark .l{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);font-family:var(--serif);font-size:19px;padding:.12em .5em;border:1px solid #c8aa6e;background:#000000d9;color:#efdcae;white-space:nowrap}
-h1{font-family:var(--display);font-size:28px;font-weight:400;color:var(--gold-hi);margin:0;letter-spacing:.08em}
+h1{font-family:var(--ui);font-size:27px;font-weight:500;color:var(--gold-hi);margin:0;letter-spacing:.06em}
 #gate p{margin:0;color:var(--muted);font-size:13.5px;max-width:520px;line-height:1.95}
 #gate .k{font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:.12em}
 .dropzone{border:1px dashed var(--rule-lit);padding:24px 42px;transition:.15s;display:flex;flex-direction:column;gap:11px;align-items:center}
@@ -285,6 +305,9 @@ h1{font-family:var(--display);font-size:28px;font-weight:400;color:var(--gold-hi
   border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center}
 .modalbody{overflow-y:auto;padding:14px 18px}
 .modalfoot{padding:12px 18px;border-top:1px solid var(--rule);display:flex;gap:8px;justify-content:flex-end}
+.modalfoot:empty{display:none}
+.recbadge{font-style:normal;font-family:var(--ui);font-size:9.5px;letter-spacing:.08em;
+  margin-left:8px;padding:1px 5px;border:1px solid currentColor;opacity:.75;vertical-align:middle}
 .issue{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #ffffff08;width:100%;text-align:left}
 .issue:hover{background:#ffffff06}
 .issue .lv{flex:0 0 42px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;padding:2px 0;text-align:center;border:1px solid}
@@ -309,12 +332,13 @@ h1{font-family:var(--display);font-size:28px;font-weight:400;color:var(--gold-hi
 
 <div id="gate">
   <div class="gatemark"><div class="b"></div><div class="l">無效石</div></div>
-  <h1>Filter Forge</h1>
+  <h1>POE 過濾器編輯器</h1>
   <p>流亡黯道 1 的掉落過濾器編輯器。英文與簡體過濾器都會換上台服官方繁中譯名，套用統一的分類架構，並即時預覽地上的物品標籤。</p>
   <div class="dropzone" id="dz">
     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
       <button class="btn primary" id="gateNew">新建 Filter</button>
       <button class="btn" id="gatePick">開啟 .filter 檔</button>
+      <button class="btn" id="gateNS">載入 NeverSink</button>
       <a class="btn" href="README_防呆與操作說明.md" target="_blank" rel="noopener" style="text-decoration:none">操作與防呆說明</a>
     </div>
     <span class="k">或把檔案拖進這個框，可一次開多個</span>
@@ -323,7 +347,7 @@ h1{font-family:var(--display);font-size:28px;font-weight:400;color:var(--gold-hi
 
 <div id="app">
   <header class="topbar">
-    <div class="brand"><b>Filter Forge</b><span>POE1</span></div>
+    <div class="brand"><b>POE 過濾器編輯器</b><button id="verChip" title="點一下檢查有沒有新版本">POE1</button></div>
     <div class="files" id="files"></div>
     <div class="tools">
       <a class="kofi" href="https://ko-fi.com/D5P323S7OG" target="_blank" rel="noopener"
@@ -336,6 +360,7 @@ h1{font-family:var(--display);font-size:28px;font-weight:400;color:var(--gold-hi
       <button class="btn" id="lintBtn">檢查<span class="n" id="lintN"></span></button>
       <button class="btn" id="newDoc">新建</button>
       <button class="btn" id="pick">開啟</button>
+      <button class="btn" id="nsBtn" title="從 GitHub 載入 NeverSink 官方過濾器">NeverSink</button>
       <a class="btn" href="README_防呆與操作說明.md" target="_blank" rel="noopener" style="text-decoration:none">說明</a>
       <button class="btn" id="save">匯出</button>
       <button class="btn primary" id="saveTW">匯出繁體版</button>
@@ -5470,6 +5495,16 @@ Who Asked	9	獨裁者的武器 物品等級: 83 已破裂	0
 Winter's Embrace	2	恐懼之環 三個固定詞綴 追憶之	1</script>
 <script>
 /* ======================================================================
+   0. 版本
+   ---------------------------------------------------------------------
+   改版時只要改這裡的 APP_VERSION 與 APP_BUILD。
+   更新偵測會重新抓取這個頁面、用正規式讀出上面那行的版本字串來比對，
+   所以這兩個常數必須放在整份程式的最前面。
+   ================================================================== */
+const APP_VERSION='1.0.0';
+const APP_BUILD='2026-08-18';
+
+/* ======================================================================
    1. 譯名資料
    ---------------------------------------------------------------------
    NAMES：台服官方繁中物品名（英文 refName → 繁中），共 4627 筆，
@@ -5907,11 +5942,11 @@ function moveBlockToEnd(b){
 function addSafetyLayer(){
   const d=state.doc;
   const sid='s_safety_'+(++state.blockUid);
-  const sec={kind:'section',id:sid,num:'9.99',title:'Filter Forge 防呆層',depth:2,count:1};
-  const b={kind:'block',id:nextBlockId(),type:'Show',indent:'',headComment:' Filter Forge 防呆層 - 未分類／未命中物品',
+  const sec={kind:'section',id:sid,num:'9.99',title:'防呆層',depth:2,count:1};
+  const b={kind:'block',id:nextBlockId(),type:'Show',indent:'',headComment:' 防呆層 - 未分類／未命中物品',
     headRaw:null,rules:[],section:sid,dirty:true};
   d.nodes.push({kind:'raw',text:''},
-    {kind:'raw',text:'# 9.99 Filter Forge 防呆層'},
+    {kind:'raw',text:'# 9.99 防呆層'},
     {kind:'raw',text:'# 未命中前方任何規則的物品會以紫紅色、粉紅光柱與星形圖示顯示'},
     {kind:'raw',text:'# 看到此樣式代表 Filter 需要補充分類或更新版本'},b);
   d.blocks.push(b); d.sections.push(sec); d.dirty=true;
@@ -7103,7 +7138,7 @@ function openSafetyManager(){
     : `<p style="margin:0 0 10px;color:#e2a89e">目前防呆層不完整：${!s.b?'找不到無條件 Show 兜底規則。':(!s.atEnd?'兜底規則不在 Filter 最後。':'兜底規則沒有特殊色、光柱、圖示或提示音。')}</p>
        <p style="margin:0;color:var(--muted)">修復後，所有未命中規則的物品會使用紫紅背景、白字、粉紅光柱、星形小地圖圖示與內建提示音。匯出時也會自動檢查並補上。</p>`;
   $('#modalFoot').innerHTML=s.ok
-    ? '<button class="btn" id="cbNo">關閉</button><button class="btn" id="safetyRestyle">改用 Filter Forge 防呆樣式</button>'
+    ? '<button class="btn" id="cbNo">關閉</button><button class="btn" id="safetyRestyle">改用內建防呆樣式</button>'
     : '<button class="btn" id="cbNo">取消</button><button class="btn primary" id="safetyFix">立即修復</button>';
   $('#modal').classList.add('on');
   $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
@@ -7148,12 +7183,12 @@ $('#addcat').addEventListener('click',()=>{
 
 /* 檔案 */
 function blankFilterText(){
-  return `# Filter Forge 新建空白 Filter
+  return `# POE 過濾器編輯器 v${APP_VERSION} - 新建空白 Filter
 # 使用「樣式階級」或開啟其他 Filter 後開始建立規則
 
-# 9.99 Filter Forge 防呆層
+# 9.99 防呆層
 # 未命中任何前方規則的物品會以特殊色顯示
-Show # Filter Forge 防呆層 - 未分類／未命中物品
+Show # 防呆層 - 未分類／未命中物品
     SetFontSize 45
     SetTextColor 255 255 255 255
     SetBorderColor 255 0 255 255
@@ -7176,7 +7211,7 @@ function starterTierLines(t){
 }
 function starterBlocks(title,num,values,tier,extra){
   const chunks=[]; for(let i=0;i<values.length;i+=36) chunks.push(values.slice(i,i+36));
-  return chunks.map((part,i)=>`Show # Filter Forge - ${title} - 待分級 ${i+1}/${chunks.length}
+  return chunks.map((part,i)=>`Show # ${title} - 待分級 ${i+1}/${chunks.length}
 ${extra?extra+'\n':''}    BaseType == ${part.map(v=>'"'+String(v).replace(/"/g,'')+'"').join(' ')}
 ${starterTierLines(tier)}
 `).join('\n');
@@ -7195,7 +7230,7 @@ function buildFullStarterFilter(){
     {code:'7',num:'7',title:'裝備底材',tier:'t6'},
     {code:'8',num:'8',title:'其他已知物品',tier:'t6'}
   ];
-  const out=[`# Filter Forge 完整新建 Filter
+  const out=[`# POE 過濾器編輯器 v${APP_VERSION} - 完整新建 Filter
 # 由編輯器內建的 ${Object.keys(NAMEBASE).length} 筆可比對底材名稱產生，不直接複製任何第三方 Filter
 # 傳奇與捕獲野獸名稱無法用 BaseType 比對，改由下方的 Rarity = Unique 廣義規則接住
 # 初始群組只是安全打樣，請使用「樣式階級」依當季價格重新分類
@@ -7205,19 +7240,19 @@ function buildFullStarterFilter(){
     out.push(starterBlocks(g.title,g.num,by[g.code]||[],tier(g.tier),g.extra||''));
   }
   out.push(`# 9 廣義分類防漏
-Show # Filter Forge - 未列名傳奇
+Show # 未列名傳奇
     Rarity = Unique
 ${starterTierLines(tier('t4'))}
 
-Show # Filter Forge - 輿圖
+Show # 輿圖
     Class "Maps"
 ${starterTierLines(tier('t6'))}
 
-Show # Filter Forge - 稀有裝備
+Show # 稀有裝備
     Rarity = Rare
 ${starterTierLines(tier('t7'))}
 
-Show # Filter Forge - 普通／魔法裝備
+Show # 普通／魔法裝備
     Class "Amulets" "Belts" "Body Armours" "Boots" "Bows" "Claws" "Daggers" "Gloves" "Helmets" "One Hand Axes" "One Hand Maces" "One Hand Swords" "Quivers" "Rings" "Rune Daggers" "Sceptres" "Shields" "Staves" "Thrusting One Hand Swords" "Two Hand Axes" "Two Hand Maces" "Two Hand Swords" "Wands" "Warstaves"
     Rarity <= Magic
 ${starterTierLines(tier('t8'))}
@@ -7228,11 +7263,11 @@ ${blankFilterText().split('\n').slice(3).join('\n')}`);
 function openNewFilter(){
   $('#modalTitle').textContent='新建 Filter';
   $('#modalBody').innerHTML=`
-    <p style="margin:0;color:var(--muted)">這裡只建立 Filter Forge 自己產生的 Filter，不會直接套用任何第三方 Filter 的規則與樣式。</p>
+    <p style="margin:0;color:var(--muted)">這裡只建立本編輯器自己產生的 Filter，不會直接套用任何第三方 Filter 的規則與樣式。</p>
     <div class="presetgrid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
       <button class="presetcard" data-newfilter="full" style="padding:12px">
-        <span class="gl" style="color:#fff;background:#641933;border-color:#ff4f7d">Filter Forge 完整新建</span>
-        <small>${Object.keys(NAMEBASE).length} 筆可比對底材 · 原創安全分組 · 建議</small>
+        <span class="gl" style="color:#fff;background:#641933;border-color:#ff4f7d">完整新建<em class="recbadge">建議</em></span>
+        <small>${Object.keys(NAMEBASE).length} 筆可比對底材 · 原創安全分組</small>
       </button>
       <button class="presetcard" data-newfilter="blank" style="padding:12px">
         <span class="gl" style="color:#fff;background:#640064;border-color:#ff00ff">空白 Filter</span>
@@ -7240,16 +7275,15 @@ function openNewFilter(){
       </button>
     </div>
     <div class="hintline">完整新建只使用能實際比對的底材名稱。傳奇物品在 PoE 1 無法用名稱比對，改由 Rarity = Unique 廣義規則接住。</div>`;
-  $('#modalFoot').innerHTML='<button class="btn" id="cbNo">取消</button>';
+  $('#modalFoot').innerHTML='';
   $('#modal').classList.add('on');
-  $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
   $('#modalBody').onclick=e=>{
     const card=e.target.closest('[data-newfilter]'); if(!card) return;
     const id=card.dataset.newfilter;
     $('#modal').classList.remove('on');
     if(id==='full') addDoc(buildFullStarterFilter(),'FilterForge_完整新建.filter');
     else addDoc(blankFilterText(),'FilterForge_空白.filter');
-    toast(id==='full'?'已建立 Filter Forge 完整 Filter':'已建立空白 Filter');
+    toast(id==='full'?'已建立完整 Filter':'已建立空白 Filter');
   };
 }
 function addDoc(text,name){
@@ -7263,6 +7297,74 @@ function selectDoc(d){
   const first=d.sections.find(s=>s.depth===1); if(first) state.open.add(first.num);
   $('#q').value=''; syncUndo(); renderAll();
 }
+/* ======================================================================
+   從 GitHub 載入 NeverSink 官方過濾器
+   ---------------------------------------------------------------------
+   NeverSink-Filter 採 MIT 授權，明確允許使用、修改與再散布。
+   raw.githubusercontent.com 回傳 access-control-allow-origin: *，
+   所以瀏覽器可以直接抓，不需要 proxy。
+   ================================================================== */
+const NS_BASE="https://raw.githubusercontent.com/NeverSinkDev/NeverSink-Filter/master/";
+const NS_LEVELS=[
+  {f:"1-REGULAR",           n:"一般",       d:"最寬鬆，撿得多。適合新開聯盟或剛進遊戲"},
+  {f:"2-SEMI-STRICT",       n:"半嚴格",     d:"藏掉最沒價值的東西，仍保留大部分裝備"},
+  {f:"3-STRICT",            n:"嚴格",       d:"最多人用的平衡點，中期地圖推薦"},
+  {f:"4-VERY-STRICT",       n:"非常嚴格",   d:"只留有價值的，畫面乾淨"},
+  {f:"5-UBER-STRICT",       n:"極度嚴格",   d:"高速刷圖用，稀有裝幾乎全藏"},
+  {f:"6-UBER-PLUS-STRICT",  n:"極度嚴格＋", d:"最嚴，只顯示接近神聖石價值的掉落"}
+];
+function nsUrl(level){ return NS_BASE+encodeURIComponent("NeverSink's filter - "+level+".filter"); }
+function nsMeta(text){
+  const m={};
+  for(const line of text.slice(0,1200).replace(/\r/g,'').split('\n')){
+    const x=line.match(/^#\s*(VERSION|TYPE|STYLE):\s*(.+?)\s*$/);
+    if(x) m[x[1]]=x[2];
+  }
+  return m;
+}
+function openNeverSink(){
+  $('#modalTitle').textContent='載入 NeverSink 官方過濾器';
+  $('#modalBody').innerHTML=`
+    <p style="margin:0 0 4px;color:var(--muted)">直接從 NeverSink 的 GitHub 抓最新版，選一個嚴格度。檔案約 500KB，載入需要幾秒。</p>
+    <p style="margin:0 0 12px;color:var(--faint);font-size:11.5px">NeverSink-Filter 採 MIT 授權，允許自由使用與修改。分享改過的版本時請保留檔案裡原作者的版權註解。</p>
+    <div class="nslist">${NS_LEVELS.map((L,i)=>`
+      <button class="nsrow" data-ns="${i}">
+        <span class="nsn">${L.n}</span>
+        <span class="nsd">${esc(L.d)}</span>
+        <span class="nsf">${L.f}</span>
+      </button>`).join('')}</div>
+    <div id="nsStatus" class="hintline"></div>`;
+  $('#modalFoot').innerHTML='';
+  $('#modal').classList.add('on');
+  $('#modalBody').querySelectorAll('.nsrow').forEach(btn=>btn.onclick=async()=>{
+    const L=NS_LEVELS[+btn.dataset.ns];
+    const st=$('#nsStatus');
+    $('#modalBody').querySelectorAll('.nsrow').forEach(b=>b.disabled=true);
+    btn.classList.add('loading');
+    st.textContent='正在下載 '+L.f+' …';
+    st.style.color='var(--gold-dim)';
+    try{
+      const res=await fetch(nsUrl(L.f),{cache:'no-store'});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const text=await res.text();
+      if(text.length<10000) throw new Error('回應內容異常');
+      const meta=nsMeta(text);
+      $('#modal').classList.remove('on');
+      addDoc(text,`NeverSink ${L.f}${meta.VERSION?' v'+meta.VERSION:''}.filter`);
+      toast(`已載入 NeverSink ${L.n}${meta.VERSION?'（v'+meta.VERSION+'）':''}`);
+    }catch(err){
+      btn.classList.remove('loading');
+      $('#modalBody').querySelectorAll('.nsrow').forEach(b=>b.disabled=false);
+      st.style.color='#e2a89e';
+      st.innerHTML='下載失敗：'+esc(String(err.message||err))+
+        '。可能是網路不通或 GitHub 暫時無法連線，也可以'+
+        `<a href="${nsUrl(L.f)}" target="_blank" rel="noopener" style="color:var(--gold-hi)">直接開這個連結</a>下載後再用「開啟」載入。`;
+    }
+  });
+}
+$('#nsBtn').addEventListener('click',openNeverSink);
+$('#gateNS').addEventListener('click',openNeverSink);
+
 function loadFiles(list){
   [...list].forEach(f=>{ const rd=new FileReader(); rd.onload=()=>addDoc(rd.result,f.name); rd.readAsText(f,'utf-8'); });
 }
@@ -7328,4 +7430,70 @@ document.addEventListener('keydown',e=>{
 });
 let tt;
 function toast(msg){ const el=$('#toast'); el.textContent=msg; el.classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>el.classList.remove('on'),2200); }
+
+/* ======================================================================
+   版本顯示與更新偵測
+   ---------------------------------------------------------------------
+   單檔應用沒有後端，所以直接重新抓取這個頁面本身（帶時間戳避開快取），
+   用正規式讀出檔案裡的 APP_VERSION 再跟目前執行中的版本比對。
+   以 file:// 開啟時 fetch 會失敗，這種情況靜靜略過，不干擾使用者。
+   ================================================================== */
+const VER_RE=/APP_VERSION='([^']+)'/;
+let lastCheck=0, updateFound=null;
+
+function showVersion(){
+  $('#verChip').textContent='POE1 · v'+APP_VERSION;
+  $('#verChip').title=`版本 ${APP_VERSION}（${APP_BUILD}）\n點一下檢查有沒有新版本`;
+}
+async function fetchRemoteVersion(){
+  const url=location.href.split('#')[0].split('?')[0]+'?_='+Date.now();
+  const res=await fetch(url,{cache:'no-store'});
+  if(!res.ok) throw new Error('HTTP '+res.status);
+  const m=VER_RE.exec(await res.text());
+  if(!m) throw new Error('讀不到版本資訊');
+  return m[1];
+}
+function showUpdateBar(remote){
+  if(updateFound===remote) return;
+  updateFound=remote;
+  let bar=$('#updbar');
+  if(!bar){
+    bar=document.createElement('div');
+    bar.id='updbar'; bar.className='updbar';
+    document.body.appendChild(bar);
+  }
+  bar.innerHTML=`<span>有新版本 <b>v${esc(remote)}</b>，目前是 v${esc(APP_VERSION)}</span>
+    <button class="btn primary" id="updNow">立即更新</button>
+    <button class="btn" id="updLater">稍後</button>`;
+  bar.classList.add('on');
+  $('#updLater').onclick=()=>bar.classList.remove('on');
+  $('#updNow').onclick=()=>{
+    /* 有沒匯出的修改時先問過，重新整理會把它們清掉 */
+    if(state.docs.some(d=>d.dirty)&&
+       !confirm('有還沒匯出的修改，重新整理後會消失。仍要更新嗎？')) return;
+    location.reload(true);
+  };
+}
+async function checkUpdate(manual){
+  const now=Date.now();
+  if(!manual&&now-lastCheck<5*60*1000) return;
+  lastCheck=now;
+  if(location.protocol==='file:'){
+    if(manual) toast('用本機檔案開啟時無法檢查更新');
+    return;
+  }
+  if(manual) toast('檢查更新中…');
+  try{
+    const remote=await fetchRemoteVersion();
+    if(remote!==APP_VERSION) showUpdateBar(remote);
+    else if(manual) toast('已經是最新版 v'+APP_VERSION);
+  }catch(err){
+    if(manual) toast('檢查更新失敗：'+(err.message||err));
+  }
+}
+showVersion();
+$('#verChip').addEventListener('click',()=>checkUpdate(true));
+setTimeout(()=>checkUpdate(false),8000);
+setInterval(()=>checkUpdate(false),30*60*1000);
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) checkUpdate(false); });
 </script>
