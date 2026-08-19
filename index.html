@@ -146,16 +146,16 @@ button{cursor:pointer;background:none;border:none}
 
 .bench .body{overflow-y:auto;flex:1 1 auto;padding-bottom:60px}
 .nosel{padding:64px 24px;text-align:center;color:var(--faint);font-size:13px;line-height:2}
-.stagefloor{position:relative;height:184px;flex:0 0 auto;overflow:hidden;border-bottom:1px solid var(--rule);
+.stagefloor{position:relative;height:132px;flex:0 0 auto;overflow:hidden;border-bottom:1px solid var(--rule);
   background:radial-gradient(120% 90% at 50% 118%,#241d13 0,#0a0806 68%),#070605}
 .stagefloor::after{content:'';position:absolute;inset:0;pointer-events:none;
   background-image:radial-gradient(#ffffff09 1px,transparent 1px);background-size:7px 7px;opacity:.5}
-.beam{position:absolute;left:50%;bottom:50px;width:30px;height:148px;transform:translateX(-50%);filter:blur(7px);opacity:.72;animation:pulse 3.4s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:.5;height:138px}50%{opacity:.85;height:158px}}
-.beamcore{position:absolute;left:50%;bottom:50px;width:3px;height:118px;transform:translateX(-50%);filter:blur(1px);opacity:.9}
-.glow{position:absolute;left:50%;bottom:42px;width:150px;height:34px;transform:translateX(-50%);border-radius:50%;filter:blur(13px);opacity:.4}
-.previewlabel{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);max-width:88%;z-index:2;text-align:center}
-.minimapchip{position:absolute;top:11px;right:11px;width:54px;height:54px;border-radius:50%;background:#0d0b0899;
+.beam{position:absolute;left:50%;bottom:44px;width:26px;height:104px;transform:translateX(-50%);filter:blur(7px);opacity:.72;animation:pulse 3.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.5;height:96px}50%{opacity:.85;height:114px}}
+.beamcore{position:absolute;left:50%;bottom:44px;width:3px;height:84px;transform:translateX(-50%);filter:blur(1px);opacity:.9}
+.glow{position:absolute;left:50%;bottom:37px;width:150px;height:34px;transform:translateX(-50%);border-radius:50%;filter:blur(13px);opacity:.4}
+.previewlabel{position:absolute;left:50%;bottom:38px;transform:translateX(-50%);max-width:88%;z-index:2;text-align:center}
+.minimapchip{position:absolute;top:9px;right:9px;width:44px;height:44px;border-radius:50%;background:#0d0b0899;
   border:1px solid var(--rule);display:flex;align-items:center;justify-content:center}
 .minimapchip.off{opacity:.28}
 .soundchip{position:absolute;left:11px;top:11px;max-width:58%;font-family:var(--mono);font-size:9px;color:var(--gold-dim);
@@ -231,6 +231,117 @@ input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--gold
 .addcond{width:100%;padding:7px;border:1px dashed var(--rule-lit);color:var(--muted);font-size:11.5px}
 .addcond:hover{border-color:var(--gold-dim);color:var(--gold-hi)}
 
+
+/* 屬性面板：緊湊單頁排版 */
+.pgrid{padding:11px 12px 16px;display:flex;flex-direction:column;gap:9px}
+.prow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:28px}
+.prow .seg{flex:1 1 auto}
+.prow .seg button{padding:6px;font-size:11.5px}
+.pcat{flex:0 0 auto;font-size:10.5px;color:var(--faint);padding-left:4px}
+.plab{flex:0 0 34px;font-size:11.5px;color:var(--muted)}
+.prow input[type=range]{flex:1 1 auto;min-width:70px}
+.pnum{flex:0 0 26px;text-align:right;font-family:var(--mono);font-size:11.5px;color:var(--gold-hi)}
+.prow input[type=number]{width:62px;background:#00000059;border:1px solid var(--rule-lit);padding:4px 5px;
+  font-family:var(--mono);font-size:12px;color:var(--gold-hi);outline:none;text-align:center}
+.prow input[type=number]:focus{border-color:var(--gold)}
+.prow input::placeholder{color:var(--faint);font-size:10.5px}
+.prow .tilde{color:var(--gold-dim);font-size:11px}
+.punit{font-size:11px;color:var(--muted)}
+.peff{flex:1 1 100%;font-size:10.5px;color:var(--gold-dim);padding-left:40px}
+.phint{font-size:10.5px;color:var(--faint)}
+.pweird{font-family:var(--mono);font-size:11px;color:var(--warn)}
+.pinp{flex:1 1 auto;min-width:0;background:#00000059;border:1px solid var(--rule);padding:5px 8px;
+  font-size:11.5px;outline:none}
+.pinp:focus{border-color:var(--gold-dim)}
+.ptog{flex:0 0 auto;display:flex;align-items:center;gap:5px;padding:4px 9px;border:1px solid var(--rule-lit);
+  font-size:11.5px;color:var(--muted);transition:.12s}
+.ptog:hover{border-color:var(--gold-dim);color:var(--text)}
+.ptog.on{color:var(--gold-hi);border-color:var(--gold-dim);background:#c8aa6e14}
+.ptog i{width:11px;height:11px;border:1px solid currentColor;font-style:normal;font-size:8px;
+  line-height:9px;text-align:center;opacity:.7}
+.psel{flex:0 0 auto;max-width:104px;background:#00000059;border:1px solid var(--rule-lit);
+  font-size:11.5px;padding:4px 5px;outline:none;color:var(--text)}
+.psel.grow{flex:1 1 auto;max-width:none;min-width:0}
+.psel:focus{border-color:var(--gold-dim)}
+.pacts{display:flex;flex-wrap:wrap;gap:5px;padding-top:3px;border-top:1px solid var(--rule);margin-top:2px}
+.pacts .chip{padding:5px 9px;font-size:11px}
+.chip.tiny{padding:2px 7px;font-size:10px}
+.pitems{display:flex;flex-wrap:wrap;gap:4px}
+.pitems .groupchip{font-size:10.5px;padding:2px 6px}
+.plint{display:flex;flex-direction:column;gap:3px}
+.plint span{font-size:10.5px;color:#dcb87f;border-left:2px solid var(--warn);padding:3px 7px;background:#d093410d;line-height:1.5}
+.plint span.e{color:#e2a89e;border-left-color:var(--hide);background:#b0574a12}
+
+.difftabs{display:flex;gap:2px;border-bottom:1px solid var(--rule);margin:0 0 12px}
+.difftabs button{padding:8px 12px;font-size:12px;color:var(--muted);border-bottom:2px solid transparent}
+.difftabs button.on{color:var(--gold-hi);border-bottom-color:var(--gold)}
+.difftabs button:hover{background:#ffffff06}
+.difftabs b{margin-left:6px;font-family:var(--mono);font-size:10.5px;color:var(--gold-dim);font-weight:500}
+.difflist{display:flex;flex-direction:column;gap:11px}
+.drow{border:1px solid var(--rule);background:#00000030}
+.dhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:7px 10px;
+  border-bottom:1px solid var(--rule);font-size:12.5px}
+.dhead b{color:var(--gold-hi);font-weight:500}
+.dhead span{font-family:var(--mono);font-size:9.5px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dcols{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule)}
+.dcols.one{grid-template-columns:1fr}
+.dcol{background:#0c0a07;padding:8px 9px;display:flex;flex-direction:column;gap:7px;min-width:0}
+.dct{font-size:10px;color:var(--faint);letter-spacing:.06em}
+.dcol pre{margin:0;font-family:var(--mono);font-size:10.5px;line-height:1.65;white-space:pre-wrap;
+  word-break:break-all;color:var(--muted);max-height:210px;overflow:auto}
+.dcol pre .df{color:var(--gold-hi);background:#c8aa6e1a;display:inline-block;width:100%}
+.dcol .chip{align-self:flex-start}
+
+
+.dftabs{display:flex;gap:2px;border-bottom:1px solid var(--rule);margin-bottom:10px}
+.dftabs button{padding:7px 12px;font-size:11.5px;color:var(--muted);border-bottom:2px solid transparent;display:flex;gap:6px;align-items:baseline}
+.dftabs button b{font-family:var(--mono);font-size:10px;color:var(--faint);font-weight:400}
+.dftabs button:hover{background:#ffffff08}
+.dftabs button.on{color:var(--gold-hi);border-bottom-color:var(--gold)}
+.dftabs button.on b{color:var(--gold-dim)}
+.dflist{max-height:52vh;overflow-y:auto;display:flex;flex-direction:column;gap:6px}
+.dfrow{border:1px solid var(--rule);background:#00000030;padding:8px 9px;border-left:3px solid transparent}
+.dfrow.changed{border-left-color:var(--warn)}
+.dfrow.onlyTheirs{border-left-color:var(--show)}
+.dfrow.onlyMine{border-left-color:#5b8bd0}
+.dfrow.same{border-left-color:var(--rule-lit);opacity:.65}
+.dfhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dfbadge{flex:0 0 auto;font-size:9px;font-family:var(--mono);letter-spacing:.06em;color:var(--faint);
+  border:1px solid var(--rule-lit);padding:1px 5px}
+.dfhead .gl{font-size:12px;max-width:200px}
+.dftag{flex:1 1 auto;text-align:right;font-family:var(--mono);font-size:9px;color:var(--faint);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.dfcols{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.dfcol h4{margin:0 0 4px;font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em}
+.dfcol pre,.dfone pre{margin:0 0 6px;background:#00000059;border:1px solid var(--rule);padding:6px 7px;
+  font-family:var(--mono);font-size:10px;line-height:1.6;color:var(--text);max-height:150px;
+  overflow:auto;white-space:pre-wrap;word-break:break-all}
+.dfone{margin-top:8px}
+.dfone .phint{display:block;margin-bottom:6px}
+@media (max-width:640px){.dfcols{grid-template-columns:1fr}}
+.econbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--rule)}
+.econbar > label{font-size:12px;color:var(--gold-hi)}
+.econbar input{width:86px;background:#00000059;border:1px solid var(--rule-lit);padding:5px 7px;
+  font-family:var(--mono);font-size:13px;color:var(--gold-hi);outline:none;text-align:center}
+.econbar input:focus{border-color:var(--gold)}
+.econbar > span{font-size:11.5px;color:var(--muted)}
+.econempty{padding:24px;text-align:center;color:var(--faint);font-size:12px;line-height:1.9;border:1px dashed var(--rule-lit)}
+.econsum{display:flex;gap:4px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin:10px 0}
+.econsum span{font-family:var(--mono);font-size:13px}
+.econsum .a{color:var(--gold-hi)} .econsum .b{color:#dd9d92} .econsum .c{color:#a9cf90}
+.econlist{max-height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+.econrow{display:flex;align-items:center;gap:8px;padding:5px 7px;border-left:3px solid transparent;background:#00000030}
+.econrow.stack{border-left-color:var(--gold)}
+.econrow.hide{border-left-color:var(--hide)}
+.econrow.show{border-left-color:var(--show)}
+.econrow.ex{border-left-color:#c8843c;background:#c8843c0f}
+.econex{flex:0 0 auto;color:var(--faint);font-size:13px;padding:0 2px;line-height:1}
+.econrow.ex .econex{color:#e8a768}
+.econn{flex:1 1 auto;font-size:12px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.econv{flex:0 0 auto;font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+.econa{flex:0 0 190px;font-size:11px;color:var(--gold-dim);text-align:right}
+.econfmt{background:#00000059;border:1px solid var(--rule);padding:8px;font-family:var(--mono);
+  font-size:10.5px;color:var(--muted);line-height:1.7;margin:0 0 10px;white-space:pre-wrap;word-break:break-all}
 .irlist{display:flex;flex-direction:column;gap:7px}
 .irow{border:1px solid var(--rule);background:#00000038;padding:9px 10px;border-left:4px solid transparent}
 .irow.s{border-left-color:var(--show)}
@@ -402,10 +513,14 @@ h1{font-family:var(--ui);font-size:27px;font-weight:500;color:var(--gold-hi);mar
       <button class="btn" id="redoBtn" title="重做 Ctrl+Shift+Z" disabled>重做</button>
       <button class="btn" id="stylePresets">樣式階級</button>
       <button class="btn" id="safetyBtn">防呆</button>
+      <button class="btn" id="diffBtn" title="與 NeverSink 原版比較">比對原版</button>
+      <button class="btn" id="econBtn" title="依市場價值自動設定數量門檻">價值門檻</button>
       <button class="btn" id="lintBtn">檢查<span class="n" id="lintN"></span></button>
       <button class="btn" id="newDoc">新建</button>
       <button class="btn" id="pick">開啟</button>
       <button class="btn" id="nsBtn" title="從 GitHub 載入 NeverSink 官方過濾器">NeverSink</button>
+      <button class="btn" id="diffBtn" title="與 NeverSink 原版逐條比對">比對原版</button>
+      <button class="btn" id="pubBtn" title="複製全文並開啟 PoE 帳號的過濾器頁面">發布</button>
       <a class="btn" href="README_防呆與操作說明.md" target="_blank" rel="noopener" style="text-decoration:none">說明</a>
       <button class="btn" id="save">匯出</button>
       <button class="btn primary" id="saveTW">匯出繁體版</button>
@@ -5538,6 +5653,574 @@ Wealth and Power	11	等級 4 啟蒙 已汙染	0
 When Currents Blaze	2	烈風暴 品質: +20% 已汙染	1
 Who Asked	9	獨裁者的武器 物品等級: 83 已破裂	0
 Winter's Embrace	2	恐懼之環 三個固定詞綴 追憶之	1</script>
+<script id="stackdata" type="text/plain">	1
+Aberrant Fossil	20
+Abrasive Catalyst	10
+Abyssal Delirium Orb	10
+Accelerating Catalyst	10
+Aetheric Fossil	20
+Albino Rhoa Feather	10
+Alchemy Shard	20
+Alteration Shard	20
+Amber Oil	10
+Amplifying Power Core	20
+Ancestral Tattoo of Bloodlines	10
+Ancient Orb	20
+Ancient Shard	20
+Annulment Shard	20
+Apprentice Cartographer's Seal	10
+Armour Recombinator	20
+Armourer's Scrap	40
+Armoursmith's Delirium Orb	10
+Astragali	1000
+Augmenting Power Core	20
+Awakened Sextant	10
+Awakener's Orb	10
+Azure Oil	10
+Bestiary Orb	10
+Binding Shard	20
+Black Oil	10
+Blacksmith's Delirium Orb	10
+Blacksmith's Whetstone	20
+Blessed Orb	20
+Blessing of Chayula	10
+Blessing of Esh	10
+Blessing of Tul	10
+Blessing of Uul-Netol	10
+Blessing of Xoph	10
+Blighted Delirium Orb	10
+Blighted Scouting Report	20
+Bloodstained Fossil	10
+Bound Fossil	20
+Bound Rune	250
+Bounty Rune	250
+Burial Medallion	1000
+Cartographer's Chisel	20
+Cartographer's Delirium Orb	10
+Challenging Delirium Orb	10
+Chaos Orb	20
+Chaos Shard	20
+Charged Compass	1
+Chromatic Orb	20
+Clear Oil	10
+Comprehensive Scouting Report	20
+Corroded Fossil	20
+Corrupt	1
+Crescent Splinter	10
+Crimson Oil	10
+Crusader's Exalted Orb	20
+Crystalline Geode	1
+Deafening Essence of Anger	9
+Deafening Essence of Anguish	9
+Deafening Essence of Contempt	9
+Deafening Essence of Doubt	9
+Deafening Essence of Dread	9
+Deafening Essence of Envy	9
+Deafening Essence of Fear	9
+Deafening Essence of Greed	9
+Deafening Essence of Hatred	9
+Deafening Essence of Loathing	9
+Deafening Essence of Misery	9
+Deafening Essence of Rage	9
+Deafening Essence of Scorn	9
+Deafening Essence of Sorrow	9
+Deafening Essence of Spite	9
+Deafening Essence of Suffering	9
+Deafening Essence of Torment	9
+Deafening Essence of Woe	9
+Deafening Essence of Wrath	9
+Deafening Essence of Zeal	9
+Deft Fossil	20
+Delirious Scouting Report	20
+Delirium Orb	10
+Dense Fossil	20
+Deregulation Scroll	10
+Divine Orb	20
+Diviner's Delirium Orb	10
+Eldritch Chaos Orb	20
+Eldritch Exalted Orb	20
+Eldritch Orb of Annulment	20
+Electroshock Scroll	10
+Elevated Sextant	10
+Empty Coffin	10
+Enchant	9
+Engineer's Orb	20
+Engineer's Shard	20
+Enkindling Orb	20
+Essence of Delirium	9
+Essence of Horror	9
+Essence of Hysteria	9
+Essence of Insanity	9
+Eternal Orb	10
+Exalted Orb	20
+Exalted Shard	20
+Exceptional Black Scythe Artifact	5000
+Exceptional Broken Circle Artifact	5000
+Exceptional Eldritch Ember	10
+Exceptional Eldritch Ichor	10
+Exceptional Order Artifact	5000
+Exceptional Sun Artifact	5000
+Exotic Coinage	1000
+Explorer's Scouting Report	20
+Faceted Fossil	10
+Facetor's Lens	1
+Fertile Catalyst	10
+Filled Coffin	1
+Fine Delirium Orb	10
+Foreboding Delirium Orb	10
+Fossilised Delirium Orb	10
+Fractured Fossil	10
+Fracturing Orb	20
+Fracturing Shard	20
+Fragmentation Scroll	10
+Fragmented Delirium Orb	10
+Frigid Fossil	20
+Fundamental Fossil	20
+Gemcutter's Prism	20
+Gilded Fossil	10
+Glassblower's Bauble	20
+Glyphic Fossil	10
+Golden Oil	10
+Grand Black Scythe Artifact	25000
+Grand Broken Circle Artifact	25000
+Grand Eldritch Ember	10
+Grand Eldritch Ichor	10
+Grand Order Artifact	25000
+Grand Sun Artifact	25000
+Greater Black Scythe Artifact	50000
+Greater Broken Circle Artifact	50000
+Greater Eldritch Ember	10
+Greater Eldritch Ichor	10
+Greater Order Artifact	50000
+Greater Sun Artifact	50000
+Haemocombustion Scroll	10
+Harbinger's Orb	20
+Harbinger's Shard	20
+Hinekora's Lock	10
+Hollow Fossil	10
+Honoured Tattoo of the Barbarian	10
+Honoured Tattoo of the Berserker	10
+Honoured Tattoo of the Dove	10
+Honoured Tattoo of the Flock	10
+Honoured Tattoo of the Flood	10
+Honoured Tattoo of the Hatungo	10
+Honoured Tattoo of the Hunter	10
+Honoured Tattoo of the Makanga	10
+Honoured Tattoo of the Mountain	10
+Honoured Tattoo of the Oak	10
+Honoured Tattoo of the Pa	10
+Honoured Tattoo of the Pillager	10
+Honoured Tattoo of the Sky	10
+Honoured Tattoo of the Storm	10
+Honoured Tattoo of the Tuatara	10
+Honoured Tattoo of the Turtle	10
+Honoured Tattoo of the Warlord	10
+Honoured Tattoo of the Wise	10
+Horizon Shard	20
+Hunter's Exalted Orb	20
+Igneous Geode	1
+Imbued Catalyst	10
+Imperial Delirium Orb	10
+Imprint	1
+Imprinted Bestiary Orb	1
+Indigo Oil	10
+Influenced Scouting Report	20
+Infused Engineer's Orb	20
+Instilling Orb	20
+Intrinsic Catalyst	10
+Jagged Fossil	20
+Jeweller's Delirium Orb	10
+Jeweller's Orb	20
+Jewellery Recombinator	20
+Journey Rune	250
+Journey Tattoo of Makanui	10
+Journey Tattoo of the Body	10
+Journey Tattoo of the Mind	10
+Journey Tattoo of the Soul	10
+Journeyman Cartographer's Seal	10
+Kalguuran Delirium Orb	10
+Lesser Black Scythe Artifact	50000
+Lesser Broken Circle Artifact	50000
+Lesser Eldritch Ember	10
+Lesser Eldritch Ichor	10
+Lesser Order Artifact	50000
+Lesser Sun Artifact	50000
+Life Rune	250
+Loyalty Tattoo of Ahuana	10
+Loyalty Tattoo of Akoya	10
+Loyalty Tattoo of Ikiaho	10
+Loyalty Tattoo of Kahuturoa	10
+Loyalty Tattoo of Kaom	10
+Loyalty Tattoo of Kiloava	10
+Loyalty Tattoo of Maata	10
+Loyalty Tattoo of Rakiata	10
+Loyalty Tattoo of Tawhanuku	10
+Loyalty Tattoo of Utula	10
+Lucent Fossil	20
+Lycia's Invocation of Acrobatics	10
+Lycia's Invocation of Ancestral Bond	10
+Lycia's Invocation of Arrow Dancing	10
+Lycia's Invocation of Avatar of Fire	10
+Lycia's Invocation of Blood Magic	10
+Lycia's Invocation of Call to Arms	10
+Lycia's Invocation of Conduit	10
+Lycia's Invocation of Crimson Dance	10
+Lycia's Invocation of Divine Shield	10
+Lycia's Invocation of Eldritch Battery	10
+Lycia's Invocation of Elemental Equilibrium	10
+Lycia's Invocation of Elemental Overload	10
+Lycia's Invocation of Eternal Youth	10
+Lycia's Invocation of Ghost Dance	10
+Lycia's Invocation of Ghost Reaver	10
+Lycia's Invocation of Glancing Blows	10
+Lycia's Invocation of Hex Master	10
+Lycia's Invocation of Imbalanced Guard	10
+Lycia's Invocation of Iron Grip	10
+Lycia's Invocation of Iron Reflexes	10
+Lycia's Invocation of Iron Will	10
+Lycia's Invocation of Lethe Shade	10
+Lycia's Invocation of Magebane	10
+Lycia's Invocation of Mind over Matter	10
+Lycia's Invocation of Minion Instability	10
+Lycia's Invocation of Pain Attunement	10
+Lycia's Invocation of Perfect Agony	10
+Lycia's Invocation of Point Blank	10
+Lycia's Invocation of Precise Technique	10
+Lycia's Invocation of Resolute Technique	10
+Lycia's Invocation of Runebinder	10
+Lycia's Invocation of Solipsism	10
+Lycia's Invocation of Supreme Ego	10
+Lycia's Invocation of Unwavering Stance	10
+Lycia's Invocation of Vaal Pact	10
+Lycia's Invocation of Versatile Combatant	10
+Lycia's Invocation of Wicked Ward	10
+Lycia's Invocation of Wind Dancer	10
+Lycia's Invocation of Zealot's Oath	10
+Lycia's Invocation of the Agnostic	10
+Lycia's Invocation of the Impaler	10
+Magmatic Ore	1
+Master Cartographer's Seal	10
+Maven's Chisel of Avarice	20
+Maven's Chisel of Divination	20
+Maven's Chisel of Procurement	20
+Maven's Chisel of Proliferation	20
+Maven's Chisel of Scarabs	20
+Metallic Fossil	20
+Mirror Shard	20
+Mirror of Kalandra	10
+Mountain Rune	250
+Muttering Essence of Anger	9
+Muttering Essence of Contempt	9
+Muttering Essence of Fear	9
+Muttering Essence of Greed	9
+Muttering Essence of Hatred	9
+Muttering Essence of Sorrow	9
+Muttering Essence of Torment	9
+Muttering Essence of Woe	9
+Mystery Leaguestone	1
+Necromancy Net	100
+Noxious Catalyst	10
+Obscured Delirium Orb	10
+Oil Extractor	10
+Omen of Acceleration	1
+Omen of Adrenaline	1
+Omen of Amelioration	1
+Omen of Bequeathal	1
+Omen of Blanching	1
+Omen of Brilliance	1
+Omen of Connections	1
+Omen of Death's Door	1
+Omen of Death-dancing	1
+Omen of Fortune	1
+Omen of Refreshment	1
+Omen of Resurgence	1
+Omen of Return	1
+Omen of Revenge	1
+Omen of the Jeweller	1
+Omen of the Soul Devourer	1
+Opalescent Oil	10
+Operative's Scouting Report	20
+Opulent Fossil	20
+Orb of Alchemy	20
+Orb of Alteration	20
+Orb of Annulment	20
+Orb of Augmentation	30
+Orb of Binding	20
+Orb of Chance	20
+Orb of Conflict	10
+Orb of Dominance	10
+Orb of Fusing	20
+Orb of Horizons	20
+Orb of Regret	40
+Orb of Scouring	30
+Orb of Transmutation	40
+Orb of Unmaking	40
+Otherworldly Scouting Report	20
+Perandus Coin	5000
+Portal Scroll	40
+Potent Alchemical Resonator	1
+Potent Alchemical Resonator	10
+Potent Chaotic Resonator	1
+Potent Chaotic Resonator	10
+Power Core	20
+Power Rune	250
+Powerful Alchemical Resonator	1
+Powerful Alchemical Resonator	10
+Powerful Chaotic Resonator	1
+Powerful Chaotic Resonator	10
+Primal Crystallised Lifeforce	50000
+Primal Delirium Orb	10
+Primal Wisps	50000
+Prime Alchemical Resonator	1
+Prime Alchemical Resonator	10
+Prime Chaotic Resonator	1
+Prime Chaotic Resonator	10
+Prime Regrading Lens	20
+Prime Sextant	10
+Primitive Alchemical Resonator	1
+Primitive Alchemical Resonator	10
+Primitive Chaotic Resonator	1
+Primitive Chaotic Resonator	10
+Prismatic Catalyst	10
+Prismatic Fossil	20
+Prismatic Oil	10
+Pristine Fossil	20
+Prophecy	1
+Redeemer's Exalted Orb	20
+Reflecting Mist	10
+Reflective Oil	10
+Regal Orb	20
+Regal Shard	20
+Reinforced Iron Net	100
+Reinforced Rope Net	100
+Reinforced Steel Net	100
+Remnant of Corruption	9
+Ritual Splinter	100
+Ritual Vessel	10
+River Rune	250
+Rogue's Marker	50000
+Sacred Crystallised Lifeforce	10
+Sacred Orb	10
+Sanctified Fossil	10
+Scorched Fossil	20
+Scrap Metal	1000
+Screaming Essence of Anger	9
+Screaming Essence of Anguish	9
+Screaming Essence of Contempt	9
+Screaming Essence of Doubt	9
+Screaming Essence of Dread	9
+Screaming Essence of Envy	9
+Screaming Essence of Fear	9
+Screaming Essence of Greed	9
+Screaming Essence of Hatred	9
+Screaming Essence of Loathing	9
+Screaming Essence of Misery	9
+Screaming Essence of Rage	9
+Screaming Essence of Scorn	9
+Screaming Essence of Sorrow	9
+Screaming Essence of Spite	9
+Screaming Essence of Suffering	9
+Screaming Essence of Torment	9
+Screaming Essence of Woe	9
+Screaming Essence of Wrath	9
+Screaming Essence of Zeal	9
+Scroll Fragment	5
+Scroll of Wisdom	40
+Secondary Regrading Lens	20
+Sepia Oil	10
+Serrated Fossil	20
+Shrieking Essence of Anger	9
+Shrieking Essence of Anguish	9
+Shrieking Essence of Contempt	9
+Shrieking Essence of Doubt	9
+Shrieking Essence of Dread	9
+Shrieking Essence of Envy	9
+Shrieking Essence of Fear	9
+Shrieking Essence of Greed	9
+Shrieking Essence of Hatred	9
+Shrieking Essence of Loathing	9
+Shrieking Essence of Misery	9
+Shrieking Essence of Rage	9
+Shrieking Essence of Scorn	9
+Shrieking Essence of Sorrow	9
+Shrieking Essence of Spite	9
+Shrieking Essence of Suffering	9
+Shrieking Essence of Torment	9
+Shrieking Essence of Woe	9
+Shrieking Essence of Wrath	9
+Shrieking Essence of Zeal	9
+Shuddering Fossil	20
+Silver Coin	30
+Silver Oil	10
+Simple Iron Net	100
+Simple Rope Net	100
+Simple Sextant	10
+Simple Steel Net	100
+Simulacrum Splinter	300
+Singular Delirium Orb	10
+Singular Scouting Report	20
+Skittering Delirium Orb	10
+Specularity Scroll	10
+Splinter of Chayula	100
+Splinter of Esh	100
+Splinter of Tul	100
+Splinter of Uul-Netol	100
+Splinter of Xoph	100
+Stacked Deck	20
+Strong Iron Net	100
+Strong Rope Net	100
+Strong Steel Net	100
+Sun Rune	250
+Surveyor's Compass	10
+Tailoring Orb	20
+Tainted Armourer's Scrap	40
+Tainted Blacksmith's Whetstone	20
+Tainted Blessing	10
+Tainted Catalyst	10
+Tainted Chaos Orb	20
+Tainted Chromatic Orb	20
+Tainted Divine Teardrop	10
+Tainted Exalted Orb	20
+Tainted Jeweller's Orb	20
+Tainted Mythic Orb	20
+Tainted Oil	10
+Tainted Orb of Fusing	20
+Tangled Fossil	10
+Tattoo of the Arohongui Makanga	10
+Tattoo of the Arohongui Moonwarden	10
+Tattoo of the Arohongui Scout	10
+Tattoo of the Arohongui Shaman	10
+Tattoo of the Arohongui Warmonger	10
+Tattoo of the Arohongui Warrior	10
+Tattoo of the Hinekora Deathwarden	10
+Tattoo of the Hinekora Makanga	10
+Tattoo of the Hinekora Shaman	10
+Tattoo of the Hinekora Storyteller	10
+Tattoo of the Hinekora Warmonger	10
+Tattoo of the Hinekora Warrior	10
+Tattoo of the Kitava Blood Drinker	10
+Tattoo of the Kitava Heart Eater	10
+Tattoo of the Kitava Makanga	10
+Tattoo of the Kitava Rebel	10
+Tattoo of the Kitava Shaman	10
+Tattoo of the Kitava Warrior	10
+Tattoo of the Ngamahu Firewalker	10
+Tattoo of the Ngamahu Makanga	10
+Tattoo of the Ngamahu Shaman	10
+Tattoo of the Ngamahu Warmonger	10
+Tattoo of the Ngamahu Warrior	10
+Tattoo of the Ngamahu Woodcarver	10
+Tattoo of the Ramako Archer	10
+Tattoo of the Ramako Fleetfoot	10
+Tattoo of the Ramako Makanga	10
+Tattoo of the Ramako Scout	10
+Tattoo of the Ramako Shaman	10
+Tattoo of the Ramako Sniper	10
+Tattoo of the Rongokurai Brute	10
+Tattoo of the Rongokurai Goliath	10
+Tattoo of the Rongokurai Guard	10
+Tattoo of the Rongokurai Makanga	10
+Tattoo of the Rongokurai Turtle	10
+Tattoo of the Rongokurai Warrior	10
+Tattoo of the Tasalio Bladedancer	10
+Tattoo of the Tasalio Makanga	10
+Tattoo of the Tasalio Scout	10
+Tattoo of the Tasalio Shaman	10
+Tattoo of the Tasalio Tideshifter	10
+Tattoo of the Tasalio Warrior	10
+Tattoo of the Tawhoa Herbalist	10
+Tattoo of the Tawhoa Makanga	10
+Tattoo of the Tawhoa Naturalist	10
+Tattoo of the Tawhoa Scout	10
+Tattoo of the Tawhoa Shaman	10
+Tattoo of the Tawhoa Warrior	10
+Tattoo of the Tukohama Brawler	10
+Tattoo of the Tukohama Makanga	10
+Tattoo of the Tukohama Shaman	10
+Tattoo of the Tukohama Warcaller	10
+Tattoo of the Tukohama Warmonger	10
+Tattoo of the Tukohama Warrior	10
+Tattoo of the Valako Makanga	10
+Tattoo of the Valako Scout	10
+Tattoo of the Valako Shaman	10
+Tattoo of the Valako Shieldbearer	10
+Tattoo of the Valako Stormrider	10
+Tattoo of the Valako Warrior	10
+Teal Oil	10
+Tempering Catalyst	10
+Tempering Orb	20
+Thaumaturge's Delirium Orb	10
+Thaumaturgical Net	100
+Time Rune	250
+Time-light Scroll	10
+Timeless Delirium Orb	10
+Timeless Eternal Empire Splinter	100
+Timeless Karui Splinter	100
+Timeless Maraketh Splinter	100
+Timeless Templar Splinter	100
+Timeless Vaal Splinter	100
+Transforming Power Core	20
+Transmutation Shard	20
+Turbulent Catalyst	10
+Uncarved Gemstone	1
+Unshaping Orb	10
+Unstable Catalyst	10
+Vaal Orb	20
+Vaal Scouting Report	20
+Valdo's Puzzle Box	10
+Veiled Orb	20
+Veiled Scarab	20
+Verdant Oil	10
+Vial of Awakening	10
+Vial of Consequence	10
+Vial of Dominance	10
+Vial of Fate	10
+Vial of Sacrifice	10
+Vial of Summoning	10
+Vial of Transcendence	10
+Vial of the Ghost	10
+Vial of the Ritual	10
+Violet Oil	10
+Vivid Crystallised Lifeforce	50000
+Vivid Wisps	50000
+Wailing Essence of Anger	9
+Wailing Essence of Anguish	9
+Wailing Essence of Contempt	9
+Wailing Essence of Doubt	9
+Wailing Essence of Fear	9
+Wailing Essence of Greed	9
+Wailing Essence of Hatred	9
+Wailing Essence of Loathing	9
+Wailing Essence of Rage	9
+Wailing Essence of Sorrow	9
+Wailing Essence of Spite	9
+Wailing Essence of Suffering	9
+Wailing Essence of Torment	9
+Wailing Essence of Woe	9
+Wailing Essence of Wrath	9
+Wailing Essence of Zeal	9
+War Rune	250
+Warlord's Exalted Orb	20
+Weapon Recombinator	20
+Weeping Essence of Anger	9
+Weeping Essence of Contempt	9
+Weeping Essence of Doubt	9
+Weeping Essence of Fear	9
+Weeping Essence of Greed	9
+Weeping Essence of Hatred	9
+Weeping Essence of Rage	9
+Weeping Essence of Sorrow	9
+Weeping Essence of Suffering	9
+Weeping Essence of Torment	9
+Weeping Essence of Woe	9
+Weeping Essence of Wrath	9
+Whispering Delirium Orb	10
+Whispering Essence of Contempt	9
+Whispering Essence of Greed	9
+Whispering Essence of Hatred	9
+Whispering Essence of Woe	9
+Wild Crystallised Lifeforce	50000
+Wild Wisps	50000</script>
 <script>
 /* ======================================================================
    0. 版本
@@ -5546,7 +6229,7 @@ Winter's Embrace	2	恐懼之環 三個固定詞綴 追憶之	1</script>
    更新偵測會重新抓取這個頁面、用正規式讀出上面那行的版本字串來比對，
    所以這兩個常數必須放在整份程式的最前面。
    ================================================================== */
-const APP_VERSION='1.3.0';
+const APP_VERSION='1.6.0';
 const APP_BUILD='2026-08-18';
 
 /* ======================================================================
@@ -5576,6 +6259,17 @@ const CARDS_NORM={};
 function normCard(s){ return String(s||'').replace(/['’]/g,'').replace(/\s+/g,' ').trim().toLowerCase(); }
 (function(){ for(const k in CARDS) CARDS_NORM[normCard(k)]=CARDS[k]; })();
 function cardInfo(en){ return CARDS[en] || CARDS_NORM[normCard(en)] || null; }
+
+/* 通貨堆疊上限（取自 RePoE base_items 的 stack_size），用來把「價值門檻」換算成 StackSize */
+const STACKCAP={};
+(function(){
+  const raw=document.getElementById('stackdata').textContent;
+  for(const line of raw.split('\n')){
+    if(!line) continue;
+    const p=line.split('\t');
+    STACKCAP[p[0]]=+p[1]||0;
+  }
+})();
 (function(){
   const raw=document.getElementById('namedata').textContent;
   for(const line of raw.split('\n')){
@@ -6514,10 +7208,7 @@ function renderInspector(){
   const snd=(findRule(b,'CustomAlertSound')||{values:[]}).values[0]?.v||'';
   const noDrop=getBool(b,'DisableDropSound');
   const conds=b.rules.filter(r=>!r.unknown&&!/^(Set|Play|Minimap|Custom|Disable|Enable)/i.test(r.key));
-  const palSrc=state.docs.find(d=>d.name===state.palFrom)||state.doc;
-  const pal=paletteOf(palSrc);
   const issues=lint(b);
-  const ns=nameSource(b);
   const bt=positiveBaseRule(b);
   const isCurrency=classify(b)==='1';
   const stackRule=findRule(b,'StackSize');
@@ -6525,118 +7216,82 @@ function renderInspector(){
   /* 有 StackSize 的區塊，找出同群組但沒有數量條件的「基準規則」，
      這樣站在門檻規則上也能管理整組門檻，不會只看到一顆用不了的按鈕 */
   const stackBase=stackRule?findStackBase(b):null;
-  let stackAction='', stackHint='拆分會複製目前規則與配色；移動只會列出 SHOW／HIDE、Class、其他條件和堆疊條件都相同的安全目標群組。';
-  if(!stackRule&&isCurrency){
-    stackAction='<button class="btn" id="stackTiers">依掉落數量分色</button>';
-  }else if(stackRule&&stackBase){
-    stackAction='<button class="btn" id="stackTiersBase">管理整組數量門檻</button>';
-    stackHint='這是一條數量門檻規則。上面可以直接改門檻，或按「管理整組數量門檻」一次調整同群組的所有門檻與配色。';
-  }else if(stackRule){
-    stackHint='這是一條數量門檻規則，上面可以直接修改門檻。同群組找不到沒有數量條件的基準規則，所以無法一次管理整組。';
-  }else if(!isCurrency){
-    stackHint='拆分會複製目前規則與配色；移動只會列出條件相同的安全目標群組。數量分色只適用於通貨群組。';
-  }
 
   el.innerHTML=`
-  ${issues.length?`<div class="sec"><h3>檢查<span>${issues.length} 項</span></h3>
-    <ul class="lintlist">${issues.map(i=>`<li class="${i.lv==='e'?'err':''}">${esc(i.msg)}</li>`).join('')}</ul></div>`:''}
+  <div class="pgrid">
 
-  <div class="sec">
-    <h3>區塊<span>${esc(catName(classify(b)))}</span></h3>
-    <div class="seg" id="showhide">
-      <button class="${b.type==='Show'?'on':''}" data-t="Show">SHOW 顯示</button>
-      <button class="${b.type==='Hide'?'on h':''}" data-t="Hide">HIDE 隱藏</button>
+    <div class="prow">
+      <div class="seg" id="showhide">
+        <button class="${b.type==='Show'?'on':''}" data-t="Show">SHOW 顯示</button>
+        <button class="${b.type==='Hide'?'on h':''}" data-t="Hide">HIDE 隱藏</button>
+      </div>
+      <span class="pcat">${esc(catName(classify(b)))}</span>
     </div>
-    ${(ns&&!bt)?`<div class="hintline">名稱取自 ${ns.key}：${esc(ns.vals.slice(0,3).map(v=>(tr(v)?tr(v)+'（'+v+'）':v)).join('、'))}${ns.vals.length>3?' …':''}</div>`:''}
-    <div class="field" style="margin-top:10px">
-      <label>作者註解</label>
-      <input class="inp" id="hc" value="${esc(T(b.headComment||''))}">
-    </div>
-  </div>
 
-  <div class="sec">
-    <h3>顏色<span>點色塊開調色盤</span></h3>
+    ${issues.length?`<div class="plint">${issues.map(i=>
+      `<span class="${i.lv==='e'?'e':''}">${esc(i.msg)}</span>`).join('')}</div>`:''}
+
     <div class="trio">${colorCell(b,'SetTextColor','文字')}${colorCell(b,'SetBackgroundColor','背景')}${colorCell(b,'SetBorderColor','邊框')}</div>
-    <div class="quick">
-      <button class="chip" id="bdText">邊框＝文字色</button>
-      <button class="chip" id="bdBg">邊框＝背景色</button>
-      <button class="chip" id="bdOff">移除邊框</button>
-    </div>
-    <div class="quick" style="margin-top:7px">
-      <button class="chip lit" id="openPal">配色盤（${pal.length} 組）</button>
-      <button class="chip" id="openScope">批次套用顏色…</button>
-    </div>
-    <div class="field" style="margin-top:12px">
-      <label>字級 <b style="color:var(--gold-hi);font-family:var(--mono)">${fs==null?'預設 32':fs}</b></label>
-      <input type="range" id="fsr" min="18" max="70" step="1" value="${fs||32}" style="width:100%">
-    </div>
-  </div>
 
-  ${bt?`<div class="sec">
-    <h3>物品群組<span>${bt.values.length} 項</span></h3>
-    ${stackEditorHTML(b)}
-    <div class="groupchips">${bt.values.slice(0,groupOpen?bt.values.length:6).map(v=>
-        `<span class="groupchip">${esc(tr(v.v)||v.v)}${tr(v.v)?`<small>${esc(v.v)}</small>`:''}</span>`).join('')}</div>
-    ${bt.values.length>6?`<button class="chip" id="groupToggle" style="width:100%;margin-bottom:9px">${
-      groupOpen?'收合物品清單':`顯示全部 ${bt.values.length} 項`}</button>`:''}
-    <div class="groupactions">
-      <button class="btn primary" id="manageGroup">拆分／移動物品</button>
-      <button class="btn" id="itemRules">這些物品的所有規則</button>
-      ${stackAction}
+    <div class="prow">
+      <label class="plab">字級</label>
+      <input type="range" id="fsr" min="18" max="70" step="1" value="${fs||32}">
+      <b class="pnum">${fs==null?'32':fs}</b>
+      <button class="chip" id="bdText" title="邊框設成跟文字一樣的顏色">框＝字</button>
+      <button class="chip" id="bdBg" title="邊框設成跟背景一樣的顏色">框＝底</button>
+      <button class="chip" id="bdOff" title="移除邊框">無框</button>
     </div>
-    <div class="hintline">${stackHint}</div>
-  </div>`:''}
 
-  <div class="sec">
-    <h3>小地圖圖示</h3>
-    <button class="toggle ${mm?'on':''}" id="mmToggle"><span class="box">${mm?'✕':''}</span>顯示小地圖圖示</button>
-    ${mm?`<div style="display:grid;grid-template-columns:70px 1fr 1fr;gap:7px;margin-top:8px">
-      <select class="inp" id="mmSize">${[0,1,2].map(s=>`<option value="${s}" ${mm.size===s?'selected':''}>${['大','中','小'][s]}</option>`).join('')}</select>
-      <select class="inp" id="mmColor">${MM_COLORS.map(c=>`<option ${mm.color===c?'selected':''}>${c}</option>`).join('')}</select>
-      <select class="inp" id="mmShape">${MM_SHAPES.map(s=>`<option ${mm.shape===s?'selected':''}>${s}</option>`).join('')}</select>
-    </div>`:''}
-  </div>
+    <div class="prow">
+      <label class="plab">數量</label>
+      ${(()=>{const s=stackRules(b);
+        if(s.other.length||s.all.length>2)
+          return `<span class="pweird">${esc(s.all.map(x=>(x.op||'=')+' '+x.values.map(v=>v.v).join(' ')).join('　'))}</span>
+                  <span class="phint">請到原始碼修改</span>`;
+        const lo=stackNum(s.lo), hi=stackNum(s.hi);
+        return `<input type="number" id="stackLo" min="1" placeholder="不限" value="${lo===null?'':lo}">
+          <span class="tilde">～</span>
+          <input type="number" id="stackHi" min="1" placeholder="不限" value="${hi===null?'':hi}">
+          <span class="punit">個</span>
+          <span class="peff">${esc(rangeText(b)||'全部數量')}</span>
+          ${s.all.length?'<button class="x" id="stackDel" title="移除數量條件">✕</button>':''}`;
+      })()}
+    </div>
 
-  <div class="sec">
-    <h3>光柱與音效</h3>
-    <button class="toggle ${beam?'on':''}" id="beamToggle"><span class="box">${beam?'✕':''}</span>掉落光柱 PlayEffect</button>
-    ${beam?`<div style="display:flex;gap:7px;margin-top:8px">
-      <select class="inp" id="beamColor">${MM_COLORS.map(c=>`<option ${beam.color===c?'selected':''}>${c}</option>`).join('')}</select>
-      <button class="toggle ${beam.temp?'on':''}" id="beamTemp" style="flex:0 0 auto;width:94px"><span class="box">${beam.temp?'✕':''}</span>Temp</button>
-    </div>`:''}
-    <div class="field" style="margin-top:12px"><label>自訂音效檔</label>
-      <input class="inp" id="snd" value="${esc(snd)}" placeholder="例如 文子过滤音效\\崇神石.mp3"></div>
-    <button class="toggle ${noDrop?'on':''}" id="ddsToggle"><span class="box">${noDrop?'✕':''}</span>關閉預設掉落音</button>
-  </div>
+    <div class="prow">
+      <button class="ptog ${mm?'on':''}" id="mmToggle"><i>${mm?'✕':''}</i>小地圖</button>
+      ${mm?`<select class="psel" id="mmSize">${[0,1,2].map(s=>`<option value="${s}" ${mm.size===s?'selected':''}>${['大','中','小'][s]}</option>`).join('')}</select>
+      <select class="psel" id="mmColor">${MM_COLORS.map(c=>`<option ${mm.color===c?'selected':''}>${c}</option>`).join('')}</select>
+      <select class="psel grow" id="mmShape">${MM_SHAPES.map(s=>`<option ${mm.shape===s?'selected':''}>${s}</option>`).join('')}</select>`
+      :'<span class="phint">未設定圖示</span>'}
+    </div>
 
-  <div class="sec">
-    <h3>條件<span>${conds.length}</span></h3>
-    ${conds.map(r=>{
-      const ri=b.rules.indexOf(r);
-      const isCard = r.key.toLowerCase()==='basetype' && r.values.some(v=>cardInfo(v.v));
-      let detail='';
-      if(isCard){
-        /* 命運卡：每張列出需要張數與獎勵 */
-        detail=`<table class="cardtbl">${r.values.map(v=>{
-          const ci=cardInfo(v.v);
-          return `<tr class="${ci&&ci.unique?'uq':''}"><td class="cn">${esc(tr(v.v)||v.v)}</td>`+
-            (ci?`<td class="cs">${ci.stack}</td><td class="cr">${esc(ci.reward||'—')}</td>`
-               :`<td class="cs">?</td><td class="cr" style="color:var(--faint)">未知卡片</td>`)+`</tr>`;
-        }).join('')}</table>`;
-      }else{
-        const trs=r.values.map(v=>tr(v.v)).filter(Boolean);
-        if(trs.length) detail=`<div class="tr">${esc(trs.slice(0,8).join('、'))}${trs.length>8?' …':''}</div>`;
-      }
-      return `<div class="cond" data-ri="${ri}">
-        <div class="hd"><input class="k" value="${esc(r.key)}" spellcheck="false">
-          <select>${OPS.map(o=>`<option value="${o}" ${r.op===o?'selected':''}>${o||'—'}</option>`).join('')}</select>
-          <button class="x" title="刪除條件">✕</button></div>
-        <textarea rows="${Math.min(9,r.values.length||1)}" spellcheck="false">${esc(r.values.map(v=>v.v).join('\n'))}</textarea>
-        ${detail}
-      </div>`;
-    }).join('')}
-    <button class="addcond" id="addcond">＋ 新增條件</button>
-    <div class="hintline">一行一個值。命運卡會列出「需要張數」與「獎勵」，其餘條件顯示官方繁中譯名。</div>
+    <div class="prow">
+      <button class="ptog ${beam?'on':''}" id="beamToggle"><i>${beam?'✕':''}</i>光柱</button>
+      ${beam?`<select class="psel" id="beamColor">${MM_COLORS.map(c=>`<option ${beam.color===c?'selected':''}>${c}</option>`).join('')}</select>
+      <button class="ptog ${beam.temp?'on':''}" id="beamTemp"><i>${beam.temp?'✕':''}</i>Temp 短暫</button>`
+      :'<span class="phint">未設定光柱</span>'}
+    </div>
+
+    <div class="prow">
+      <label class="plab">音效</label>
+      <input class="pinp" id="snd" value="${esc(snd)}" placeholder="音效資料夾\\檔名.mp3">
+      <button class="ptog ${noDrop?'on':''}" id="ddsToggle" title="關閉遊戲預設的掉落音"><i>${noDrop?'✕':''}</i>靜音</button>
+    </div>
+
+    <div class="pacts">
+      <button class="chip lit" id="openPal">配色盤</button>
+      <button class="chip" id="openScope">批次套用</button>
+      ${bt?`<button class="chip" id="manageGroup">拆分／移動</button>
+      <button class="chip" id="itemRules">物品規則（${bt.values.length}）</button>`:''}
+      ${!stackRule&&isCurrency?'<button class="chip" id="stackTiers">數量分色</button>':''}
+      ${stackRule&&stackBase?'<button class="chip" id="stackTiersBase">整組門檻</button>':''}
+    </div>
+
+    ${bt?`<div class="pitems">${bt.values.slice(0,groupOpen?bt.values.length:8).map(v=>
+        `<span class="groupchip">${esc(tr(v.v)||v.v)}</span>`).join('')}
+      ${bt.values.length>8?`<button class="chip tiny" id="groupToggle">${groupOpen?'收合':`＋${bt.values.length-8}`}</button>`:''}</div>`:''}
+
   </div>`;
 }
 function renderAll(){
@@ -6756,29 +7411,10 @@ $('#inspector').addEventListener('click',e=>{
   if(e.target.closest('#ddsToggle')){ snap([b],'sound');
     if(getBool(b,'DisableDropSound')) dropRule(b,'DisableDropSound'); else putRule(b,'DisableDropSound',['True']);
     renderInspector(); refreshSelected(); return; }
-  const rx=e.target.closest('.cond .x');
-  if(rx){ const ri=+rx.closest('.cond').dataset.ri;
-    snap([b],'cond'); b.rules=b.rules.filter((_,i)=>i!==ri); touch(b); renderInspector(); refreshSelected(); return; }
-  if(e.target.closest('#addcond')){ snap([b],'cond');
-    b.rules=[{indent:b.indent==='\t'?'\t':'    ',key:'BaseType',op:'',values:[],comment:null,unknown:false,dirty:true,raw:null}].concat(b.rules);
-    touch(b); renderInspector(); refreshSelected(); return; }
-  if(e.target.closest('#applysrc')){
-    const txt=$('#srcbox').value.replace(/\r\n/g,'\n').split('\n');
-    const head=txt[0].match(/^([ \t]*)(Show|Hide)\b(.*)$/);
-    if(!head){ toast('第一行必須是 Show 或 Hide，沒有寫入'); return; }
-    snap([b],'src');
-    b.indent=head[1]; b.type=head[2]; b.headComment=splitComment(head[3]).comment;
-    b.rules=txt.slice(1).filter(l=>l.trim()!=='').map(l=>{
-      const r=parseRule(/^[ \t]/.test(l)?l:'    '+l); r.dirty=true; r.raw=null; return r; });
-    touch(b); state.tab='props';
-    document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x.dataset.tab==='props'));
-    renderInspector(); refreshSelected(); toast('已套用'); return;
-  }
 });
 $('#inspector').addEventListener('input',e=>{
   const b=curBlock(); if(!b) return;
   const t=e.target;
-  if(t.id==='hc'){ snap([b],'edit'); b.headComment=t.value; touch(b); refreshSelected(); return; }
   if(t.id==='stackLo'||t.id==='stackHi'){
     const isLo=t.id==='stackLo';
     const raw=t.value.trim();
@@ -6826,16 +7462,6 @@ $('#inspector').addEventListener('input',e=>{
     const none=ci.querySelector('.none'); if(none) none.remove();
     refreshSelected(); return;
   }
-  const cond=t.closest('.cond');
-  if(cond){
-    const r=b.rules[+cond.dataset.ri]; if(!r) return;
-    snap([b],'edit');
-    const ri=+cond.dataset.ri;
-    if(t.classList.contains('k')) patchRule(b,ri,{key:t.value.trim()||'BaseType'});
-    else if(t.tagName==='TEXTAREA')
-      patchRule(b,ri,{values:t.value.split('\n').map(s=>s.trim()).filter(Boolean).map(v=>({v,q:false}))});
-    refreshSelected();
-  }
 });
 $('#inspector').addEventListener('change',e=>{
   const b=curBlock(); if(!b) return;
@@ -6844,9 +7470,6 @@ $('#inspector').addEventListener('change',e=>{
     putRule(b,'MinimapIcon',[$('#mmSize').value,$('#mmColor').value,$('#mmShape').value]); refreshSelected(); return; }
   if(t.id==='beamColor'){ const bm=getBeam(b); snap([b],'beam');
     putRule(b,'PlayEffect',bm&&bm.temp?[t.value,'Temp']:[t.value]); refreshSelected(); return; }
-  const cond=t.closest('.cond');
-  if(cond&&t.tagName==='SELECT'){ const r=b.rules[+cond.dataset.ri]; if(!r) return;
-    snap([b],'cond'); patchRule(b,+cond.dataset.ri,{op:t.value}); refreshSelected(); }
 });
 
 /* 工具列 */
@@ -6859,6 +7482,8 @@ $('#undoBtn').addEventListener('click',doUndo);
 $('#redoBtn').addEventListener('click',doRedo);
 $('#stylePresets').addEventListener('click',openStylePresetManager);
 $('#safetyBtn').addEventListener('click',openSafetyManager);
+$('#diffBtn').addEventListener('click',openNsDiff);
+$('#econBtn').addEventListener('click',openEconomyTool);
 $('#lintBtn').addEventListener('click',()=>{
   const gs=lintGroups();
   const total=gs.reduce((a,g)=>a+g.n,0);
@@ -7269,6 +7894,623 @@ function openItemRulesFor(b){
     const p=e.target.closest('[data-pick]'); if(!p) return;
     openItemRules(p.dataset.pick);
   };
+}
+
+/* ======================================================================
+   與 NeverSink 原版比對
+   ---------------------------------------------------------------------
+   NeverSink 每個區塊的註解都帶 $type->x $tier->y 標籤，實測 754 個區塊
+   有 754 個不同簽章、零重複，所以拿它當識別碼配對兩邊的規則最準確。
+   沒有標籤的檔案（例如自己寫的）退回用 BaseType＋其他條件當鍵。
+   ================================================================== */
+function blockSig(b){
+  const tags=[...String(b.headComment||'').matchAll(/\$(\w+)->(\S+)/g)];
+  if(tags.length) return 'tag:'+tags.map(m=>m[1]+'='+m[2]).join('|');
+  return 'cond:'+b.type+'|'+baseTypeKey(b)+'|'+selectorKey(b);
+}
+/* 只比較實際會影響遊戲行為的部分，忽略註解與縮排差異 */
+function blockFingerprint(b){
+  return b.type+'\n'+b.rules.filter(r=>!r.unknown)
+    .map(r=>r.key.toLowerCase()+' '+(r.op||'')+' '+r.values.map(v=>v.v).join(' '))
+    .sort().join('\n');
+}
+function blockLines(b){
+  return [b.type].concat(b.rules.filter(r=>!r.unknown)
+    .map(r=>'    '+r.key+(r.op?' '+r.op:'')+' '+r.values.map(v=>quoteVal(r.key,v)?'"'+v.v+'"':v.v).join(' ')));
+}
+function diffDocs(mine,theirs){
+  const mineMap=new Map(), theirsMap=new Map();
+  for(const b of mine.blocks){ const s=blockSig(b); if(!mineMap.has(s)) mineMap.set(s,b); }
+  for(const b of theirs.blocks){ const s=blockSig(b); if(!theirsMap.has(s)) theirsMap.set(s,b); }
+  const changed=[],onlyMine=[],onlyTheirs=[];
+  for(const [s,b] of mineMap){
+    const t=theirsMap.get(s);
+    if(!t){ onlyMine.push({sig:s,mine:b}); continue; }
+    if(blockFingerprint(b)!==blockFingerprint(t)) changed.push({sig:s,mine:b,theirs:t});
+  }
+  for(const [s,t] of theirsMap) if(!mineMap.has(s)) onlyTheirs.push({sig:s,theirs:t,idx:theirs.blocks.indexOf(t)});
+  return {changed,onlyMine,onlyTheirs,mineMap,theirsMap};
+}
+/* 逐行比對，標出哪幾行不同 */
+function lineDiff(a,b){
+  const setB=new Set(b), setA=new Set(a);
+  return {
+    left:a.map(l=>({t:l,d:!setB.has(l)})),
+    right:b.map(l=>({t:l,d:!setA.has(l)}))
+  };
+}
+function sigLabel(sig){
+  if(sig.startsWith('tag:')) return sig.slice(4).replace(/\|/g,'　');
+  return sig.slice(5).split('|')[1].split('\u001f').slice(0,3).join('、')||'（無 BaseType）';
+}
+
+let diffState=null;
+
+/* ======================================================================
+   發布到 PoE 帳號
+   ---------------------------------------------------------------------
+   GGG 的 account:item_filter 權限需要 confidential client，也就是要有自己的
+   後端伺服器來保管 client secret，還要用自己擁有的網域註冊。純靜態的
+   GitHub Pages 做不到，所以這裡做到「一鍵複製＋開啟頁面」，剩下貼上即可。
+   ================================================================== */
+const POE_FILTER_PAGE='https://www.pathofexile.com/my-account/item-filters';
+function suggestFilterName(){
+  const meta=nsMeta(serializeDoc(state.doc,false));
+  if(meta.TYPE) return 'NeverSink-'+meta.TYPE.replace(/^(\d)-.*$/,'$1')+'-個人編輯版';
+  return (state.doc.name||'我的過濾器').replace(/\.filter$/i,'')+'-個人編輯版';
+}
+function openPublish(){
+  if(!state.doc) return;
+  const name=suggestFilterName();
+  $('#modalTitle').textContent='發布到 PoE 帳號';
+  $('#modalBody').innerHTML=`
+    <p style="margin:0 0 10px;color:var(--muted)">GGG 的過濾器上傳 API 需要有後端伺服器的正式應用程式授權，
+    純靜態網頁無法直接上傳。改用複製貼上，兩步就好。</p>
+    <div class="field"><label>建議的過濾器名稱（已複製時會一起帶上）</label>
+      <input class="inp" id="pubName" value="${esc(name)}"></div>
+    <div class="nslist" style="margin-top:10px">
+      <button class="nsrow" data-pub="copy"><span class="nsn">第 1 步</span>
+        <span class="nsd">複製整份過濾器內容到剪貼簿</span><span class="nsf">COPY</span></button>
+      <button class="nsrow" data-pub="open"><span class="nsn">第 2 步</span>
+        <span class="nsd">開啟 PoE 帳號的過濾器頁面，貼上並存檔</span><span class="nsf">OPEN</span></button>
+      <button class="nsrow" data-pub="file"><span class="nsn">或者</span>
+        <span class="nsd">下載成 .filter 檔，放進遊戲的 filters 資料夾</span><span class="nsf">SAVE</span></button>
+    </div>
+    <div id="pubStatus" class="hintline"></div>`;
+  $('#modalFoot').innerHTML='';
+  $('#modal').classList.add('on');
+  $('#modalBody').onclick=async e=>{
+    const r=e.target.closest('[data-pub]'); if(!r) return;
+    const st=$('#pubStatus'), nm=$('#pubName').value.trim()||name;
+    if(r.dataset.pub==='copy'){
+      try{
+        await navigator.clipboard.writeText(serializeDoc(state.doc,false));
+        st.style.color='var(--gold-hi)';
+        st.textContent='已複製。到 PoE 網站按「Create new item filter」，名稱填「'+nm+'」，內容貼上即可。';
+      }catch(err){
+        st.style.color='#e2a89e';
+        st.textContent='複製失敗（瀏覽器可能擋了剪貼簿權限），請改用下面的下載。';
+      }
+    }else if(r.dataset.pub==='open'){
+      window.open(POE_FILTER_PAGE,'_blank','noopener');
+    }else{
+      const blob=new Blob([serializeDoc(state.doc,false)],{type:'text/plain;charset=utf-8'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download=nm+'.filter'; a.click();
+      URL.revokeObjectURL(a.href);
+      state.doc.dirty=false; renderFiles();
+      st.style.color='var(--gold-hi)'; st.textContent='已下載 '+nm+'.filter';
+    }
+  };
+}
+function openDiff(){
+  if(!state.doc) return;
+  const meta=nsMeta(serializeDoc(state.doc,false));
+  const guess=NS_LEVELS.find(L=>meta.TYPE&&meta.TYPE.indexOf(L.f)>=0)||NS_LEVELS[2];
+  $('#modalTitle').textContent='與 NeverSink 原版比對';
+  $('#modalBody').innerHTML=`
+    <p style="margin:0 0 10px;color:var(--muted)">抓取 NeverSink 最新版，跟你目前這份逐條比對。
+    ${meta.TYPE?`偵測到這份是 <b style="color:var(--gold-hi)">${esc(meta.TYPE)}</b>${meta.VERSION?`（v${esc(meta.VERSION)}）`:''}。`:''}</p>
+    <div class="nslist">${NS_LEVELS.map((L,i)=>`
+      <button class="nsrow" data-diff="${i}"><span class="nsn">${L.n}</span>
+        <span class="nsd">${L===guess?'偵測到的對應版本':esc(L.d)}</span>
+        <span class="nsf">${L.f}</span></button>`).join('')}</div>
+    <div id="diffStatus" class="hintline"></div>`;
+  $('#modalFoot').innerHTML='';
+  $('#modal').classList.add('on');
+  $('#modalBody').onclick=async e=>{
+    const row=e.target.closest('[data-diff]'); if(!row) return;
+    const L=NS_LEVELS[+row.dataset.diff];
+    const st=$('#diffStatus');
+    $('#modalBody').querySelectorAll('.nsrow').forEach(x=>x.disabled=true);
+    row.classList.add('loading'); st.textContent='下載 '+L.f+' 並比對中…';
+    try{
+      const res=await fetch(nsUrl(L.f),{cache:'no-store'});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const text=await res.text();
+      const theirs=parseDoc(text,'NeverSink '+L.f);
+      diffState={theirs,result:diffDocs(state.doc,theirs),level:L,meta:nsMeta(text)};
+      renderDiff();
+    }catch(err){
+      row.classList.remove('loading');
+      $('#modalBody').querySelectorAll('.nsrow').forEach(x=>x.disabled=false);
+      st.style.color='#e2a89e'; st.textContent='下載失敗：'+(err.message||err);
+    }
+  };
+}
+function renderDiff(){
+  const {result:R,level:L,meta}=diffState;
+  const tabs=[['changed','兩邊都有但不同',R.changed.length],
+              ['theirs','原版新增／我沒有',R.onlyTheirs.length],
+              ['mine','只有我有',R.onlyMine.length]];
+  const tab=diffState.tab||'changed';
+  $('#modalTitle').textContent=`與 NeverSink ${L.n} 比對${meta.VERSION?'（原版 v'+meta.VERSION+'）':''}`;
+  const rows=(tab==='changed'?R.changed:tab==='theirs'?R.onlyTheirs:R.onlyMine);
+  $('#modalBody').innerHTML=`
+    <div class="difftabs">${tabs.map(([k,n,c])=>
+      `<button class="${k===tab?'on':''}" data-dtab="${k}">${n}<b>${c}</b></button>`).join('')}</div>
+    ${rows.length?`<div class="difflist">${rows.slice(0,120).map((r,i)=>diffRow(r,tab,i)).join('')}
+      ${rows.length>120?`<p style="color:var(--faint);font-size:11.5px">只列出前 120 筆，處理完再開一次會看到其餘的。</p>`:''}</div>`
+      :'<p style="color:var(--muted);padding:18px 0">這一類沒有差異。</p>'}`;
+  $('#modalFoot').innerHTML='<button class="btn" id="diffBack">換一個版本</button>';
+  $('#diffBack').onclick=openDiff;
+  $('#modalBody').onclick=e=>{
+    const t=e.target.closest('[data-dtab]');
+    if(t){ diffState.tab=t.dataset.dtab; renderDiff(); return; }
+    const act=e.target.closest('[data-dact]');
+    if(!act) return;
+    applyDiffAction(act.dataset.dact,+act.dataset.di,tab);
+  };
+}
+function diffRow(r,tab,i){
+  const name=r.mine?displayName(r.mine):displayName(r.theirs);
+  if(tab==='changed'){
+    const d=lineDiff(blockLines(r.mine),blockLines(r.theirs));
+    return `<div class="drow">
+      <div class="dhead"><b>${esc(name)}</b><span>${esc(sigLabel(r.sig))}</span></div>
+      <div class="dcols">
+        <div class="dcol"><div class="dct">我的版本</div>
+          <pre>${d.left.map(l=>`<span class="${l.d?'df':''}">${esc(l.t)}</span>`).join('\n')}</pre>
+          <button class="chip" data-dact="keep" data-di="${i}">保留我的</button></div>
+        <div class="dcol"><div class="dct">NeverSink 原版</div>
+          <pre>${d.right.map(l=>`<span class="${l.d?'df':''}">${esc(l.t)}</span>`).join('\n')}</pre>
+          <button class="chip lit" data-dact="take" data-di="${i}">改用原版</button></div>
+      </div></div>`;
+  }
+  if(tab==='theirs'){
+    return `<div class="drow">
+      <div class="dhead"><b>${esc(name)}</b><span>${esc(sigLabel(r.sig))}</span></div>
+      <div class="dcols one">
+        <div class="dcol"><div class="dct">原版有、你的檔案沒有</div>
+          <pre>${blockLines(r.theirs).map(l=>esc(l)).join('\n')}</pre>
+          <button class="chip lit" data-dact="add" data-di="${i}">加進我的檔案</button></div>
+      </div></div>`;
+  }
+  return `<div class="drow">
+    <div class="dhead"><b>${esc(name)}</b><span>${esc(sigLabel(r.sig))}</span></div>
+    <div class="dcols one">
+      <div class="dcol"><div class="dct">只有你的檔案有（原版已移除或你自己加的）</div>
+        <pre>${blockLines(r.mine).map(l=>esc(l)).join('\n')}</pre>
+        <button class="chip" data-dact="del" data-di="${i}">刪除這條</button></div>
+    </div></div>`;
+}
+function applyDiffAction(act,i,tab){
+  const R=diffState.result;
+  const rows=(tab==='changed'?R.changed:tab==='theirs'?R.onlyTheirs:R.onlyMine);
+  const r=rows[i]; if(!r) return;
+  if(act==='keep'){ R.changed.splice(i,1); renderDiff(); return; }
+  snapDoc('diff-'+act);
+  if(act==='take'){
+    r.mine.type=r.theirs.type;
+    r.mine.rules=r.theirs.rules.map(x=>({...x,dirty:true,raw:null}));
+    touch(r.mine);
+    R.changed.splice(i,1);
+    toast('已改用原版');
+  }else if(act==='add'){
+    /* 插到「原版裡它前一個、而我也有的區塊」後面，位置才不會亂 */
+    const T=diffState.theirs;
+    let anchor=null;
+    for(let k=r.idx-1;k>=0;k--){
+      const cand=R.mineMap.get(blockSig(T.blocks[k]));
+      if(cand){ anchor=cand; break; }
+    }
+    const nb=cloneBlock(r.theirs);
+    if(anchor){
+      const ni=state.doc.nodes.indexOf(anchor), bi=state.doc.blocks.indexOf(anchor);
+      state.doc.nodes.splice(ni+1,0,nb); state.doc.blocks.splice(bi+1,0,nb);
+    }else{ insertBlockBefore(state.doc.blocks[0],nb); }
+    state.doc.dirty=true;
+    R.mineMap.set(r.sig,nb);
+    R.onlyTheirs.splice(i,1);
+    toast('已加入：'+displayName(nb));
+  }else if(act==='del'){
+    removeBlock(r.mine);
+    R.mineMap.delete(r.sig);
+    R.onlyMine.splice(i,1);
+    toast('已刪除');
+  }
+  renderDiff(); renderAll();
+}
+
+/* ======================================================================
+   價值門檻自動分色
+   ---------------------------------------------------------------------
+   輸入各通貨的兌換率，設一個「我不想撿低於 N 混沌石的東西」的門檻，
+   自動換算成 StackSize 條件：
+     點金石 20:1C → 單價 0.05C → 湊滿 20 個才值 1C → StackSize >= 20
+     蛻變石 200:1C → 堆疊上限只有 40，永遠湊不到 1C → 隱藏
+   赦免名單裡的物品（傳送卷軸等）不受門檻影響，一律照原樣顯示。
+
+   資料來源不綁定任何網站：可以貼上 JSON、CSV，或填一個回傳 JSON 的網址。
+   靜態網頁受瀏覽器跨來源限制，多數價格站不會允許直接讀取；
+   最穩的做法是用 GitHub Action 定時抓取後存成 JSON 放進自己的 repo，
+   再從 raw.githubusercontent.com 讀（實測允許跨來源）。
+   ================================================================== */
+const EXEMPT_DEFAULT=['Scroll of Wisdom','Portal Scroll','Orb of Transmutation',
+  'Orb of Augmentation','Chaos Orb','Divine Orb','Mirror of Kalandra'];
+
+/* 接受多種貼上格式，盡量不挑食 */
+function parseEconomy(text){
+  const out={}; const t=String(text||'').trim();
+  if(!t) return out;
+  if(t[0]==='{'||t[0]==='['){
+    try{
+      const j=JSON.parse(t);
+      const arr=Array.isArray(j)?j:(j.lines||j.data||j.items||Object.entries(j).map(([k,v])=>({name:k,value:v})));
+      for(const row of arr){
+        if(typeof row!=='object') continue;
+        const name=row.name||row.currencyTypeName||row.detailsId||row.item;
+        let val=row.chaosValue!=null?row.chaosValue:(row.chaos!=null?row.chaos:(row.value!=null?row.value:row.price));
+        if(typeof val==='object'&&val) val=val.chaos||val.chaosValue;
+        if(name&&isFinite(+val)) out[String(name).trim()]=+val;
+      }
+      return out;
+    }catch(e){ /* 不是 JSON 就當文字表格處理 */ }
+  }
+  for(const line of t.split('\n')){
+    const s=line.trim(); if(!s||s.startsWith('#')) continue;
+    /* 支援「名稱,數值」「名稱\t數值」「名稱 20:1」 */
+    let m=s.match(/^(.+?)[\t,]\s*([\d.]+)\s*(?::\s*1)?$/) || s.match(/^(.+?)\s+([\d.]+)\s*:\s*1$/);
+    if(!m) continue;
+    const name=m[1].trim().replace(/^["']|["']$/g,'');
+    const num=parseFloat(m[2]);
+    if(!name||!isFinite(num)) continue;
+    /* 「20:1」代表 20 個換 1C，單價是 1/20 */
+    out[name]= /:\s*1\s*$/.test(s) ? 1/num : num;
+  }
+  return out;
+}
+/* 名稱可能是英文或繁中，兩邊都試 */
+function econValue(econ,en){
+  if(econ[en]!=null) return econ[en];
+  const zh=tr(en);
+  if(zh&&econ[zh]!=null) return econ[zh];
+  return null;
+}
+/* 依門檻算出這個通貨該怎麼處理 */
+function thresholdPlan(en,unitChaos,threshold){
+  const cap=STACKCAP[en]||0;
+  if(unitChaos==null) return {act:'skip',why:'沒有價格資料'};
+  if(unitChaos>=threshold) return {act:'show',why:`單價 ${unitChaos}C 已達門檻`};
+  const need=Math.ceil(threshold/unitChaos);
+  if(cap&&need>cap) return {act:'hide',need,cap,why:`要 ${need} 個才值 ${threshold}C，但堆疊上限只有 ${cap}`};
+  return {act:'stack',need,cap,why:`湊滿 ${need} 個才值 ${threshold}C`};
+}
+function openEconomyTool(){
+  if(!state.doc) return;
+  state.econ=state.econ||{};
+  state.econThreshold=state.econThreshold||1;
+  state.econExempt=state.econExempt||EXEMPT_DEFAULT.slice();
+  const render=()=>{
+    const econ=state.econ, th=state.econThreshold;
+    /* 找出檔案裡所有通貨區塊涉及的物品 */
+    const items=new Map();
+    for(const b of state.doc.blocks){
+      if(classify(b)!=='1') continue;
+      const r=positiveBaseRule(b); if(!r) continue;
+      for(const v of r.values){
+        if(!STACKCAP[v.v]) continue;
+        if(!items.has(v.v)) items.set(v.v,[]);
+        items.get(v.v).push(b);
+      }
+    }
+    const rows=[...items.keys()].map(en=>{
+      const plan=thresholdPlan(en,econValue(econ,en),th);
+      return {en,plan,blocks:items.get(en),exempt:state.econExempt.includes(en)};
+    });
+    const known=rows.filter(r=>r.plan.act!=='skip');
+    const willHide=known.filter(r=>r.plan.act==='hide'&&!r.exempt);
+    const willStack=known.filter(r=>r.plan.act==='stack'&&!r.exempt);
+    $('#modalBody').innerHTML=`
+      <div class="econbar">
+        <label>價值門檻</label>
+        <input type="number" id="econTh" min="0.01" step="0.05" value="${th}">
+        <span>混沌石以下的不撿</span>
+        <button class="chip" id="econPaste">貼上價格資料…</button>
+      </div>
+      ${Object.keys(econ).length?`<div class="hintline">已載入 ${Object.keys(econ).length} 筆價格；這份 Filter 的通貨有 ${items.size} 種，其中 ${known.length} 種對得上。</div>`
+        :`<div class="econempty">還沒有價格資料。按「貼上價格資料」把兌換率貼進來，支援 JSON、CSV，或每行「名稱,20:1」這種寫法。</div>`}
+      ${known.length?`
+      <div class="econsum">
+        <span class="a">${willStack.length}</span> 種改用數量門檻　
+        <span class="b">${willHide.length}</span> 種會被隱藏　
+        <span class="c">${known.filter(r=>r.plan.act==='show').length}</span> 種維持顯示
+      </div>
+      <div class="econlist">${rows.filter(r=>r.plan.act!=='skip').sort((a,z)=>
+          (econValue(econ,z.en)||0)-(econValue(econ,a.en)||0)).map(r=>`
+        <div class="econrow ${r.exempt?'ex':r.plan.act}">
+          <button class="econex" data-ex="${esc(r.en)}" title="加入或移出赦免名單">${r.exempt?'★':'☆'}</button>
+          <span class="econn">${esc(tr(r.en)||r.en)}</span>
+          <span class="econv">${(econValue(econ,r.en)||0).toFixed(4)}C</span>
+          <span class="econa">${r.exempt?'赦免，維持原樣'
+            :r.plan.act==='show'?'維持顯示'
+            :r.plan.act==='stack'?`StackSize ≥ ${r.plan.need}`
+            :`隱藏（${r.plan.why}）`}</span>
+        </div>`).join('')}</div>
+      <div class="hintline">★ 是赦免名單，不受門檻影響。傳送卷軸、知識卷軸這種一定要撿的建議留在名單裡。</div>`
+      :''}`;
+    $('#modalFoot').innerHTML= known.length
+      ? '<button class="btn" id="cbNo">取消</button><button class="btn primary" id="econApply">套用到這份 Filter</button>'
+      : '<button class="btn" id="cbNo">關閉</button>';
+    const no=$('#cbNo'); if(no) no.onclick=()=>$('#modal').classList.remove('on');
+    const th2=$('#econTh');
+    if(th2) th2.oninput=()=>{ const v=parseFloat(th2.value); if(v>0){ state.econThreshold=v; render(); } };
+    const pb=$('#econPaste'); if(pb) pb.onclick=pastePanel;
+    const ap=$('#econApply'); if(ap) ap.onclick=()=>applyThreshold(rows.filter(r=>!r.exempt&&(r.plan.act==='stack'||r.plan.act==='hide')));
+    $('#modalBody').onclick=e=>{
+      const ex=e.target.closest('[data-ex]'); if(!ex) return;
+      const en=ex.dataset.ex, i=state.econExempt.indexOf(en);
+      if(i>=0) state.econExempt.splice(i,1); else state.econExempt.push(en);
+      render();
+    };
+  };
+  const pastePanel=()=>{
+    $('#modalBody').innerHTML=`
+      <p style="margin:0 0 8px;color:var(--muted)">把價格資料貼進來。支援這幾種格式：</p>
+      <pre class="econfmt">Orb of Alchemy,0.05
+點金石,20:1
+{"lines":[{"currencyTypeName":"Orb of Alchemy","chaosValue":0.05}]}</pre>
+      <textarea class="srcbox" id="econText" style="min-height:220px" placeholder="貼上價格資料"></textarea>
+      <div class="hintline">「20:1」代表 20 個換 1 混沌石。單獨一個數字則視為單價（幾個混沌石）。</div>`;
+    $('#modalFoot').innerHTML='<button class="btn" id="cbBack">返回</button><button class="btn primary" id="econLoad">載入</button>';
+    $('#cbBack').onclick=render;
+    $('#econLoad').onclick=()=>{
+      const got=parseEconomy($('#econText').value);
+      const n=Object.keys(got).length;
+      if(!n){ toast('讀不出任何價格，請檢查格式'); return; }
+      state.econ=got; toast(`已載入 ${n} 筆價格`); render();
+    };
+  };
+  const applyThreshold=list=>{
+    if(!list.length){ toast('沒有需要調整的通貨'); return; }
+    confirmBox('套用價值門檻',
+      `<p style="margin:0 0 10px;color:var(--muted)">會調整 <b style="color:var(--gold-hi)">${list.length}</b> 種通貨：
+       湊得到門檻的加上數量條件，湊不到的改成隱藏。</p>
+       <p style="margin:0 0 8px;color:var(--faint);font-size:11.5px">只影響「只鎖定這一種通貨」的規則；一條規則管很多物品時不會動它，避免誤傷同群組的其他東西。</p>
+       <div style="max-height:160px;overflow:auto">${list.slice(0,20).map(r=>
+         `<div style="font-size:11.5px;color:var(--muted);padding:2px 0">${esc(tr(r.en)||r.en)} → ${
+           r.plan.act==='stack'?'StackSize ≥ '+r.plan.need:'隱藏'}</div>`).join('')}
+         ${list.length>20?`<div style="color:var(--faint);font-size:11px">…還有 ${list.length-20} 種</div>`:''}</div>`,
+      ()=>{
+        snapDoc('econ-threshold');
+        let changed=0, skipped=0;
+        for(const r of list){
+          for(const b of r.blocks){
+            const br=positiveBaseRule(b);
+            if(!br||br.values.length!==1){ skipped++; continue; }   /* 共用群組不動 */
+            if(r.plan.act==='hide'){ b.type='Hide'; touch(b); }
+            else{
+              const s=stackRules(b);
+              if(s.lo) patchRule(b,b.rules.indexOf(s.lo),{values:[{v:String(r.plan.need),q:false}],op:'>='});
+              else{ b.rules=b.rules.concat([{indent:b.indent==='\t'?'\t':'    ',key:'StackSize',op:'>=',
+                values:[{v:String(r.plan.need),q:false}],comment:null,unknown:false,dirty:true,raw:null}]); touch(b); }
+            }
+            changed++;
+          }
+        }
+        $('#modal').classList.remove('on');
+        renderAll();
+        toast(`已調整 ${changed} 條規則${skipped?`，略過 ${skipped} 條共用群組`:''}`);
+      });
+  };
+  $('#modalTitle').textContent='價值門檻自動分色';
+  render();
+  $('#modal').classList.add('on');
+}
+
+/* ======================================================================
+   與 NeverSink 原版比較
+   ---------------------------------------------------------------------
+   NeverSink 每個區塊的註解都有 $type->xxx $tier->yyy 標籤，實測 754 個全部唯一，
+   拿來當比對用的識別碼最穩（就算區塊搬動位置、改了顏色也對得起來）。
+   沒有標籤的檔案（例如自己新建的）退回用「BaseType 集合＋其他條件」當識別碼。
+   ================================================================== */
+function blockTag(b){
+  const m=[...String(b.headComment||'').matchAll(/\$(\w+)->(\S+)/g)];
+  return m.length?m.map(x=>x[1]+'->'+x[2]).join(' '):null;
+}
+function blockKey(b){
+  return blockTag(b) || ('~'+b.type+'|'+baseTypeKey(b)+'|'+selectorKey(b));
+}
+/* 比較內容時忽略註解與縮排差異，只看實際生效的規則 */
+function blockBody(b){
+  return b.type+'\n'+b.rules.filter(r=>!r.unknown).map(r=>{
+    const vals=r.values.map(v=>v.v).join(' ');
+    return r.key.toLowerCase()+' '+(r.op||'')+' '+vals;
+  }).join('\n');
+}
+function docMeta(doc){
+  const m={};
+  for(const n of doc.nodes){
+    if(n.kind!=='raw') continue;
+    const x=n.text.match(/^#\s*(VERSION|TYPE|STYLE):\s*(.+?)\s*$/);
+    if(x) m[x[1]]=x[2];
+    if(m.VERSION&&m.TYPE) break;
+  }
+  return m;
+}
+function diffDocs(mine,theirs){
+  const mineMap=new Map(), theirsMap=new Map();
+  for(const b of mine.blocks) if(!mineMap.has(blockKey(b))) mineMap.set(blockKey(b),b);
+  for(const b of theirs.blocks) if(!theirsMap.has(blockKey(b))) theirsMap.set(blockKey(b),b);
+  const same=[],changed=[],onlyMine=[],onlyTheirs=[];
+  for(const [k,b] of mineMap){
+    const t=theirsMap.get(k);
+    if(!t){ onlyMine.push({k,mine:b}); continue; }
+    if(blockBody(b)===blockBody(t)) same.push({k,mine:b,theirs:t});
+    else changed.push({k,mine:b,theirs:t});
+  }
+  for(const [k,t] of theirsMap) if(!mineMap.has(k)) onlyTheirs.push({k,theirs:t});
+  return {same,changed,onlyMine,onlyTheirs,theirsOrder:theirs.blocks};
+}
+/* 把一個區塊的內容整個換成另一個版本的 */
+function adoptBlock(target,srcBlock){
+  target.type=srcBlock.type;
+  target.headComment=srcBlock.headComment;
+  target.rules=srcBlock.rules.map(r=>Object.assign({},r,{dirty:true,raw:null,
+    values:(r.values||[]).map(v=>({v:v.v,q:v.q}))}));
+  touch(target);
+}
+/* 原版新增的區塊，盡量插到跟原版一樣的相對位置 */
+function insertUpstream(theirsBlock,d){
+  const clone={kind:'block',id:'b'+(state.blockUid=(state.blockUid||0)+1)+'_up',
+    type:theirsBlock.type,indent:theirsBlock.indent,headComment:theirsBlock.headComment,headRaw:null,
+    rules:theirsBlock.rules.map(r=>Object.assign({},r,{dirty:true,raw:null,
+      values:(r.values||[]).map(v=>({v:v.v,q:v.q}))})),
+    section:null,dirty:true};
+  const order=state.nsDiff?state.nsDiff.theirsOrder:[];
+  const idx=order.indexOf(theirsBlock);
+  let anchor=null;
+  for(let i=idx+1;i<order.length&&!anchor;i++){
+    const k=blockKey(order[i]);
+    anchor=d.blocks.find(x=>blockKey(x)===k)||null;
+  }
+  if(anchor) insertBlockBefore(anchor,clone);
+  else{
+    /* 找不到參考點就放在防呆層前面，不要蓋掉兜底規則 */
+    const safe=safetyCandidate();
+    if(safe) insertBlockBefore(safe,clone); else{ d.nodes.push(clone); d.blocks.push(clone); d.dirty=true; }
+  }
+  return clone;
+}
+function diffRowHTML(item,kind){
+  const b=item.mine||item.theirs;
+  const badge={changed:'已修改',onlyMine:'我新增',onlyTheirs:'原版新增'}[kind];
+  return `<div class="dfrow ${kind}" data-k="${esc(item.k)}">
+    <div class="dfhead">
+      <span class="dfbadge">${badge}</span>
+      <span class="gl" style="${labelStyle(b,12)}">${esc(displayName(b))}</span>
+      <span class="dftag">${esc(item.k.replace(/^~/,''))}</span>
+    </div>
+    ${kind==='changed'?`<div class="dfcols">
+      <div class="dfcol"><h4>我的版本</h4><pre>${esc(blockBody(item.mine))}</pre>
+        <button class="chip" data-take="mine">保留我的</button></div>
+      <div class="dfcol"><h4>原版</h4><pre>${esc(blockBody(item.theirs))}</pre>
+        <button class="chip lit" data-take="theirs">改用原版</button></div>
+    </div>`:''}
+    ${kind==='onlyTheirs'?`<div class="dfone"><pre>${esc(blockBody(item.theirs))}</pre>
+      <button class="chip lit" data-take="add">加進我的 Filter</button></div>`:''}
+    ${kind==='onlyMine'?`<div class="dfone"><pre>${esc(blockBody(item.mine))}</pre>
+      <span class="phint">原版沒有這條，可能是你自己加的，或原版已經移除。</span>
+      <button class="chip" data-take="drop">刪掉這條</button></div>`:''}
+  </div>`;
+}
+async function openNsDiff(){
+  const d=state.doc; if(!d) return;
+  const meta=docMeta(d);
+  const guess=NS_LEVELS.find(L=>L.f===meta.TYPE)||NS_LEVELS[2];
+  $('#modalTitle').textContent='與 NeverSink 原版比較';
+  $('#modalBody').innerHTML=`
+    <p style="margin:0 0 10px;color:var(--muted)">會抓 GitHub 上的最新原版來比對。
+    ${meta.TYPE?`這份檔案標示為 <b style="color:var(--gold-hi)">${esc(meta.TYPE)}</b>${meta.VERSION?`（v${esc(meta.VERSION)}）`:''}。`
+      :'這份檔案沒有 NeverSink 檔頭，請自己選一個嚴格度。'}</p>
+    <div class="nslist">${NS_LEVELS.map((L,i)=>`
+      <button class="nsrow ${L===guess?'on':''}" data-nsd="${i}">
+        <span class="nsn">${L.n}</span><span class="nsd">${esc(L.d)}</span>
+        <span class="nsf">${L.f}${L===guess?' ← 建議':''}</span></button>`).join('')}</div>
+    <div id="dfStatus" class="hintline"></div>`;
+  $('#modalFoot').innerHTML='';
+  $('#modal').classList.add('on');
+  $('#modalBody').onclick=async e=>{
+    const row=e.target.closest('[data-nsd]'); if(!row) return;
+    const L=NS_LEVELS[+row.dataset.nsd];
+    const st=$('#dfStatus');
+    $('#modalBody').querySelectorAll('.nsrow').forEach(x=>x.disabled=true);
+    row.classList.add('loading');
+    st.textContent='正在下載原版 '+L.f+' …'; st.style.color='var(--gold-dim)';
+    try{
+      const res=await fetch(nsUrl(L.f),{cache:'no-store'});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const text=await res.text();
+      if(text.length<10000) throw new Error('回應內容異常');
+      const theirs=parseDoc(text,L.f);
+      state.nsDiff=diffDocs(d,theirs);
+      state.nsDiff.meta=docMeta(theirs);
+      state.nsDiff.level=L;
+      showDiff();
+    }catch(err){
+      row.classList.remove('loading');
+      $('#modalBody').querySelectorAll('.nsrow').forEach(x=>x.disabled=false);
+      st.style.color='#e2a89e';
+      st.textContent='下載失敗：'+(err.message||err);
+    }
+  };
+}
+function showDiff(){
+  const D=state.nsDiff; if(!D) return;
+  const tabs=[['changed','已修改',D.changed],['onlyTheirs','原版新增',D.onlyTheirs],
+              ['onlyMine','我新增',D.onlyMine],['same','相同',D.same]];
+  state.dfTab=state.dfTab||'changed';
+  const cur=tabs.find(t=>t[0]===state.dfTab)||tabs[0];
+  $('#modalTitle').textContent=`與 NeverSink ${D.level.f} 比較${D.meta.VERSION?`（原版 v${D.meta.VERSION}）`:''}`;
+  $('#modalBody').innerHTML=`
+    <div class="dftabs">${tabs.map(([k,n,arr])=>
+      `<button class="${k===state.dfTab?'on':''}" data-dft="${k}">${n}<b>${arr.length}</b></button>`).join('')}</div>
+    ${cur[2].length?`<div class="dflist">${cur[2].slice(0,200).map(it=>
+        cur[0]==='same'
+          ? `<div class="dfrow same"><div class="dfhead"><span class="dfbadge">相同</span>
+             <span class="gl" style="${labelStyle(it.mine,12)}">${esc(displayName(it.mine))}</span>
+             <span class="dftag">${esc(it.k.replace(/^~/,''))}</span></div></div>`
+          : diffRowHTML(it,cur[0])).join('')}
+      ${cur[2].length>200?`<div class="hintline">只顯示前 200 筆</div>`:''}</div>`
+      :`<div class="econempty">這一類沒有項目</div>`}
+    ${cur[0]==='onlyTheirs'&&cur[2].length?'<button class="btn" id="dfAddAll" style="width:100%;margin-top:9px">全部加進我的 Filter</button>':''}
+    ${cur[0]==='changed'&&cur[2].length?'<button class="btn" id="dfTakeAll" style="width:100%;margin-top:9px">全部改用原版</button>':''}`;
+  $('#modalFoot').innerHTML='<button class="btn" id="cbNo">關閉</button>';
+  $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
+  const all=$('#dfAddAll');
+  if(all) all.onclick=()=>bulkDiff('add',D.onlyTheirs);
+  const tk=$('#dfTakeAll');
+  if(tk) tk.onclick=()=>bulkDiff('theirs',D.changed);
+  $('#modalBody').onclick=e=>{
+    const tb=e.target.closest('[data-dft]');
+    if(tb){ state.dfTab=tb.dataset.dft; showDiff(); return; }
+    const btn=e.target.closest('[data-take]'); if(!btn) return;
+    const row=btn.closest('.dfrow'), k=row.dataset.k;
+    const act=btn.dataset.take;
+    const find=arr=>arr.find(x=>x.k===k);
+    snapDoc('nsdiff');
+    if(act==='theirs'){ const it=find(D.changed); if(it) adoptBlock(it.mine,it.theirs); }
+    else if(act==='add'){ const it=find(D.onlyTheirs); if(it){ insertUpstream(it.theirs,state.doc); D.onlyTheirs=D.onlyTheirs.filter(x=>x!==it); } }
+    else if(act==='drop'){ const it=find(D.onlyMine); if(it){ removeBlock(it.mine); D.onlyMine=D.onlyMine.filter(x=>x!==it); } }
+    if(act==='theirs'||act==='mine'){ const it=find(D.changed); if(it){ D.changed=D.changed.filter(x=>x!==it); D.same.push(it); } }
+    renderAll(); showDiff();
+    toast(act==='add'?'已加入':act==='drop'?'已刪除':act==='theirs'?'已改用原版':'保留我的版本');
+  };
+}
+function bulkDiff(act,list){
+  if(!list.length) return;
+  confirmBox(act==='add'?'全部加入原版新增的規則':'全部改用原版',
+    `<p style="margin:0;color:var(--muted)">會處理 <b style="color:var(--gold-hi)">${list.length}</b> 個區塊。這個動作可以用「復原」還原。</p>`,
+    ()=>{
+      snapDoc('nsdiff-bulk');
+      const D=state.nsDiff;
+      for(const it of list.slice()){
+        if(act==='add'){ insertUpstream(it.theirs,state.doc); D.onlyTheirs=D.onlyTheirs.filter(x=>x!==it); }
+        else{ adoptBlock(it.mine,it.theirs); D.changed=D.changed.filter(x=>x!==it); D.same.push(it); }
+      }
+      renderAll(); showDiff(); toast(`已處理 ${list.length} 個區塊`);
+    });
 }
 function existingTier(base,n){
   return state.doc.blocks.find(b=>b!==base&&b.type===base.type&&b.section===base.section&&
@@ -7711,6 +8953,8 @@ function openNeverSink(){
   });
 }
 $('#nsBtn').addEventListener('click',openNeverSink);
+$('#diffBtn').addEventListener('click',openDiff);
+$('#pubBtn').addEventListener('click',openPublish);
 $('#gateNS').addEventListener('click',openNeverSink);
 
 function loadFiles(list){
@@ -7722,9 +8966,49 @@ $('#pick').addEventListener('click',()=>$('#fileinput').click());
 $('#gatePick').addEventListener('click',()=>$('#fileinput').click());
 $('#gateNew').addEventListener('click',openNewFilter);
 const dz=$('#dz');
-['dragenter','dragover'].forEach(t=>document.addEventListener(t,e=>{ e.preventDefault(); if(dz) dz.classList.add('hot'); }));
-['dragleave','drop'].forEach(t=>document.addEventListener(t,e=>{ e.preventDefault(); if(dz) dz.classList.remove('hot'); }));
-document.addEventListener('drop',e=>{ if(e.dataTransfer.files.length) loadFiles(e.dataTransfer.files); });
+/* ======================================================================
+   拖曳檔案：通用寫法（可以整段複製到別的專案）
+   ---------------------------------------------------------------------
+   要解決兩個常見問題：
+   1. 放開在框外 → 瀏覽器會直接開啟那個檔案，把整個頁面換掉，做到一半的東西全沒。
+      解法：在 window 層對 dragover 與 drop 一律 preventDefault，
+      瀏覽器就不會接手，落在任何地方都不會導航。
+   2. 高亮閃爍 → 游標移到子元素時會觸發 dragleave，狀態忽亮忽暗。
+      解法：用進出計數器，只有計數歸零才算真的離開。
+   ================================================================== */
+(function setupFileDrop(onFiles,zone){
+  let depth=0;
+  const isFileDrag=e=>{
+    const dt=e.dataTransfer; if(!dt) return false;
+    return Array.from(dt.types||[]).includes('Files');
+  };
+  const paint=on=>{ if(zone) zone.classList.toggle('hot',on); };
+  const reset=()=>{ depth=0; paint(false); };
+
+  window.addEventListener('dragenter',e=>{
+    if(!isFileDrag(e)) return;
+    e.preventDefault(); depth++; paint(true);
+  });
+  window.addEventListener('dragover',e=>{
+    if(!isFileDrag(e)) return;
+    e.preventDefault();                     /* 一定要擋，否則放開時瀏覽器會開檔 */
+    e.dataTransfer.dropEffect='copy';
+  });
+  window.addEventListener('dragleave',e=>{
+    if(!isFileDrag(e)) return;
+    depth=Math.max(0,depth-1);
+    if(!depth) paint(false);                /* 只有真的離開整個視窗才熄滅 */
+  });
+  window.addEventListener('drop',e=>{
+    e.preventDefault(); reset();
+    const files=e.dataTransfer&&e.dataTransfer.files;
+    if(files&&files.length) onFiles(files);
+  });
+  /* 拖到一半按 Esc 或拖出視窗，補一道保險 */
+  window.addEventListener('dragend',reset);
+  window.addEventListener('blur',reset);
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') reset(); });
+})(loadFiles,dz);
 
 function doDownload(d,toTW){
   const blob=new Blob([serializeDoc(d,toTW)],{type:'text/plain;charset=utf-8'});
