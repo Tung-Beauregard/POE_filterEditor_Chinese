@@ -479,13 +479,24 @@ input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--gold
 #gate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:26px;padding:30px;text-align:center}
 #gate.off{display:none}
 .gatemark{position:relative;width:200px;height:150px}
-.gatemark .b{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);width:34px;height:116px;filter:blur(9px);opacity:.6;background:linear-gradient(to top,#c8aa6e,transparent)}
-.gatemark .l{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);font-family:var(--serif);font-size:19px;padding:.12em .5em;border:1px solid #c8aa6e;background:#000000d9;color:#efdcae;white-space:nowrap}
+.gatemark .b{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);width:30px;height:118px;
+  filter:blur(9px);opacity:.72;background:linear-gradient(to top,#ff2d2d,transparent);
+  animation:gatepulse 3.6s ease-in-out infinite}
+.gatemark .g{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);width:132px;height:30px;
+  border-radius:50%;filter:blur(14px);opacity:.42;background:#ff2d2d}
+@keyframes gatepulse{0%,100%{opacity:.5;height:108px}50%{opacity:.85;height:126px}}
+.gatemark .l{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);z-index:2;
+  font-family:var(--serif);font-weight:500;font-size:21px;padding:.1em .5em;
+  border:1px solid #ff0000;background:#ffffff;color:#ff0000;white-space:nowrap;
+  text-shadow:none;box-shadow:0 2px 14px #ff2d2d55}
 h1{font-family:var(--ui);font-size:27px;font-weight:500;color:var(--gold-hi);margin:0;letter-spacing:.06em}
 #gate p{margin:0;color:var(--muted);font-size:13.5px;max-width:520px;line-height:1.95}
 #gate .k{font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:.12em}
 .dropzone{border:1px dashed var(--rule-lit);padding:24px 42px;transition:.15s;display:flex;flex-direction:column;gap:11px;align-items:center}
 .dropzone.hot{border-color:var(--gold);background:#c8aa6e12}
+
+.gatever{font-family:var(--mono);font-size:10px;color:#b0574a;letter-spacing:.04em;max-width:340px;line-height:1.6}
+.gatever.ok{color:var(--faint);letter-spacing:.14em}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1c1710;border:1px solid var(--gold-dim);
   color:var(--gold-hi);padding:9px 18px;font-size:12.5px;z-index:99;opacity:0;pointer-events:none;transition:opacity .2s}
 .toast.on{opacity:1}
@@ -522,7 +533,7 @@ h1{font-family:var(--ui);font-size:27px;font-weight:500;color:var(--gold-hi);mar
 </style>
 
 <div id="gate">
-  <div class="gatemark"><div class="b"></div><div class="l">無效石</div></div>
+  <div class="gatemark"><div class="b"></div><div class="g"></div><div class="l">神聖石</div></div>
   <h1>POE 過濾器編輯器</h1>
   <p>流亡黯道 1 的掉落過濾器編輯器。英文與簡體過濾器都會換上台服官方繁中譯名，套用統一的分類架構，並即時預覽地上的物品標籤。</p>
   <div class="dropzone" id="dz">
@@ -533,6 +544,7 @@ h1{font-family:var(--ui);font-size:27px;font-weight:500;color:var(--gold-hi);mar
       <a class="btn" href="README_防呆與操作說明.md" target="_blank" rel="noopener" style="text-decoration:none">操作與防呆說明</a>
     </div>
     <span class="k">或把檔案拖進這個框，可一次開多個</span>
+    <span class="gatever" id="gateVer">若這裡沒有出現版本號，代表載入的是舊的快取版本，請按 Ctrl+F5 重新整理</span>
   </div>
 </div>
 
@@ -6271,7 +6283,7 @@ Wild Wisps	50000</script>
    更新偵測會重新抓取這個頁面、用正規式讀出上面那行的版本字串來比對，
    所以這兩個常數必須放在整份程式的最前面。
    ================================================================== */
-const APP_VERSION='1.10.1';
+const APP_VERSION='1.10.3';
 const APP_BUILD='2026-08-18';
 
 /* ======================================================================
@@ -9294,6 +9306,8 @@ const VER_RE=/APP_VERSION='([^']+)'/;
 let lastCheck=0, updateFound=null;
 
 function showVersion(){
+  const gv=$('#gateVer');
+  if(gv){ gv.textContent='v'+APP_VERSION+'　'+APP_BUILD; gv.classList.add('ok'); }
   $('#verChip').textContent='POE1 · v'+APP_VERSION;
   $('#verChip').title=`版本 ${APP_VERSION}（${APP_BUILD}）\n點一下檢查有沒有新版本`;
 }
