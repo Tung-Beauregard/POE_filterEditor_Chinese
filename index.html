@@ -566,7 +566,7 @@ h1{font-family:var(--ui);font-size:27px;font-weight:500;color:var(--gold-hi);mar
         <button class="btn" id="toolsBtn">工具 ▾</button>
         <div class="menu" id="toolsMenu">
           <b class="mgrp">來源</b>
-          <button data-tool="nsBtn">載入 NeverSink 官方過濾器</button>
+          <button data-tool="nsBtn">載入 NeverSink 過濾器</button>
           <button data-tool="diffBtn">與原版逐條比對</button>
           <b class="mgrp">編輯工具</b>
           <button data-tool="tierBtn">樣式階級</button>
@@ -6297,7 +6297,7 @@ Wild Wisps	50000</script>
    更新偵測會重新抓取這個頁面、用正規式讀出上面那行的版本字串來比對，
    所以這兩個常數必須放在整份程式的最前面。
    ================================================================== */
-const APP_VERSION='1.12.1';
+const APP_VERSION='1.12.3';
 const APP_BUILD='2026-08-18';
 
 /* ======================================================================
@@ -6897,9 +6897,18 @@ function lint(b){
   const out=[];
   const conds=b.rules.filter(r=>!r.unknown&&!/^(Set|Play|Minimap|Custom|Disable|Enable|Continue)/i.test(r.key));
   if(!conds.length&&!findRule(b,'Continue')){
-    out.push(b.type==='Hide'
-      ? {lv:'w',msg:'沒有任何條件的 Hide：會擋掉所有沒被上面規則攔截的物品。放在檔尾是正常收尾，放在中間會吃掉後面的規則'}
-      : {lv:'e',msg:'沒有任何條件的 Show：會顯示所有沒被上面規則攔截的物品'});
+    /* 無條件區塊只有極少數，所以在這裡才去找防呆層，不會拖慢整份檔案的檢查。
+       最後那條無條件 Show 本來就是防呆層（應該存在），由防呆面板負責回報，
+       這裡不再重複標成錯誤，否則會出現「防呆 ✓」與「錯誤」同時成立的矛盾。 */
+    const isSafety = b.type==='Show' && b===safetyCandidate();
+    const lastB = state.doc && state.doc.blocks[state.doc.blocks.length-1];
+    if(!isSafety){
+      out.push(b.type==='Hide'
+        ? (b===lastB
+            ? {lv:'w',msg:'檔尾的無條件 Hide：沒被前面規則攔截的物品都會被藏起來。這通常是刻意的收尾，但代表沒有醒目的兜底提示'}
+            : {lv:'e',msg:'中間出現無條件 Hide：會吃掉它後面所有規則'})
+        : {lv:'e',msg:'沒有任何條件的 Show：會顯示所有沒被上面規則攔截的物品'});
+    }
   }
   const fs=getNum(b,'SetFontSize');
   if(fs!=null&&(fs<18||fs>45)) out.push({lv:'w',msg:`字級 ${fs} 超出遊戲可用範圍 18–45，實際會被夾到 ${fs<18?18:45}`});
@@ -9171,7 +9180,7 @@ function selectDoc(d){
   $('#q').value=''; syncUndo(); renderAll();
 }
 /* ======================================================================
-   從 GitHub 載入 NeverSink 官方過濾器
+   從 GitHub 載入 NeverSink 過濾器
    ---------------------------------------------------------------------
    NeverSink-Filter 採 MIT 授權，明確允許使用、修改與再散布。
    raw.githubusercontent.com 回傳 access-control-allow-origin: *，
@@ -9196,9 +9205,9 @@ function nsMeta(text){
   return m;
 }
 function openNeverSink(){
-  $('#modalTitle').textContent='載入 NeverSink 官方過濾器';
+  $('#modalTitle').textContent='載入 NeverSink 過濾器';
   $('#modalBody').innerHTML=`
-    <p style="margin:0 0 4px;color:var(--muted)">直接從 NeverSink 的 GitHub 抓最新版，選一個嚴格度。檔案約 500KB，載入需要幾秒。</p>
+    <p style="margin:0 0 4px;color:var(--muted)">直接從作者 NeverSink 的 GitHub 抓最新版，選一個嚴格度。檔案約 500KB，載入需要幾秒。</p>
     <p style="margin:0 0 12px;color:var(--faint);font-size:11.5px">NeverSink-Filter 採 MIT 授權，允許自由使用與修改。分享改過的版本時請保留檔案裡原作者的版權註解。</p>
     <div class="nslist">${NS_LEVELS.map((L,i)=>`
       <button class="nsrow" data-ns="${i}">
