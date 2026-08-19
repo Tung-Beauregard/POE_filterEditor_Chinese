@@ -176,20 +176,10 @@ select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50
 .seg button:hover{background:#ffffff08}
 .seg button.on{background:#7fae6322;color:#a9cf90}
 .seg button.on.h{background:#b0574a22;color:#dd9d92}
-.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px}
-.ci{border:1px solid var(--rule);background:#00000038;padding:7px 7px 6px;position:relative}
-.ci > label{display:block;font-size:10.5px;color:var(--muted);letter-spacing:.06em;margin-bottom:5px}
-.ci .swwrap{position:relative;height:36px;margin-bottom:5px;border:1px solid var(--rule-lit);
   background-image:linear-gradient(45deg,#2a241a 25%,transparent 25%,transparent 75%,#2a241a 75%),linear-gradient(45deg,#2a241a 25%,#191510 25%,#191510 75%,#2a241a 75%);
   background-size:8px 8px;background-position:0 0,4px 4px}
 .ci .swwrap i{position:absolute;inset:0;display:block}
 .ci .swwrap input[type=color]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:none;padding:0;background:none}
-.ci .none{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9.5px;color:var(--faint);pointer-events:none}
-.ci input.chex{width:100%;background:#00000059;border:1px solid var(--rule);padding:3px 4px;font-family:var(--mono);font-size:10px;outline:none;text-align:center}
-.ci input.chex:focus{border-color:var(--gold-dim)}
-.ci input[type=range]{width:100%;margin:1px 0 0}
-.ci .x{position:absolute;top:3px;right:4px;font-size:10px;color:var(--faint);padding:1px 3px;line-height:1}
-.ci .x:hover{color:var(--hide)}
 input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;height:20px}
 input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--rule-lit)}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;background:var(--gold);margin-top:-4.5px;transform:rotate(45deg)}
@@ -232,151 +222,108 @@ input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--gold
 .addcond:hover{border-color:var(--gold-dim);color:var(--gold-hi)}
 
 
-/* 屬性面板：緊湊單頁排版 */
-.pgrid{padding:11px 12px 16px;display:flex;flex-direction:column;gap:9px}
-.prow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:28px}
-.prow .seg{flex:1 1 auto}
-.prow .seg button{padding:6px;font-size:11.5px}
-.pcat{flex:0 0 auto;font-size:10.5px;color:var(--faint);padding-left:4px}
-.plab{flex:0 0 34px;font-size:11.5px;color:var(--muted)}
-.prow input[type=range]{flex:1 1 auto;min-width:70px}
-.pnum{flex:0 0 26px;text-align:right;font-family:var(--mono);font-size:11.5px;color:var(--gold-hi)}
-.prow input[type=number]{width:62px;background:#00000059;border:1px solid var(--rule-lit);padding:4px 5px;
-  font-family:var(--mono);font-size:12px;color:var(--gold-hi);outline:none;text-align:center}
-.prow input[type=number]:focus{border-color:var(--gold)}
-.prow input::placeholder{color:var(--faint);font-size:10.5px}
-.prow .tilde{color:var(--gold-dim);font-size:11px}
-.punit{font-size:11px;color:var(--muted)}
-.peff{flex:1 1 100%;font-size:10.5px;color:var(--gold-dim);padding-left:40px}
-.phint{font-size:10.5px;color:var(--faint)}
-.pweird{font-family:var(--mono);font-size:11px;color:var(--warn)}
-.pinp{flex:1 1 auto;min-width:0;background:#00000059;border:1px solid var(--rule);padding:5px 8px;
-  font-size:11.5px;outline:none}
-.pinp:focus{border-color:var(--gold-dim)}
-.ptog{flex:0 0 auto;display:flex;align-items:center;gap:5px;padding:4px 9px;border:1px solid var(--rule-lit);
-  font-size:11.5px;color:var(--muted);transition:.12s}
-.ptog:hover{border-color:var(--gold-dim);color:var(--text)}
-.ptog.on{color:var(--gold-hi);border-color:var(--gold-dim);background:#c8aa6e14}
-.ptog i{width:11px;height:11px;border:1px solid currentColor;font-style:normal;font-size:8px;
-  line-height:9px;text-align:center;opacity:.7}
-.psel{flex:0 0 auto;max-width:104px;background:#00000059;border:1px solid var(--rule-lit);
-  font-size:11.5px;padding:4px 5px;outline:none;color:var(--text)}
-.psel.grow{flex:1 1 auto;max-width:none;min-width:0}
-.psel:focus{border-color:var(--gold-dim)}
-.pacts{display:flex;flex-wrap:wrap;gap:5px;padding-top:3px;border-top:1px solid var(--rule);margin-top:2px}
-.pacts .chip{padding:5px 9px;font-size:11px}
-.chip.tiny{padding:2px 7px;font-size:10px}
-.pitems{display:flex;flex-wrap:wrap;gap:4px}
+
+/* ==== Inspector：資訊分層與格線對齊 ==== */
+.ins{padding:4px 0 26px}
+.isec{padding:13px 14px 15px;border-bottom:1px solid var(--rule)}
+.isec:last-child{border-bottom:none}
+.isec > h4{margin:0 0 11px;font-size:10.5px;font-weight:500;letter-spacing:.2em;
+  color:var(--gold-dim);text-transform:none;display:flex;align-items:center;gap:9px}
+.isec > h4::after{content:'';flex:1 1 auto;height:1px;background:var(--rule)}
+
+/* 所有控制項從同一條垂直線開始 */
+.prow2{display:grid;grid-template-columns:72px minmax(0,1fr);gap:10px;align-items:center;margin-bottom:8px}
+.prow2 > label{font-size:11.5px;color:var(--muted);line-height:1.3}
+.prowhint{grid-column:1/-1;font-size:10.5px;color:var(--faint);line-height:1.7;
+  padding-left:82px;margin:-2px 0 8px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.pval{font-size:12.5px;color:var(--text)}
+.pval small{display:block;font-size:10px;color:var(--faint);margin-top:2px}
+.pval.warnv{color:var(--warn);font-family:var(--mono);font-size:11px}
+.linkbtn{font-size:10.5px;color:var(--gold-dim);border-bottom:1px solid transparent;padding:0}
+.linkbtn:hover{color:var(--gold-hi);border-bottom-color:var(--gold-dim)}
+
+/* 顏色列 */
+.cbody{display:flex;align-items:center;gap:7px;min-width:0}
+.csw{position:relative;flex:0 0 auto;width:30px;height:24px;border:1px solid var(--rule-lit);
+  background-image:linear-gradient(45deg,#2a241a 25%,transparent 25%,transparent 75%,#2a241a 75%),
+    linear-gradient(45deg,#2a241a 25%,#191510 25%,#191510 75%,#2a241a 75%);
+  background-size:8px 8px;background-position:0 0,4px 4px;transition:border-color .12s}
+.csw:hover{border-color:var(--gold-dim)}
+.csw i{position:absolute;inset:0;display:block}
+.csw input[type=color]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:none;padding:0;background:none}
+.chex{flex:0 0 84px;background:#00000059;border:1px solid var(--rule);padding:4px 6px;
+  font-family:var(--mono);font-size:11px;color:var(--gold-hi);outline:none;text-align:center}
+.chex:focus{border-color:var(--gold);background:#000000a0}
+.chex::placeholder{color:var(--faint)}
+.calphawrap{flex:1 1 auto;display:flex;align-items:center;gap:6px;min-width:0}
+.calphawrap input[type=range]{flex:1 1 auto;min-width:40px}
+.calphawrap em{flex:0 0 34px;font-style:normal;font-family:var(--mono);font-size:10px;color:var(--faint);text-align:right}
+.cclear{flex:0 0 auto;color:var(--faint);font-size:11px;padding:2px 4px}
+.cclear:hover{color:var(--hide)}
+.ci.unset .csw{border-style:dashed;opacity:.55}
+.unset{font-size:10.5px;color:var(--faint);font-style:normal}
+
+/* 字級步進 */
+.stepper{display:flex;align-items:center;gap:6px;min-width:0;flex-wrap:wrap}
+.stepbtn{flex:0 0 auto;width:24px;height:24px;border:1px solid var(--rule-lit);color:var(--muted);
+  font-size:13px;line-height:1;transition:.12s}
+.stepbtn:hover{border-color:var(--gold-dim);color:var(--gold-hi);background:#c8aa6e14}
+#fsNum{flex:0 0 52px;background:#00000059;border:1px solid var(--rule);padding:4px;
+  font-family:var(--mono);font-size:13px;color:var(--gold-hi);outline:none;text-align:center}
+#fsNum:focus{border-color:var(--gold)}
+#fsr{flex:1 1 auto;min-width:56px}
+.stepper .unset{flex:1 1 100%}
+
+/* 輸入 */
+.pinp{width:100%;background:#00000059;border:1px solid var(--rule);padding:5px 8px;
+  font-size:12px;outline:none;color:var(--text)}
+.pinp:focus{border-color:var(--gold);background:#000000a0}
+.pinp::placeholder{color:var(--faint)}
+.pinp.num{font-family:var(--mono);text-align:center;max-width:110px}
+.psel{width:100%;max-width:170px;background:#00000059;border:1px solid var(--rule);
+  font-size:12px;padding:5px 7px;outline:none;color:var(--text)}
+.psel.wide{max-width:none}
+.psel:focus{border-color:var(--gold)}
+
+/* 勾選式開關：沒開就不顯示底下設定 */
+.chk{display:flex;align-items:center;gap:9px;width:100%;text-align:left;padding:7px 2px;
+  font-size:12.5px;color:var(--muted);transition:color .12s}
+.chk:hover{color:var(--text)}
+.chk i{flex:0 0 auto;width:14px;height:14px;border:1px solid var(--rule-lit);position:relative;transition:.12s}
+.chk:hover i{border-color:var(--gold-dim)}
+.chk.on{color:var(--gold-hi)}
+.chk.on i{border-color:var(--gold);background:#c8aa6e26}
+.chk.on i::after{content:'';position:absolute;left:3px;top:0;width:5px;height:9px;
+  border:solid var(--gold);border-width:0 1.5px 1.5px 0;transform:rotate(42deg)}
+.sub{padding:4px 0 8px 23px;margin-bottom:2px;border-left:1px solid var(--rule)}
+.sub .prow2{grid-template-columns:52px minmax(0,1fr);margin-bottom:6px}
+
+/* 進階操作 */
+.actrow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:7px}
+.actrow .btn{flex:1 1 auto;padding:6px 10px;font-size:11.5px;text-align:center}
+.disc{border-top:1px solid var(--rule);padding-top:8px;margin-top:2px}
+.dischead{display:flex;align-items:center;gap:8px;width:100%;text-align:left;padding:5px 2px;
+  font-size:12px;color:var(--muted)}
+.dischead:hover{color:var(--gold-hi)}
+.dischead b{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--faint);font-weight:400}
+.dischead .arrow{display:inline-block;transition:transform .15s;color:var(--faint)}
+.dischead .arrow.open{transform:rotate(90deg)}
+.discbody{padding:6px 0 2px 4px}
+.pitems{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:9px}
 .pitems .groupchip{font-size:10.5px;padding:2px 6px}
-.plint{display:flex;flex-direction:column;gap:3px}
-.plint span{font-size:10.5px;color:#dcb87f;border-left:2px solid var(--warn);padding:3px 7px;background:#d093410d;line-height:1.5}
+.pitems .groupchip.more{color:var(--faint)}
+.plint{display:flex;flex-direction:column;gap:3px;margin-top:9px}
+.plint span{font-size:10.5px;color:#dcb87f;border-left:2px solid var(--warn);padding:4px 8px;
+  background:#d093410d;line-height:1.55}
 .plint span.e{color:#e2a89e;border-left-color:var(--hide);background:#b0574a12}
 
-.difftabs{display:flex;gap:2px;border-bottom:1px solid var(--rule);margin:0 0 12px}
-.difftabs button{padding:8px 12px;font-size:12px;color:var(--muted);border-bottom:2px solid transparent}
-.difftabs button.on{color:var(--gold-hi);border-bottom-color:var(--gold)}
-.difftabs button:hover{background:#ffffff06}
-.difftabs b{margin-left:6px;font-family:var(--mono);font-size:10.5px;color:var(--gold-dim);font-weight:500}
-.difflist{display:flex;flex-direction:column;gap:11px}
-.drow{border:1px solid var(--rule);background:#00000030}
-.dhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:7px 10px;
-  border-bottom:1px solid var(--rule);font-size:12.5px}
-.dhead b{color:var(--gold-hi);font-weight:500}
-.dhead span{font-family:var(--mono);font-size:9.5px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dcols{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule)}
-.dcols.one{grid-template-columns:1fr}
-.dcol{background:#0c0a07;padding:8px 9px;display:flex;flex-direction:column;gap:7px;min-width:0}
-.dct{font-size:10px;color:var(--faint);letter-spacing:.06em}
-.dcol pre{margin:0;font-family:var(--mono);font-size:10.5px;line-height:1.65;white-space:pre-wrap;
-  word-break:break-all;color:var(--muted);max-height:210px;overflow:auto}
-.dcol pre .df{color:var(--gold-hi);background:#c8aa6e1a;display:inline-block;width:100%}
-.dcol .chip{align-self:flex-start}
-
-
-
-
-.tools .ico{padding:6px 9px;font-size:13px;line-height:1}
-.tsep{width:1px;height:20px;background:var(--rule-lit);margin:0 3px;flex:0 0 auto}
-.menuwrap{position:relative;flex:0 0 auto}
-#toolsBtn.alert::after{content:'';display:inline-block;width:5px;height:5px;border-radius:50%;
-  background:var(--warn);margin-left:5px;vertical-align:middle}
-.menu{position:absolute;top:calc(100% + 5px);right:0;min-width:216px;z-index:60;display:none;
-  background:#171208;border:1px solid var(--rule-lit);box-shadow:0 8px 30px #000b;padding:4px}
-.menu.on{display:block}
-.menu button,.menu a{display:block;width:100%;text-align:left;padding:8px 11px;font-size:12.5px;
-  color:var(--text);background:none;border:none;text-decoration:none;transition:.1s}
-.menu button:hover,.menu a:hover{background:#c8aa6e18;color:var(--gold-hi)}
-.menu hr{border:none;border-top:1px solid var(--rule);margin:4px 6px}
-.menu b{font-family:var(--mono);font-size:10px;color:var(--warn);font-weight:400;margin-left:6px}
-.menu .warn2{color:#dcb87f}
-@media (max-width:820px){ .tsep{display:none} .tools .ico{padding:6px 7px} }
-
-.abh{margin:14px 0 6px;font-size:11px;color:var(--faint);font-weight:500;letter-spacing:.12em;text-transform:uppercase}
-.abtbl{width:100%;border-collapse:collapse;font-size:12px}
-.abtbl td{padding:5px 6px;border-top:1px solid #ffffff0d;vertical-align:top}
-.abtbl td:first-child{white-space:nowrap}
-.abtbl td:nth-child(2){color:var(--muted);width:99%}
-.abtbl td:last-child{font-family:var(--mono);font-size:10px;color:var(--gold-dim);text-align:right}
-.abtbl a{color:var(--gold-hi);text-decoration:none}
-.abtbl a:hover{text-decoration:underline}
-.abnote{margin:8px 0 0;font-size:11px;color:var(--faint);line-height:1.85}
-.abnote a{color:var(--gold-dim)}
-.fswarn{border:1px solid var(--warn);background:#d093410f;padding:10px 11px;margin-bottom:11px;
-  display:flex;flex-direction:column;gap:5px}
-.fswarn b{color:#dcb87f;font-size:12px;font-weight:500}
-.fswarn span{font-size:11.5px;color:var(--muted);line-height:1.7}
-.fswarn code{font-family:var(--mono);font-size:11px;color:var(--gold-hi);background:#00000059;
-  padding:5px 7px;border:1px solid var(--rule)}
-.fslist{margin:0;padding-left:18px;color:var(--muted);font-size:11.5px;line-height:1.95}
-.dftabs{display:flex;gap:2px;border-bottom:1px solid var(--rule);margin-bottom:10px}
-.dftabs button{padding:7px 12px;font-size:11.5px;color:var(--muted);border-bottom:2px solid transparent;display:flex;gap:6px;align-items:baseline}
-.dftabs button b{font-family:var(--mono);font-size:10px;color:var(--faint);font-weight:400}
-.dftabs button:hover{background:#ffffff08}
-.dftabs button.on{color:var(--gold-hi);border-bottom-color:var(--gold)}
-.dftabs button.on b{color:var(--gold-dim)}
-.dflist{max-height:52vh;overflow-y:auto;display:flex;flex-direction:column;gap:6px}
-.dfrow{border:1px solid var(--rule);background:#00000030;padding:8px 9px;border-left:3px solid transparent}
-.dfrow.changed{border-left-color:var(--warn)}
-.dfrow.onlyTheirs{border-left-color:var(--show)}
-.dfrow.onlyMine{border-left-color:#5b8bd0}
-.dfrow.same{border-left-color:var(--rule-lit);opacity:.65}
-.dfhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.dfbadge{flex:0 0 auto;font-size:9px;font-family:var(--mono);letter-spacing:.06em;color:var(--faint);
-  border:1px solid var(--rule-lit);padding:1px 5px}
-.dfhead .gl{font-size:12px;max-width:200px}
-.dftag{flex:1 1 auto;text-align:right;font-family:var(--mono);font-size:9px;color:var(--faint);
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
-.dfcols{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-.dfcol h4{margin:0 0 4px;font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em}
-.dfcol pre,.dfone pre{margin:0 0 6px;background:#00000059;border:1px solid var(--rule);padding:6px 7px;
-  font-family:var(--mono);font-size:10px;line-height:1.6;color:var(--text);max-height:150px;
-  overflow:auto;white-space:pre-wrap;word-break:break-all}
-.dfone{margin-top:8px}
-.dfone .phint{display:block;margin-bottom:6px}
-@media (max-width:640px){.dfcols{grid-template-columns:1fr}}
-.econbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--rule)}
-.econbar > label{font-size:12px;color:var(--gold-hi)}
-.econbar input{width:86px;background:#00000059;border:1px solid var(--rule-lit);padding:5px 7px;
-  font-family:var(--mono);font-size:13px;color:var(--gold-hi);outline:none;text-align:center}
-.econbar input:focus{border-color:var(--gold)}
-.econbar > span{font-size:11.5px;color:var(--muted)}
-.econempty{padding:24px;text-align:center;color:var(--faint);font-size:12px;line-height:1.9;border:1px dashed var(--rule-lit)}
-.econsum{display:flex;gap:4px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin:10px 0}
-.econsum span{font-family:var(--mono);font-size:13px}
-.econsum .a{color:var(--gold-hi)} .econsum .b{color:#dd9d92} .econsum .c{color:#a9cf90}
-.econlist{max-height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
-.econrow{display:flex;align-items:center;gap:8px;padding:5px 7px;border-left:3px solid transparent;background:#00000030}
-.econrow.stack{border-left-color:var(--gold)}
-.econrow.hide{border-left-color:var(--hide)}
-.econrow.show{border-left-color:var(--show)}
-.econrow.ex{border-left-color:#c8843c;background:#c8843c0f}
-.econex{flex:0 0 auto;color:var(--faint);font-size:13px;padding:0 2px;line-height:1}
-.econrow.ex .econex{color:#e8a768}
-.econn{flex:1 1 auto;font-size:12px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.econv{flex:0 0 auto;font-family:var(--mono);font-size:10.5px;color:var(--faint)}
-.econa{flex:0 0 190px;font-size:11px;color:var(--gold-dim);text-align:right}
-.econfmt{background:#00000059;border:1px solid var(--rule);padding:8px;font-family:var(--mono);
-  font-size:10.5px;color:var(--muted);line-height:1.7;margin:0 0 10px;white-space:pre-wrap;word-break:break-all}
+@media (max-width:960px){
+  .prow2{grid-template-columns:1fr;gap:4px}
+  .prow2 > label{font-size:11px;color:var(--faint)}
+  .prowhint{padding-left:0}
+  .sub .prow2{grid-template-columns:1fr}
+  .psel{max-width:none}
+}
 .irlist{display:flex;flex-direction:column;gap:7px}
 .irow{border:1px solid var(--rule);background:#00000038;padding:9px 10px;border-left:4px solid transparent}
 .irow.s{border-left-color:var(--show)}
@@ -6283,7 +6230,7 @@ Wild Wisps	50000</script>
    更新偵測會重新抓取這個頁面、用正規式讀出上面那行的版本字串來比對，
    所以這兩個常數必須放在整份程式的最前面。
    ================================================================== */
-const APP_VERSION='1.10.3';
+const APP_VERSION='1.11.0';
 const APP_BUILD='2026-08-18';
 
 /* ======================================================================
@@ -7214,18 +7161,35 @@ function renderFloor(){
     <div class="minimapchip ${mm?'':'off'}">${mm?shapeSVG(mm.shape,mm.color,[26,20,15][mm.size]||18):'<span style="color:#3a3428;font-size:9.5px">無圖示</span>'}</div>
     ${snd?`<div class="soundchip">♪ ${esc(snd.split(/[\\/]/).pop())}</div>`:''}`;
 }
-function colorCell(b,key,label){
+/* 顏色列：名稱、色塊、HEX、透明度都在同一條格線上 */
+function colorRow(b,key,label){
   const c=getColor(b,key);
   const hex=c?('#'+[c.r,c.g,c.b].map(x=>x.toString(16).padStart(2,'0')).join('')):'';
-  return `<div class="ci" data-ckey="${key}">
+  const pct=c?Math.round(c.a/255*100):100;
+  return `<div class="prow2 ci ${c?'set':'unset'}" data-ckey="${key}">
     <label>${label}</label>
-    <div class="swwrap"><i style="background:${css(c,'transparent')}"></i>
-      <input type="color" class="cpick" value="${hex||'#ffffff'}"><
-      ${c?'':'<span class="none">未設定</span>'}</div>
-    <input type="text" class="chex" value="${hex}" placeholder="未設定" maxlength="7" spellcheck="false">
-    <input type="range" class="calpha" min="0" max="255" value="${c?c.a:255}">
-    ${c?'<button class="x" title="移除">✕</button>':''}
+    <div class="cbody">
+      <span class="csw">
+        <i style="background:${css(c,'transparent')}"></i>
+        <input type="color" class="cpick" value="${hex||'#ffffff'}" title="${label}">
+      </span>
+      <input type="text" class="chex" value="${hex}" placeholder="未設定" maxlength="7" spellcheck="false">
+      ${c?`<span class="calphawrap" title="不透明度">
+        <input type="range" class="calpha" min="0" max="255" value="${c.a}">
+        <em>${pct}%</em></span>
+      <button class="cclear" title="清除這個顏色">✕</button>`
+      :'<span class="unset">未設定</span>'}
+    </div>
   </div>`;
+}
+/* 邊框效果：判斷目前邊框色是不是跟文字或背景一致 */
+function sameColor(a,z){ return !!a&&!!z&&a.r===z.r&&a.g===z.g&&a.b===z.b&&a.a===z.a; }
+function borderModeOf(b){
+  const bd=getColor(b,'SetBorderColor');
+  if(!bd) return 'off';
+  if(sameColor(bd,getColor(b,'SetTextColor'))) return 'text';
+  if(sameColor(bd,getColor(b,'SetBackgroundColor'))) return 'bg';
+  return '';
 }
 function paletteOf(doc){
   const map=new Map();
@@ -7253,6 +7217,24 @@ function applyPalette(b,p){
 }
 function curPalette(b){ return {fg:getColor(b,'SetTextColor'),bg:getColor(b,'SetBackgroundColor'),bd:getColor(b,'SetBorderColor')}; }
 
+
+/* 試聽自訂音效：只有連結資料夾後才讀得到檔案，否則不顯示這顆按鈕 */
+async function testSound(b){
+  const r=findRule(b,'CustomAlertSound');
+  const raw=r&&r.values[0]?r.values[0].v:'';
+  if(!raw||!state.folder){ toast('需要先連結資料夾'); return; }
+  try{
+    if(!await ensureWritePermission(state.folder)){ toast('資料夾權限已失效'); return; }
+    let dir=state.folder;
+    const parts=raw.split(/[\\/]/).filter(Boolean);
+    for(const seg of parts.slice(0,-1)) dir=await dir.getDirectoryHandle(seg);
+    const fh=await dir.getFileHandle(parts[parts.length-1]);
+    const url=URL.createObjectURL(await fh.getFile());
+    const a=new Audio(url);
+    a.onended=()=>URL.revokeObjectURL(url);
+    await a.play();
+  }catch(err){ toast('找不到或無法播放這個音效檔'); }
+}
 function renderInspector(){
   const b=curBlock(),el=$('#inspector');
   if(!b){ el.innerHTML='<div class="nosel">從中間的清單選一個區塊<br>右側會顯示它的樣式、條件與檢查結果</div>'; return; }
@@ -7278,82 +7260,130 @@ function renderInspector(){
      這樣站在門檻規則上也能管理整組門檻，不會只看到一顆用不了的按鈕 */
   const stackBase=stackRule?findStackBase(b):null;
 
+  const beamTempOn=beam&&beam.temp;
+  const sndOn=!!snd;
   el.innerHTML=`
-  <div class="pgrid">
+  <div class="ins">
 
-    <div class="prow">
+    <section class="isec">
+      <h4>顯示</h4>
       <div class="seg" id="showhide">
         <button class="${b.type==='Show'?'on':''}" data-t="Show">SHOW 顯示</button>
         <button class="${b.type==='Hide'?'on h':''}" data-t="Hide">HIDE 隱藏</button>
       </div>
-      <span class="pcat">${esc(catName(classify(b)))}</span>
-    </div>
+      <div class="prow2">
+        <label>分類</label>
+        <div class="pval">${esc(catName(classify(b)))}
+          <small>依 Class 與 BaseType 自動判斷</small></div>
+      </div>
+      ${issues.length?`<div class="plint">${issues.map(i=>
+        `<span class="${i.lv==='e'?'e':''}">${esc(i.msg)}</span>`).join('')}</div>`:''}
+    </section>
 
-    ${issues.length?`<div class="plint">${issues.map(i=>
-      `<span class="${i.lv==='e'?'e':''}">${esc(i.msg)}</span>`).join('')}</div>`:''}
+    <section class="isec">
+      <h4>標籤外觀</h4>
+      ${colorRow(b,'SetTextColor','文字色')}
+      ${colorRow(b,'SetBackgroundColor','背景色')}
+      ${colorRow(b,'SetBorderColor','邊框色')}
+      <div class="prow2">
+        <label>字級</label>
+        <div class="stepper">
+          <button class="stepbtn" id="fsDown" title="調小">−</button>
+          <input type="number" id="fsNum" min="18" max="45" step="1" value="${fs==null?32:fs}">
+          <button class="stepbtn" id="fsUp" title="調大">＋</button>
+          <input type="range" id="fsr" min="18" max="45" step="1" value="${Math.max(18,Math.min(45,fs||32))}">
+          ${fs==null?'<span class="unset">未設定（預設 32）</span>':''}
+        </div>
+      </div>
+      <div class="prow2">
+        <label>邊框效果</label>
+        <select class="psel wide" id="borderMode">
+          <option value="">自訂顏色</option>
+          <option value="text">跟隨文字色</option>
+          <option value="bg">跟隨背景色</option>
+          <option value="off">關閉邊框</option>
+        </select>
+      </div>
+    </section>
 
-    <div class="trio">${colorCell(b,'SetTextColor','文字')}${colorCell(b,'SetBackgroundColor','背景')}${colorCell(b,'SetBorderColor','邊框')}</div>
-
-    <div class="prow">
-      <label class="plab">字級</label>
-      <input type="range" id="fsr" min="18" max="70" step="1" value="${fs||32}">
-      <b class="pnum">${fs==null?'32':fs}</b>
-      <button class="chip" id="bdText" title="邊框設成跟文字一樣的顏色">框＝字</button>
-      <button class="chip" id="bdBg" title="邊框設成跟背景一樣的顏色">框＝底</button>
-      <button class="chip" id="bdOff" title="移除邊框">無框</button>
-    </div>
-
-    <div class="prow">
-      <label class="plab">數量</label>
+    <section class="isec">
+      <h4>數量條件</h4>
       ${(()=>{const s=stackRules(b);
         if(s.other.length||s.all.length>2)
-          return `<span class="pweird">${esc(s.all.map(x=>(x.op||'=')+' '+x.values.map(v=>v.v).join(' ')).join('　'))}</span>
-                  <span class="phint">請到原始碼修改</span>`;
+          return `<div class="prow2"><label>條件</label>
+            <div class="pval warnv">${esc(s.all.map(x=>(x.op||'=')+' '+x.values.map(v=>v.v).join(' ')).join('　'))}
+            <small>這組條件較特殊，請到「原始碼」分頁修改</small></div></div>`;
         const lo=stackNum(s.lo), hi=stackNum(s.hi);
-        return `<input type="number" id="stackLo" min="1" placeholder="不限" value="${lo===null?'':lo}">
-          <span class="tilde">～</span>
-          <input type="number" id="stackHi" min="1" placeholder="不限" value="${hi===null?'':hi}">
-          <span class="punit">個</span>
-          <span class="peff">${esc(rangeText(b)||'全部數量')}</span>
-          ${s.all.length?'<button class="x" id="stackDel" title="移除數量條件">✕</button>':''}`;
+        return `<div class="prow2"><label>最少</label>
+            <input type="number" class="pinp num" id="stackLo" min="1" placeholder="不限" value="${lo===null?'':lo}"></div>
+          <div class="prow2"><label>最多</label>
+            <input type="number" class="pinp num" id="stackHi" min="1" placeholder="不限" value="${hi===null?'':hi}"></div>
+          <div class="prowhint">${esc(rangeText(b)||'沒有數量限制，任何數量都會套用這條規則')}
+            ${s.all.length?'<button class="linkbtn" id="stackDel">清除數量條件</button>':''}</div>`;
       })()}
-    </div>
+    </section>
 
-    <div class="prow">
-      <button class="ptog ${mm?'on':''}" id="mmToggle"><i>${mm?'✕':''}</i>小地圖</button>
-      ${mm?`<select class="psel" id="mmSize">${[0,1,2].map(s=>`<option value="${s}" ${mm.size===s?'selected':''}>${['大','中','小'][s]}</option>`).join('')}</select>
-      <select class="psel" id="mmColor">${MM_COLORS.map(c=>`<option ${mm.color===c?'selected':''}>${c}</option>`).join('')}</select>
-      <select class="psel grow" id="mmShape">${MM_SHAPES.map(s=>`<option ${mm.shape===s?'selected':''}>${s}</option>`).join('')}</select>`
-      :'<span class="phint">未設定圖示</span>'}
-    </div>
+    <section class="isec">
+      <h4>掉落提示</h4>
 
-    <div class="prow">
-      <button class="ptog ${beam?'on':''}" id="beamToggle"><i>${beam?'✕':''}</i>光柱</button>
-      ${beam?`<select class="psel" id="beamColor">${MM_COLORS.map(c=>`<option ${beam.color===c?'selected':''}>${c}</option>`).join('')}</select>
-      <button class="ptog ${beam.temp?'on':''}" id="beamTemp"><i>${beam.temp?'✕':''}</i>Temp 短暫</button>`
-      :'<span class="phint">未設定光柱</span>'}
-    </div>
+      <button class="chk ${mm?'on':''}" id="mmToggle"><i></i>小地圖圖示</button>
+      ${mm?`<div class="sub">
+        <div class="prow2"><label>大小</label>
+          <select class="psel" id="mmSize">${[0,1,2].map(s=>`<option value="${s}" ${mm.size===s?'selected':''}>${['大','中','小'][s]}</option>`).join('')}</select></div>
+        <div class="prow2"><label>顏色</label>
+          <select class="psel" id="mmColor">${MM_COLORS.map(c=>`<option ${mm.color===c?'selected':''}>${c}</option>`).join('')}</select></div>
+        <div class="prow2"><label>圖示</label>
+          <select class="psel" id="mmShape">${MM_SHAPES.map(s=>`<option ${mm.shape===s?'selected':''}>${s}</option>`).join('')}</select></div>
+      </div>`:''}
 
-    <div class="prow">
-      <label class="plab">音效</label>
-      <input class="pinp" id="snd" value="${esc(snd)}" placeholder="音效資料夾\\檔名.mp3">
-      <button class="ptog ${noDrop?'on':''}" id="ddsToggle" title="關閉遊戲預設的掉落音"><i>${noDrop?'✕':''}</i>靜音</button>
-    </div>
+      <button class="chk ${beam?'on':''}" id="beamToggle"><i></i>掉落光柱</button>
+      ${beam?`<div class="sub">
+        <div class="prow2"><label>顏色</label>
+          <select class="psel" id="beamColor">${MM_COLORS.map(c=>`<option ${beam.color===c?'selected':''}>${c}</option>`).join('')}</select></div>
+        <div class="prow2"><label>持續</label>
+          <select class="psel" id="beamTempSel">
+            <option value="" ${!beamTempOn?'selected':''}>持續顯示</option>
+            <option value="temp" ${beamTempOn?'selected':''}>Temp 短暫閃現</option>
+          </select></div>
+      </div>`:''}
 
-    <div class="pacts">
-      <button class="chip lit" id="openPal">配色盤</button>
-      <button class="chip" id="openScope">批次套用</button>
-      ${bt?`<button class="chip" id="manageGroup">拆分／移動</button>
-      <button class="chip" id="itemRules">物品規則（${bt.values.length}）</button>`:''}
-      ${!stackRule&&isCurrency?'<button class="chip" id="stackTiers">數量分色</button>':''}
-      ${stackRule&&stackBase?'<button class="chip" id="stackTiersBase">整組門檻</button>':''}
-    </div>
+      <button class="chk ${sndOn?'on':''}" id="sndToggle"><i></i>自訂音效</button>
+      ${sndOn?`<div class="sub">
+        <div class="prow2"><label>檔案</label>
+          <input class="pinp" id="snd" value="${esc(snd)}" placeholder="音效資料夾\\檔名.mp3"></div>
+        ${state.folder?'<div class="prowhint"><button class="linkbtn" id="sndTest">試聽</button>從已連結的資料夾讀取</div>'
+          :'<div class="prowhint">連結資料夾後可以試聽</div>'}
+      </div>`:''}
 
-    ${bt?`<div class="pitems">${bt.values.slice(0,groupOpen?bt.values.length:8).map(v=>
-        `<span class="groupchip">${esc(tr(v.v)||v.v)}</span>`).join('')}
-      ${bt.values.length>8?`<button class="chip tiny" id="groupToggle">${groupOpen?'收合':`＋${bt.values.length-8}`}</button>`:''}</div>`:''}
+      <button class="chk ${noDrop?'on':''}" id="ddsToggle"><i></i>關閉遊戲預設掉落音</button>
+    </section>
+
+    <section class="isec">
+      <h4>進階操作</h4>
+      <div class="actrow">
+        <button class="btn" id="openPal">配色盤</button>
+        <button class="btn" id="openScope">批次套用</button>
+      </div>
+      ${bt?`<div class="disc">
+        <button class="dischead" id="groupToggle">
+          <span class="arrow ${groupOpen?'open':''}">›</span>物品規則
+          <b>${bt.values.length}</b></button>
+        ${groupOpen?`<div class="discbody">
+          <div class="pitems">${bt.values.slice(0,40).map(v=>
+            `<span class="groupchip">${esc(tr(v.v)||v.v)}</span>`).join('')}
+            ${bt.values.length>40?`<span class="groupchip more">…還有 ${bt.values.length-40} 項</span>`:''}</div>
+          <div class="actrow">
+            <button class="btn" id="manageGroup">拆分／移動物品</button>
+            <button class="btn" id="itemRules">這些物品的所有規則</button>
+          </div>
+          ${!stackRule&&isCurrency?'<div class="actrow"><button class="btn" id="stackTiers">依掉落數量分色</button></div>':''}
+          ${stackRule&&stackBase?'<div class="actrow"><button class="btn" id="stackTiersBase">管理整組數量門檻</button></div>':''}
+        </div>`:''}
+      </div>`:''}
+    </section>
 
   </div>`;
+  const bm=$('#borderMode'); if(bm) bm.value=borderModeOf(b);
 }
 function renderAll(){
   renderFiles(); renderOutline(); renderList(true); renderInspector(); renderFloor(); syncLint();
@@ -7454,15 +7484,20 @@ bind('#inspector','click',e=>{
   }
   const sh=e.target.closest('#showhide button');
   if(sh){ if(b.type!==sh.dataset.t){ snap([b],'showhide'); b.type=sh.dataset.t; touch(b); } renderInspector(); refreshSelected(); return; }
-  const cx=e.target.closest('.ci .x');
+  const cx=e.target.closest('.ci .cclear');
   if(cx){ snap([b],'color'); dropRule(b,cx.closest('.ci').dataset.ckey); renderInspector(); refreshSelected(); return; }
-  if(e.target.closest('#bdText')||e.target.closest('#bdBg')){
-    const src=getColor(b,e.target.closest('#bdText')?'SetTextColor':'SetBackgroundColor');
-    if(!src){ toast('來源顏色還沒設定'); return; }
-    snap([b],'border'); putRule(b,'SetBorderColor',src.a>=255?[src.r,src.g,src.b]:[src.r,src.g,src.b,src.a]);
+  if(e.target.closest('#fsUp')||e.target.closest('#fsDown')){
+    const cur=getNum(b,'SetFontSize')??32;
+    const next=Math.max(18,Math.min(45,cur+(e.target.closest('#fsUp')?1:-1)));
+    snap([b],'edit'); putRule(b,'SetFontSize',[next]); renderInspector(); refreshSelected(); return;
+  }
+  if(e.target.closest('#sndToggle')){
+    snap([b],'sound');
+    if(findRule(b,'CustomAlertSound')) dropRule(b,'CustomAlertSound');
+    else putRule(b,'CustomAlertSound',['音效資料夾\\檔名.mp3']);
     renderInspector(); refreshSelected(); return;
   }
-  if(e.target.closest('#bdOff')){ snap([b],'border'); dropRule(b,'SetBorderColor'); renderInspector(); refreshSelected(); return; }
+  if(e.target.closest('#sndTest')){ testSound(b); return; }
   if(e.target.closest('#mmToggle')){ snap([b],'mm');
     if(getMinimap(b)) dropRule(b,'MinimapIcon'); else putRule(b,'MinimapIcon',[0,'Yellow','Circle']);
     renderInspector(); refreshSelected(); return; }
@@ -7504,8 +7539,14 @@ bind('#inspector','input',e=>{
     if(eff) eff.textContent=rangeText(b)||'未設定';
     refreshSelected(); return;
   }
-  if(t.id==='fsr'){ snap([b],'edit'); putRule(b,'SetFontSize',[t.value]);
-    const lab=t.closest('.field').querySelector('label b'); if(lab) lab.textContent=t.value;
+  if(t.id==='fsr'||t.id==='fsNum'){
+    const n=parseInt(t.value,10);
+    if(!Number.isFinite(n)) return;
+    const v=Math.max(18,Math.min(45,n));
+    snap([b],'edit'); putRule(b,'SetFontSize',[v]);
+    const other=t.id==='fsr'?$('#fsNum'):$('#fsr');
+    if(other) other.value=v;
+    const u=document.querySelector('.stepper .unset'); if(u) u.remove();
     refreshSelected(); return; }
   if(t.id==='snd'){ snap([b],'edit');
     if(t.value.trim()) putRule(b,'CustomAlertSound',[t.value.trim()]);
@@ -7521,8 +7562,10 @@ bind('#inspector','input',e=>{
     snap([b],'edit');
     const rgb=[0,2,4].map(i=>parseInt(m[1].substr(i,2),16));
     putRule(b,key,a>=255?rgb:rgb.concat([a]));
-    ci.querySelector('.swwrap i').style.background=`rgba(${rgb.join(',')},${(a/255).toFixed(3)})`;
-    const none=ci.querySelector('.none'); if(none) none.remove();
+    ci.querySelector('.csw i').style.background=`rgba(${rgb.join(',')},${(a/255).toFixed(3)})`;
+    const pctEl=ci.querySelector('.calphawrap em');
+    if(pctEl) pctEl.textContent=Math.round(a/255*100)+'%';
+    if(!ci.classList.contains('set')) renderInspector();
     refreshSelected(); return;
   }
 });
@@ -7533,6 +7576,17 @@ bind('#inspector','change',e=>{
     putRule(b,'MinimapIcon',[$('#mmSize').value,$('#mmColor').value,$('#mmShape').value]); refreshSelected(); return; }
   if(t.id==='beamColor'){ const bm=getBeam(b); snap([b],'beam');
     putRule(b,'PlayEffect',bm&&bm.temp?[t.value,'Temp']:[t.value]); refreshSelected(); return; }
+  if(t.id==='beamTempSel'){ const bm=getBeam(b); if(!bm) return; snap([b],'beam');
+    putRule(b,'PlayEffect',t.value==='temp'?[bm.color,'Temp']:[bm.color]); refreshSelected(); return; }
+  if(t.id==='borderMode'){
+    if(t.value===''){ t.value=borderModeOf(b); return; }
+    const src=t.value==='text'?getColor(b,'SetTextColor'):t.value==='bg'?getColor(b,'SetBackgroundColor'):null;
+    if(t.value!=='off'&&!src){ toast('來源顏色還沒設定'); t.value=borderModeOf(b); return; }
+    snap([b],'border');
+    if(t.value==='off') dropRule(b,'SetBorderColor');
+    else putRule(b,'SetBorderColor',src.a>=255?[src.r,src.g,src.b]:[src.r,src.g,src.b,src.a]);
+    renderInspector(); refreshSelected(); return;
+  }
 });
 
 /* 工具列 */
