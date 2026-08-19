@@ -293,6 +293,30 @@ input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--gold
 .dcol .chip{align-self:flex-start}
 
 
+
+
+.tools .ico{padding:6px 9px;font-size:13px;line-height:1}
+.tsep{width:1px;height:20px;background:var(--rule-lit);margin:0 3px;flex:0 0 auto}
+.menuwrap{position:relative;flex:0 0 auto}
+#toolsBtn.alert::after{content:'';display:inline-block;width:5px;height:5px;border-radius:50%;
+  background:var(--warn);margin-left:5px;vertical-align:middle}
+.menu{position:absolute;top:calc(100% + 5px);right:0;min-width:216px;z-index:60;display:none;
+  background:#171208;border:1px solid var(--rule-lit);box-shadow:0 8px 30px #000b;padding:4px}
+.menu.on{display:block}
+.menu button,.menu a{display:block;width:100%;text-align:left;padding:8px 11px;font-size:12.5px;
+  color:var(--text);background:none;border:none;text-decoration:none;transition:.1s}
+.menu button:hover,.menu a:hover{background:#c8aa6e18;color:var(--gold-hi)}
+.menu hr{border:none;border-top:1px solid var(--rule);margin:4px 6px}
+.menu b{font-family:var(--mono);font-size:10px;color:var(--warn);font-weight:400;margin-left:6px}
+.menu .warn2{color:#dcb87f}
+@media (max-width:820px){ .tsep{display:none} .tools .ico{padding:6px 7px} }
+.fswarn{border:1px solid var(--warn);background:#d093410f;padding:10px 11px;margin-bottom:11px;
+  display:flex;flex-direction:column;gap:5px}
+.fswarn b{color:#dcb87f;font-size:12px;font-weight:500}
+.fswarn span{font-size:11.5px;color:var(--muted);line-height:1.7}
+.fswarn code{font-family:var(--mono);font-size:11px;color:var(--gold-hi);background:#00000059;
+  padding:5px 7px;border:1px solid var(--rule)}
+.fslist{margin:0;padding-left:18px;color:var(--muted);font-size:11.5px;line-height:1.95}
 .dftabs{display:flex;gap:2px;border-bottom:1px solid var(--rule);margin-bottom:10px}
 .dftabs button{padding:7px 12px;font-size:11.5px;color:var(--muted);border-bottom:2px solid transparent;display:flex;gap:6px;align-items:baseline}
 .dftabs button b{font-family:var(--mono);font-size:10px;color:var(--faint);font-weight:400}
@@ -506,24 +530,31 @@ h1{font-family:var(--ui);font-size:27px;font-weight:500;color:var(--gold-hi);mar
     <div class="brand"><b>POE 過濾器編輯器</b><button id="verChip" title="點一下檢查有沒有新版本">POE1</button></div>
     <div class="files" id="files"></div>
     <div class="tools">
-      <a class="kofi" href="https://ko-fi.com/D5P323S7OG" target="_blank" rel="noopener"
-         title="Buy Me a Coffee at ko-fi.com"><img height="36" src="https://storage.ko-fi.com/cdn/kofi6.png?v=6"
-         alt="Buy Me a Coffee at ko-fi.com"></a>
-      <button class="btn" id="undoBtn" title="復原 Ctrl+Z" disabled>復原</button>
-      <button class="btn" id="redoBtn" title="重做 Ctrl+Shift+Z" disabled>重做</button>
-      <button class="btn" id="stylePresets">樣式階級</button>
-      <button class="btn" id="safetyBtn">防呆</button>
-      <button class="btn" id="diffBtn" title="與 NeverSink 原版比較">比對原版</button>
-      <button class="btn" id="econBtn" title="依市場價值自動設定數量門檻">價值門檻</button>
-      <button class="btn" id="lintBtn">檢查<span class="n" id="lintN"></span></button>
-      <button class="btn" id="newDoc">新建</button>
+      <button class="btn ico" id="undoBtn" title="復原 Ctrl+Z" disabled>↶</button>
+      <button class="btn ico" id="redoBtn" title="重做 Ctrl+Shift+Z" disabled>↷</button>
+      <span class="tsep"></span>
       <button class="btn" id="pick">開啟</button>
-      <button class="btn" id="nsBtn" title="從 GitHub 載入 NeverSink 官方過濾器">NeverSink</button>
-      <button class="btn" id="diffBtn" title="與 NeverSink 原版逐條比對">比對原版</button>
+      <div class="menuwrap">
+        <button class="btn" id="toolsBtn">工具 ▾</button>
+        <div class="menu" id="toolsMenu">
+          <button data-tool="nsBtn">載入 NeverSink 官方過濾器</button>
+          <button data-tool="diffBtn">與原版逐條比對</button>
+          <hr>
+          <button data-tool="tierBtn">樣式階級</button>
+          <button data-tool="econBtn">價值門檻自動分色</button>
+          <hr>
+          <button data-tool="safetyBtn"><span id="safetyLabel">防呆層</span></button>
+          <button data-tool="lintBtn">全檔檢查<b id="lintN"></b></button>
+          <hr>
+          <button data-tool="folderBtn"><span id="folderLabel">連結資料夾</span></button>
+          <button data-tool="copyBtn">複製全文</button>
+          <button data-tool="newBtn">新建 Filter</button>
+          <a href="README_防呆與操作說明.md" target="_blank" rel="noopener">操作與防呆說明</a>
+        </div>
+      </div>
       <button class="btn" id="pubBtn" title="複製全文並開啟 PoE 帳號的過濾器頁面">發布</button>
-      <a class="btn" href="README_防呆與操作說明.md" target="_blank" rel="noopener" style="text-decoration:none">說明</a>
-      <button class="btn" id="save">匯出</button>
-      <button class="btn primary" id="saveTW">匯出繁體版</button>
+      <button class="btn primary" id="save">匯出</button>
+      <button class="btn" id="saveTW" title="註解一併轉成繁體">繁</button>
     </div>
   </header>
 
@@ -6229,7 +6260,7 @@ Wild Wisps	50000</script>
    更新偵測會重新抓取這個頁面、用正規式讀出上面那行的版本字串來比對，
    所以這兩個常數必須放在整份程式的最前面。
    ================================================================== */
-const APP_VERSION='1.6.0';
+const APP_VERSION='1.9.0';
 const APP_BUILD='2026-08-18';
 
 /* ======================================================================
@@ -7310,8 +7341,10 @@ function syncLintNow(){
   const safe=safetyState();
   const n=lintAll().reduce((a,x)=>a+x.issues.length,0)+(safe.ok?0:1);
   $('#lintN').textContent=n?n:'';
-  $('#safetyBtn').textContent=safe.ok?'防呆 ✓':'防呆 !';
-  $('#safetyBtn').classList.toggle('primary',!safe.ok);
+  const sl=$('#safetyLabel');
+  if(sl){ sl.textContent=safe.ok?'防呆層 ✓':'防呆層 ⚠ 需要處理';
+          sl.classList.toggle('warn2',!safe.ok); }
+  $('#toolsBtn').classList.toggle('alert',!safe.ok);
 }
 
 /* ======================================================================
@@ -7478,13 +7511,35 @@ document.querySelectorAll('#namesw button').forEach(btn=>btn.addEventListener('c
   btn.classList.add('on'); state.nameMode=btn.dataset.m;
   renderList(true); renderInspector(); renderFloor();
 }));
+
+/* ======================================================================
+   工具選單
+   ================================================================== */
+const TOOL_ACTIONS={
+  nsBtn:()=>openNeverSink(), diffBtn:()=>openDiff(),
+  tierBtn:()=>openStylePresetManager(), econBtn:()=>openEconomyTool(),
+  safetyBtn:()=>openSafetyManager(), lintBtn:()=>openLint(),
+  folderBtn:()=>openFolderDialog(), copyBtn:()=>copyAll(),
+  newBtn:()=>openNewFilter()
+};
+function closeMenu(){ $('#toolsMenu').classList.remove('on'); }
+$('#toolsBtn').addEventListener('click',e=>{
+  e.stopPropagation();
+  $('#toolsMenu').classList.toggle('on');
+});
+$('#toolsMenu').addEventListener('click',e=>{
+  const b=e.target.closest('[data-tool]');
+  if(!b) return;                       /* 說明是一般連結，讓它自己開 */
+  closeMenu();
+  const fn=TOOL_ACTIONS[b.dataset.tool];
+  if(fn) fn();
+});
+document.addEventListener('click',e=>{ if(!e.target.closest('.menuwrap')) closeMenu(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeMenu(); });
 $('#undoBtn').addEventListener('click',doUndo);
 $('#redoBtn').addEventListener('click',doRedo);
 $('#stylePresets').addEventListener('click',openStylePresetManager);
-$('#safetyBtn').addEventListener('click',openSafetyManager);
-$('#diffBtn').addEventListener('click',openNsDiff);
-$('#econBtn').addEventListener('click',openEconomyTool);
-$('#lintBtn').addEventListener('click',()=>{
+function openLint(){
   const gs=lintGroups();
   const total=gs.reduce((a,g)=>a+g.n,0);
   $('#modalTitle').textContent=total?`檢查結果 · ${total} 項，${gs.length} 類`:'檢查結果';
@@ -7501,7 +7556,7 @@ $('#lintBtn').addEventListener('click',()=>{
     : '<p style="color:var(--muted)">沒有發現問題。字級、顏色範圍、小地圖與光柱參數、關鍵字拼字都通過了。</p>';
   $('#modalFoot').innerHTML='';
   $('#modal').classList.add('on');
-});
+}
 $('#modalBody').addEventListener('click',e=>{
   const j=e.target.closest('[data-jump]'); if(!j) return;
   $('#modal').classList.remove('on');
@@ -7953,7 +8008,7 @@ let diffState=null;
    後端伺服器來保管 client secret，還要用自己擁有的網域註冊。純靜態的
    GitHub Pages 做不到，所以這裡做到「一鍵複製＋開啟頁面」，剩下貼上即可。
    ================================================================== */
-const POE_FILTER_PAGE='https://www.pathofexile.com/my-account/item-filters';
+const POE_FILTER_PAGE='https://pathofexile.tw/my-account/item-filters';
 function suggestFilterName(){
   const meta=nsMeta(serializeDoc(state.doc,false));
   if(meta.TYPE) return 'NeverSink-'+meta.TYPE.replace(/^(\d)-.*$/,'$1')+'-個人編輯版';
@@ -8952,8 +9007,6 @@ function openNeverSink(){
     }
   });
 }
-$('#nsBtn').addEventListener('click',openNeverSink);
-$('#diffBtn').addEventListener('click',openDiff);
 $('#pubBtn').addEventListener('click',openPublish);
 $('#gateNS').addEventListener('click',openNeverSink);
 
@@ -9010,19 +9063,91 @@ const dz=$('#dz');
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') reset(); });
 })(loadFiles,dz);
 
-function doDownload(d,toTW){
+/* ======================================================================
+   直接寫入遊戲的 Filter 資料夾（File System Access API）
+   ---------------------------------------------------------------------
+   安全性要點：
+   * 網頁無法自己指定路徑，一定要使用者透過系統對話框親手挑資料夾。
+   * 授權範圍只有被選中的那一個資料夾，上層與其他資料夾都碰不到。
+   * 授權可以在瀏覽器的網站設定裡隨時撤銷。
+   * 只有 Chrome／Edge 支援；其他瀏覽器自動退回原本的下載方式。
+   這裡只寫入純文字 .filter，遊戲僅將其當設定檔讀取，不會執行。
+   ================================================================== */
+const canUseFS = typeof window!=='undefined' && 'showDirectoryPicker' in window &&
+                 (location.protocol==='https:'||location.hostname==='localhost');
+
+/* 檔名策略分兩種：
+   寫進遊戲資料夾 → 預設沿用原檔名直接覆蓋，這樣遊戲裡選的那個過濾器不用重選，
+                    按遊戲內的重新載入鈕就生效。
+   瀏覽器下載     → 加後綴，避免蓋掉下載資料夾裡的原始檔。 */
+function outName(d,toTW,forFolder){
+  if(forFolder) return (state.outName||d.name).replace(/(\.filter)?$/i,'')+'.filter';
+  return d.name.replace(/(\.filter)?$/i,'')+(toTW?'_繁體':'_edited')+'.filter';
+}
+async function ensureWritePermission(handle){
+  if(!handle) return false;
+  const opts={mode:'readwrite'};
+  if(await handle.queryPermission(opts)==='granted') return true;
+  return await handle.requestPermission(opts)==='granted';
+}
+async function linkFolder(){
+  if(!canUseFS){ toast('這個瀏覽器不支援直接寫入資料夾，請改用匯出'); return; }
+  try{
+    const handle=await window.showDirectoryPicker({mode:'readwrite',startIn:'documents'});
+    if(!await ensureWritePermission(handle)){ toast('沒有取得寫入權限'); return; }
+    state.folder=handle;
+    syncFolderChip();
+    toast('已連結資料夾：'+handle.name);
+  }catch(err){
+    if(err&&err.name==='AbortError') return;   /* 使用者自己取消，不用報錯 */
+    toast('連結資料夾失敗：'+(err.message||err));
+  }
+}
+function unlinkFolder(){ state.folder=null; syncFolderChip(); toast('已中斷資料夾連結'); }
+function syncFolderChip(){
+  const el=$('#folderLabel'); if(!el) return;
+  el.textContent=state.folder?('📁 已連結 '+state.folder.name):'連結資料夾';
+}
+async function writeToFolder(d,toTW){
+  const name=outName(d,toTW,true);
+  if(!await ensureWritePermission(state.folder)){
+    toast('資料夾權限已失效，請重新連結'); state.folder=null; syncFolderChip(); return false;
+  }
+  const fh=await state.folder.getFileHandle(name,{create:true});
+  const w=await fh.createWritable();
+  await w.write(serializeDoc(d,toTW));
+  await w.close();
+  d.dirty=false; renderFiles();
+  toast(`已寫入 ${name}　回遊戲按物品篩選器旁的 ↻ 重新載入`);
+  return true;
+}
+function browserDownload(d,toTW){
   const blob=new Blob([serializeDoc(d,toTW)],{type:'text/plain;charset=utf-8'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  a.download=d.name.replace(/(\.filter)?$/i,'')+(toTW?'_繁體':'_edited')+'.filter';
+  a.download=outName(d,toTW);
   a.click(); URL.revokeObjectURL(a.href);
   d.dirty=false; renderFiles(); toast('已匯出 '+a.download);
+}
+async function doDownload(d,toTW){
+  if(state.folder){
+    try{ if(await writeToFolder(d,toTW)) return; }
+    catch(err){ toast('寫入失敗，改用下載：'+(err.message||err)); }
+  }
+  browserDownload(d,toTW);
+}
+async function copyAll(){
+  const d=state.doc; if(!d) return;
+  try{
+    await navigator.clipboard.writeText(serializeDoc(d,state.tw));
+    toast('全文已複製，可以直接貼進網頁版過濾器編輯器');
+  }catch(err){ toast('複製失敗，請改用匯出檔案'); }
 }
 /* 匯出絕對不會自己改動 Filter，只在防呆層有問題時先提醒 */
 function download(toTW){
   const d=state.doc; if(!d) return;
   const s=safetyState();
-  if(s.ok){ doDownload(d,toTW); return; }
+  if(s.ok){ doDownload(d,toTW).catch(e=>toast('匯出失敗：'+(e.message||e))); return; }
   const why = !s.b ? '這份 Filter 沒有無條件 Show 兜底規則'
     : s.blockers.length ? `「${displayName(s.blockers[0])}」是無條件規則，會擋在防呆層前面`
     : '兜底規則缺少特殊色或光柱／圖示／提示音';
@@ -9034,8 +9159,58 @@ function download(toTW){
   $('#modal').classList.add('on');
   $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
   $('#dlSafety').onclick=()=>{ $('#modal').classList.remove('on'); openSafetyManager(); };
-  $('#dlGo').onclick=()=>{ $('#modal').classList.remove('on'); doDownload(d,toTW); };
+  $('#dlGo').onclick=()=>{ $('#modal').classList.remove('on'); doDownload(d,toTW).catch(e=>toast('匯出失敗：'+(e.message||e))); };
 }
+function openFolderDialog(){
+  if(state.folder){
+    confirmBox('中斷資料夾連結',
+      `<p style="margin:0 0 8px;color:var(--muted)">目前連結的是「<b style="color:var(--gold-hi)">${esc(state.folder.name)}</b>」，
+       寫入檔名為 <b style="color:var(--gold-hi)">${esc(outName(state.doc,false,true))}</b>。</p>
+       <p style="margin:0;color:var(--faint);font-size:11.5px">中斷後匯出會改回瀏覽器下載。要完全撤銷授權，請到瀏覽器的網站設定移除。</p>`,
+      unlinkFolder,'中斷連結');
+    return;
+  }
+  if(!canUseFS){
+    $('#modalTitle').textContent='這個瀏覽器不支援';
+    $('#modalBody').innerHTML=`<p style="margin:0 0 8px;color:var(--muted)">直接寫入資料夾需要 Chrome 或 Edge，而且必須以 https 開啟。</p>
+      <p style="margin:0;color:var(--faint);font-size:11.5px">Firefox 與 Safari 目前沒有這個功能，請繼續使用「匯出」下載檔案。</p>`;
+    $('#modalFoot').innerHTML='<button class="btn" id="cbNo">知道了</button>';
+    $('#modal').classList.add('on');
+    $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
+    return;
+  }
+  $('#modalTitle').textContent='連結遊戲的 Filter 資料夾';
+  $('#modalBody').innerHTML=`
+    <p style="margin:0 0 10px;color:var(--muted)">連結後按「匯出」就會直接寫進遊戲資料夾，不用再手動搬檔案。</p>
+    <div class="fswarn">
+      <b>請選過濾器資料夾本身，不要選 Documents 根目錄</b>
+      <span>授權範圍是整個資料夾，程式可以覆蓋裡面的檔案。選得越精確越安全。</span>
+      <code>文件\My Games\Path of Exile\</code>
+    </div>
+    <div class="field" style="margin-top:2px">
+      <label>寫入的檔名（預設沿用原檔名，直接覆蓋）</label>
+      <input class="inp" id="fsName" value="${esc((state.outName||state.doc.name||'').replace(/(\.filter)?$/i,''))}"
+        placeholder="例如 Neversink-5"><span class="phint">.filter</span>
+    </div>
+    <div class="hintline" style="margin-bottom:10px">檔名要跟遊戲裡「物品篩選器」下拉選的那個一致才會覆蓋。
+      不確定路徑的話，遊戲的<b style="color:var(--gold-hi)">選項 → 遊戲 → 物品篩選器</b>旁邊有一顆資料夾按鈕，
+      點下去就會開啟過濾器資料夾，把它選起來即可。寫入後回遊戲按旁邊的 <b style="color:var(--gold-hi)">↻</b> 重新載入。</div>
+    <ul class="fslist">
+      <li>網頁不能自己指定路徑，一定要你親手選</li>
+      <li>只碰得到你選的那一個資料夾，上一層與其他資料夾都存取不到</li>
+      <li>寫入的是純文字 .filter，遊戲只當設定讀，不會執行</li>
+      <li>隨時可以按工具列的資料夾按鈕中斷，或到瀏覽器網站設定撤銷授權</li>
+    </ul>`;
+  $('#modalFoot').innerHTML='<button class="btn" id="cbNo">取消</button><button class="btn primary" id="fsGo">選擇資料夾</button>';
+  $('#modal').classList.add('on');
+  $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
+  $('#fsGo').onclick=()=>{
+    const nm=$('#fsName').value.trim();
+    state.outName=nm?nm+'.filter':null;
+    $('#modal').classList.remove('on'); linkFolder();
+  };
+}
+syncFolderChip();
 $('#save').addEventListener('click',()=>download(false));
 $('#saveTW').addEventListener('click',()=>download(true));
 
