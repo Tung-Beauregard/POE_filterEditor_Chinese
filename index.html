@@ -58,9 +58,9 @@ button{cursor:pointer;background:none;border:none}
   color:var(--faint);border:1px solid transparent;opacity:.45;transition:.12s}
 .ftab:hover .fx,.ftab.on .fx{opacity:1}
 .ftab .fx:hover{color:#dd9d92;border-color:#b0574a66;background:#b0574a1f}
-.kofi{flex:0 0 auto;display:flex;align-items:center;opacity:.9;transition:opacity .15s}
-.kofi:hover{opacity:1}
-.kofi img{display:block;border:0;height:36px}
+.menu a.kofi{display:flex;align-items:center;gap:9px;padding:8px 11px}
+.menu a.kofi img{height:17px;border:0;opacity:.85;transition:opacity .12s}
+.menu a.kofi:hover img{opacity:1}
 .tools{display:flex;gap:6px;flex:0 0 auto;align-items:center}
 .btn{padding:6px 11px;border:1px solid var(--rule-lit);color:var(--text);font-size:12px;letter-spacing:.03em;background:#ffffff05;transition:.14s;white-space:nowrap}
 .btn:hover{border-color:var(--gold-dim);color:var(--gold-hi);background:#c8aa6e14}
@@ -181,10 +181,6 @@ select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50
 .seg button:hover{background:#ffffff08}
 .seg button.on{background:#7fae6322;color:#a9cf90}
 .seg button.on.h{background:#b0574a22;color:#dd9d92}
-  background-image:linear-gradient(45deg,#2a241a 25%,transparent 25%,transparent 75%,#2a241a 75%),linear-gradient(45deg,#2a241a 25%,#191510 25%,#191510 75%,#2a241a 75%);
-  background-size:8px 8px;background-position:0 0,4px 4px}
-.ci .swwrap i{position:absolute;inset:0;display:block}
-.ci .swwrap input[type=color]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:none;padding:0;background:none}
 input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;height:20px}
 input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--rule-lit)}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;background:var(--gold);margin-top:-4.5px;transform:rotate(45deg)}
@@ -582,6 +578,9 @@ h1{font-family:var(--ui);font-size:27px;font-weight:500;color:var(--gold-hi);mar
           <b class="mgrp">說明</b>
           <a href="README_防呆與操作說明.md" target="_blank" rel="noopener">操作與防呆說明</a>
           <button data-tool="aboutBtn">關於與資料來源</button>
+          <a class="kofi" href="https://ko-fi.com/D5P323S7OG" target="_blank" rel="noopener">
+            <img src="https://storage.ko-fi.com/cdn/kofi6.png?v=6" alt="Buy Me a Coffee at ko-fi.com">
+            請我喝杯咖啡</a>
         </div>
       </div>
       <button class="btn primary" id="save" title="寫入已連結的資料夾，或下載檔案（Ctrl+S）">匯出</button>
@@ -663,10 +662,12 @@ Abrasive Catalyst	研磨的催化劑	1	1
 Absolution	赦免	6	1
 Absolution of Inspiring	赦免．啟發	6	1
 Abyss Scarab	聖甲蟲：深淵	3	1
+Abyss Scarab of Crystals	聖甲蟲：晶石深淵	8	1
 Abyss Scarab of Descending	聖甲蟲：落降深淵	8	1
 Abyss Scarab of Edifice	聖甲蟲：宏偉深淵	3	1
 Abyss Scarab of Multitudes	聖甲蟲：眾生深淵	3	1
 Abyss Scarab of Profound Depth	聖甲蟲：深沉深淵	3	1
+Abyss Scarab of the Consort	聖甲蟲：伴侶深淵	8	1
 Abyssal Axe	深淵巨斧	7	1
 Abyssal Delirium Orb	深淵之譫妄玉	1	1
 Abyssal Incubator	深淵的培育器	4	1
@@ -709,7 +710,7 @@ Akoya's Gaze	艾古亞的凝視	7	0
 Al Dhih	鬣犬之牙	7	0
 Al-Hezmin's Crest	奧赫茲明刻紋	3	1
 Alberon's Warpath	阿爾貝隆的征途	7	0
-Albino Rhoa Feather	白化的羽毛	1	1
+Albino Rhoa Feather	白化恐喙鳥羽毛	1	1
 Alchemist's Mark	煉金術士印記	6	1
 Alder Spiked Shield	榿木刺盾	7	1
 Algor Mortis	阿爾戈．莫堤斯	7	0
@@ -762,6 +763,7 @@ Ancestral Call Support	先祖怒嚎輔助	6	1
 Ancestral Club	祖靈之杵	7	1
 Ancestral Cry	先祖戰吼	6	1
 Ancestral Protector	先祖衛士	6	1
+Ancestral Tattoo of Bloodlines	血族的祖靈紋身	1	1
 Ancestral Vision	先祖預視	7	0
 Ancestral Warchief	先祖戰士長	6	1
 Ancient Gauntlets	遠古護手	7	1
@@ -787,6 +789,7 @@ Annulment Shard	無效石碎片	1	1
 Antique Gauntlets	古鋼護手	7	1
 Antique Greaves	古鋼脛甲	7	1
 Antique Rapier	古代細劍	7	1
+Ape Talisman	靈猴魔符	8	1
 Apep's Rage	艾普之怒	7	0
 Apep's Slumber	艾普之眠	7	0
 Apep's Supremacy	艾普霸權	7	0
@@ -852,6 +855,7 @@ Assassin's Garb	刺殺者之裝	7	1
 Assassin's Gift	刺客的餽贈	5	1
 Assassin's Mark	刺客印記	6	1
 Assassin's Mitts	刺殺者護手	7	1
+Assembled Eye Jewel	拼湊之眼珠寶	8	1
 Assembler Wand	拼裝法杖	7	1
 Astragali	骰子	1	1
 Astral Leather	星際皮甲	7	1
@@ -939,6 +943,7 @@ Azyran's Reward	艾斯尤倫的報酬	5	1
 Badge of the Brotherhood	激情之章	7	0
 Baited Expectations	誘餌之期待	5	1
 Balefire	野火	7	0
+Baleful Dominion	邪惡統治	7	0
 Ball Lightning	天雷之珠	6	1
 Ball Lightning of Orbiting	天雷之珠．軌跡	6	1
 Ball Lightning of Static	天雷之珠．靜電	6	1
@@ -1013,11 +1018,13 @@ Bitter Instinct	苦澀直覺	7	0
 Bitterbind Point	苦綑畸點	7	0
 Bitterdream	苦夢	7	0
 Black Maw Talisman	黑牙魔符	7	1
+Black Maw Talisman	黯牙魔符	7	1
 Black Mórrigan	黑色莫里根	4	0
 Black Oil	漆黑油瓶	1	1
 Black Scorpion	漆黑毒蠍	4	0
 Black Sun Crest	黑陽之冠	7	0
 Black Thumb	黑指	7	0
+Black Widow Talisman	黑寡婦魔符	8	1
 Black Zenith	漆黑極頂	7	0
 Blackflame	黯炎	7	0
 Blackgleam	黑炎之芒	7	0
@@ -1082,6 +1089,7 @@ Blood Rage	鮮血狂怒	6	1
 Blood Raiment	血色之衣	7	1
 Blood Sap Tincture	鮮血液萃取物	7	1
 Blood Sceptre	血色權杖	7	1
+Blood Viper Talisman	血蛇魔符	8	1
 Blood and Sand	血腥沙戮	6	1
 Blood of Corruption	墮落之血	7	0
 Blood of the Karui	卡魯之血	7	0
@@ -1163,6 +1171,7 @@ Breathstealer	偷息	7	0
 Brightbeak	光耀之錘	7	0
 Brimstone Treads	硫磺鐵靴	7	1
 Brine Vassal	海洋之奴	4	0
+Brinehook's Ducat	布琳霍克的達克特	8	1
 Brinerot Flag	布琳洛特之旗	7	0
 Brinerot Mark	布琳洛特印記	7	0
 Brinerot Whalers	布琳洛特岸行者	7	0
@@ -1212,7 +1221,7 @@ Caer Blaidd, Wolfpack's Den	塞爾．佈雷德狼穴	7	0
 Calamitous Visions	悲慘幻視	7	0
 Call of the Brotherhood	意志呼喚	7	0
 Call of the Void	虛空呼喚	7	0
-Call to the First Ones	先人召喚	5	1
+Call to the First Ones	呼喚初始者	5	1
 Callinellus Malleus	堅定之刃	7	0
 Calling Wand	呼喚法杖	7	1
 Callous Mask	無情之面	7	1
@@ -1237,6 +1246,7 @@ Carnal Mitts	禁禮護手	7	1
 Carnal Sceptre	禁禮權杖	7	1
 Carrion Burrower	食腐掘地蟲	4	0
 Carrion Queen	食腐蟲后	4	0
+Carrion Queen Talisman	食腐蟲后魔符	8	1
 Carrion Swarmer	食腐蟲	4	0
 Cartographer's Delight	製圖師之喜悅	5	1
 Cartographer's Delirium Orb	製圖之譫妄玉	1	1
@@ -1279,6 +1289,7 @@ Chain Boots	鏈甲長靴	7	1
 Chain Gloves	鏈甲手套	7	1
 Chain Hauberk	鎖子長甲	7	1
 Chain Hook	奪魂勾索	6	1
+Chain Hook of Angling	奪魂勾索．開釣	6	1
 Chain Hook of Trarthus	特拉特斯奪魂勾索	6	1
 Chain Support	連鎖輔助	6	1
 Chain of Endurance	堅決鎖鏈	7	0
@@ -1309,7 +1320,9 @@ Chernobog's Pillar	五芒屏障	7	0
 Cherrubim's Maleficence	薛魯賓的惡作劇	7	0
 Chest Splitter	開膛利刃	7	1
 Chestplate	胸甲	7	1
+Chieftain Talisman	酋長魔符	8	1
 Chill of Corruption	腐化寒息	7	0
+Chimeral Talisman	龍蜥魔符	8	1
 Chimerascale Boots	龍蜥鱗長靴	7	1
 Chimerascale Gauntlets	龍蜥鱗護手	7	1
 Chimeric Croaker	幻想冥蛙	4	0
@@ -1357,6 +1370,7 @@ Cluster Traps Support	散彈陷阱輔助	6	1
 Clutching Talisman	咒箍魔符	7	1
 Cobalt Jewel	鈷藍珠寶	7	1
 Cobra Lash	毒蛇鞭笞	6	1
+Cobra Talisman	眼鏡蛇魔符	8	1
 Coffer Relic	寶箱聖物	7	1
 Cogwork Ring	齒輪戒指	7	1
 Coiled Staff	強化長杖	7	1
@@ -1384,6 +1398,7 @@ Combat Focus	專精作戰	7	0
 Combustion Support	燃燒輔助	6	1
 Command of the Pit	闇核號令	7	0
 Commander's Brigandine	指揮者鎖甲	7	1
+Communion Support	共融輔助	6	1
 Companionship Support	羈絆輔助	6	1
 Composite Bow	合成弓	7	1
 Composite Ring	複合戒指	7	1
@@ -1438,6 +1453,8 @@ Copper Plate	銅鍛板甲	7	1
 Copper Sword	青銅短劍	7	1
 Copper Tower Shield	銅鍛塔盾	7	1
 Coral Amulet	珊瑚護身符	7	1
+Coral Forest Chart	珊瑚林海圖	8	1
+Coral Reef Chart	珊瑚礁海圖	8	1
 Coral Ring	珊瑚戒指	7	1
 Coralito's Signature	克拉里多的名印	7	0
 Cord Belt	繩帶	8	1
@@ -1464,6 +1481,7 @@ Cospri's Malice	卡斯普里的怨恨	7	0
 Cospri's Will	卡斯普里意志	7	0
 Costly Curio	昂貴古玩	5	1
 Council of Cats	貓咪議會	5	1
+Coursing Current Support	雷鳴湍流輔助	6	1
 Courtesan Sword	花魁之劍	7	1
 Coveted Possession	飢渴之佔	5	1
 Coward's Chains	懦夫的鎖鏈	7	0
@@ -1483,12 +1501,14 @@ Craiceann's Pincers	奎爾珊堅鉗	7	0
 Craiceann's Tracks	奎爾珊之跡	7	0
 Craiceann, First of the Deep	初始之潭奎爾珊	4	0
 Craicic Chimeral	奎爾珊龍蜥	4	0
+Craicic Croaker	奎爾珊鳴蛙	4	0
 Craicic Maw	奎爾珊裂齒獸	4	0
 Craicic Sand Spitter	奎爾珊噴砂爪蟹	4	0
 Craicic Savage Crab	奎爾珊殘暴的蟹	4	0
 Craicic Shield Crab	奎爾珊重盾巨蟹	4	0
 Craicic Spider Crab	奎爾珊蛛蛛蟹	4	0
 Craicic Squid	奎爾珊烏賊	4	0
+Craicic Talisman	奎爾珊魔符	8	1
 Craicic Vassal	奎爾珊之奴	4	0
 Craicic Watcher	奎爾珊看守者	4	0
 Creeping Frost	寒霜滲透	6	1
@@ -1506,6 +1526,7 @@ Crimson Oil	緋紅油瓶	1	1
 Crimson Raiment	緋紅之衣	7	1
 Crimson Round Shield	緋紅圓盾	7	1
 Critical Strike Affliction Support	暴擊苦痛輔助	6	1
+Croaker Talisman	鳴蛙魔符	8	1
 Crop Rotation	作物輪作	7	0
 Crown of Eyes	邪眼之冠	7	0
 Crown of Thorns	刺棘之冠	7	0
@@ -1533,6 +1554,7 @@ Crypt Weaver	深穴巨蛛	4	0
 Crystal Belt	水晶腰帶	7	1
 Crystal Sceptre	水晶權杖	7	1
 Crystal Wand	水晶法杖	7	1
+Crystalfall Support	晶墜輔助	6	1
 Crystallised Omniscience	晶化全知	7	0
 Crystallised Power	晶化之力	7	0
 Crystallised Rancour	晶化仇怨	8	1
@@ -1551,6 +1573,7 @@ Curtain Call	華麗閉幕	7	0
 Curved Blade	彎刃	7	1
 Cutlass	軍用長刃	7	1
 Cutthroat's Garb	殘殺者之裝	7	1
+Cyaxan's Ducat	塞亞珊的達克特	8	1
 Cybil's Paw	希比爾的冰爪	7	0
 Cyclone	旋風斬	6	1
 Cyclone of Tumult	旋風斬．騷動	6	1
@@ -1565,6 +1588,8 @@ Daresso's Courage	德瑞索的勇者之盾	7	0
 Daresso's Defiance	德瑞索的衛衣	7	0
 Daresso's Passion	德瑞索的熱情	7	0
 Daresso's Salute	德瑞索的戰禮	7	0
+Dark Bargain	暗夜血契	6	1
+Dark Bargain of Trarthus	特拉特斯暗夜血契	6	1
 Dark Dreams	漆黑夢魘	5	1
 Dark Marionette	黑暗木偶	4	1
 Dark Pact	暗夜血契	6	1
@@ -1580,6 +1605,7 @@ Darkwood Sceptre	烏木權杖	7	1
 Dash	幻步	6	1
 Dawnbreaker	破曉	7	0
 Dawnstrider	晨行者	7	0
+Dead Man's Sulphur	亡者硫酸	8	1
 Dead Reckoning	死亡清算	7	0
 Deadhand Talisman	亡手魔符	7	1
 Deadly Ailments Support	致命異常輔助	6	1
@@ -1617,6 +1643,7 @@ Debeon's Dirge	狄恩的輓歌	7	0
 Decay Support	腐化輔助	6	1
 Decaying Fragment	腐朽碎片	3	1
 Decaying Reliquary Key	腐化遺鑰	4	1
+Deceptive Astrolabe	幻象星盤	8	1
 Decimation Bow	獵魂之弓	7	1
 Decorative Axe	富貴之斧	7	1
 Decoy Totem	誘餌圖騰	6	1
@@ -1655,6 +1682,7 @@ Despot Axe	霸主巨斧	7	1
 Destined to Crumble	殞落的命運	5	1
 Destiny Leather	命運皮甲	7	1
 Destroyer Regalia	滅世法衣	7	1
+Destructive Aspiration	滅亡之願	7	0
 Destructive Link	連結：破壞	6	1
 Destructive Play	毀滅遊戲	7	0
 Determination	堅定	6	1
@@ -1665,6 +1693,7 @@ Detonate Mines	引爆地雷	6	1
 Devoto's Devotion	德沃托的信念之盔	7	0
 Devour Support	吞噬輔助	6	1
 Devourer	吞噬獸	4	0
+Devourer Talisman	吞噬者魔符	8	1
 Devouring Fragment	吞噬碎片	3	1
 Devouring Totem	吞噬圖騰	6	1
 Devout Chainmail	虔誠鏈甲	7	1
@@ -1690,6 +1719,7 @@ Divination Scarab of Plenty	聖甲蟲：富饒命運	3	1
 Divination Scarab of The Cloister	聖甲蟲：迴廊命運	3	1
 Divine Beauty	神聖之美	5	1
 Divine Blast	神聖爆破	6	1
+Divine Blast of Radiance	神聖爆破．輝耀	6	1
 Divine Crown	神聖之冠	7	1
 Divine Ire	聖怒	6	1
 Divine Ire of Disintegration	聖怒．毀滅	6	1
@@ -1700,6 +1730,7 @@ Divine Mana Flask	不朽魔力藥劑	7	1
 Divine Orb	神聖石	1	1
 Divine Retribution	神聖制裁	6	1
 Divine Sentinel Support	聖潔守望輔助	6	1
+Divine Shard	神聖碎片	5	1
 Divine Vessel	眾神聖器	3	1
 Diviner's Delirium Orb	聖人之譫妄玉	1	1
 Diviner's Incubator	聖者的培育器	4	1
@@ -1740,6 +1771,7 @@ Dragonscale Gauntlets	龍鱗手套	7	1
 Dragoon Sword	騎兵軍刀	7	1
 Draped in Dreams	披夢	5	1
 Dread Banner	恐懼之旗	6	1
+Dread Captain's Cutlass	滅亡海盜彎刀	7	0
 Dread Maul	威權巨錘	7	1
 Dread Primate	恐懼狂猿	4	0
 Dreadarc	恐懼之鐮	7	0
@@ -1846,6 +1878,7 @@ Energised Armour	能量堅甲	7	0
 Energy Blade	能量之刃	7	1
 Energy From Within	潛能防護	7	0
 Energy Leech Support	能量偷取輔助	6	1
+Energy Sword	能量之劍	5	1
 Enfeeble	衰弱	6	1
 Engraved Greatsword	符文巨劍	7	1
 Engraved Hatchet	雕文戰斧	7	1
@@ -1930,6 +1963,7 @@ Exquisite Blade	精緻之刃	7	1
 Exquisite Leather	精製皮甲	7	1
 Exsanguinate	抽血	6	1
 Exsanguinate of Transmission	抽血．傳染	6	1
+Extinguishing Grasp	撲滅之握	7	0
 Extractor Mentis	心靈抽取	7	0
 Extreme Archaeology	極限考古學	7	0
 Eye Gouger	刺眼鉤	7	1
@@ -1967,6 +2001,7 @@ Farric Goliath	費爾羅巨獸	4	0
 Farric Lynx Alpha	費爾羅山貓幻獸	4	0
 Farric Magma Hound	費爾羅岩漿獵犬	4	0
 Farric Pit Hound	費爾羅坑穴獵犬	4	0
+Farric Talisman	費爾羅魔符	8	1
 Farric Taurus	費爾羅金牛人	4	0
 Farric Tiger Alpha	費爾羅猛虎幻獸	4	0
 Farric Ursa	費爾羅暴熊	4	0
@@ -1996,6 +2031,7 @@ Fenumal Plagued Arachnid	菲恩絲疫病蜘蛛	4	0
 Fenumal Queen	菲恩絲女皇	4	0
 Fenumal Scorpion	菲恩絲毒蠍	4	0
 Fenumal Scrabbler	菲恩絲搗亂者	4	0
+Fenumal Talisman	菲恩絲魔符	8	1
 Fenumal Widow	菲恩絲黑寡婦	4	0
 Fenumus' Shroud	菲恩絲魘甲	7	0
 Fenumus' Spinnerets	菲恩絲刺靴	7	0
@@ -2008,6 +2044,7 @@ Feral Incubator	狂野的培育器	4	1
 Fertile Catalyst	富饒的催化劑	1	1
 Fertile Mind	豐富心靈	7	0
 Festering Resentment	潰爛怨恨	7	0
+Festering Vengeance	潰爛復仇	7	0
 Festival Mask	節慶之面	7	1
 Fetid Maw	惡臭裂齒獸	4	0
 Fevered Mind	狂熱之心	7	0
@@ -2048,6 +2085,7 @@ Fist of War Support	拳霸輔助	6	1
 Flame Dash	烈焰衝刺	6	1
 Flame Dash of Return	烈焰衝刺．返回	6	1
 Flame Hellion	煉獄犬	4	0
+Flame Hellion Talisman	烈炎地獄犬魔符	8	1
 Flame Link	連結：烈焰	6	1
 Flame Surge	怒焰奔騰	6	1
 Flame Surge of Combusting	怒焰奔騰．燃燒	6	1
@@ -2093,6 +2131,13 @@ Forbidden Rite	禁忌儀式	6	1
 Forbidden Rite of Soul Sacrifice	禁忌儀式．靈魂獻祭	6	1
 Forbidden Shako	禁忌軍帽	7	0
 Forbidden Taste	禁果	7	0
+Forbidden Tattoo of the Duelist	決鬥者的禁忌紋身	8	1
+Forbidden Tattoo of the Marauder	野蠻人的禁忌紋身	8	1
+Forbidden Tattoo of the Ranger	遊俠的禁忌紋身	8	1
+Forbidden Tattoo of the Scion	貴族的禁忌紋身	8	1
+Forbidden Tattoo of the Shadow	暗影刺客的禁忌紋身	8	1
+Forbidden Tattoo of the Templar	聖堂武僧的禁忌紋身	8	1
+Forbidden Tattoo of the Witch	女巫的禁忌紋身	8	1
 Forbidden Tome	禁忌之書	4	1
 Foreboding Incubator	預示的培育器	4	1
 Forest Beast	叢林猛獸	4	0
@@ -2152,6 +2197,7 @@ Frost Blades of Katabasis	冰霜之刃．降臨	6	1
 Frost Bomb	寒霜爆	6	1
 Frost Bomb of Forthcoming	寒霜爆．來臨	6	1
 Frost Bomb of Instability	寒霜爆．不定	6	1
+Frost Hellion Talisman	冰霜犬魔符	8	1
 Frost Shield	寒霜護盾	6	1
 Frost Wall	冰牆	6	1
 Frost Wall of Encroachment	冰牆．侵襲	6	1
@@ -2192,6 +2238,7 @@ Galvanic Field of Intensity	電光領域．強度	6	1
 Gamblesprint	豪賭	7	0
 Gang's Momentum	剛勇	7	0
 Garb of the Ephemeral	無常禮袍	7	0
+Gargantuan Talisman	龐然魔符	8	1
 Garukhan's Flight	卡洛翰之影	7	0
 Gavel	堅錘	7	1
 Gemcutter's Incubator	寶石匠的培育器	4	1
@@ -2210,6 +2257,7 @@ Geofri's Crest	吉爾菲的榮光	7	0
 Geofri's Sanctuary	吉爾菲的聖殿	7	0
 Geomancer's Incubator	占卜師的培育器	4	1
 Ghastly Eye Jewel	極懼之眼珠寶	7	1
+Ghostflame Blade	青焰利刃	8	1
 Ghostwrithe	鬧鬼	7	0
 Giant Life Flask	巨型生命藥劑	7	1
 Giant Mana Flask	巨型魔力藥劑	7	1
@@ -2255,6 +2303,7 @@ Goatman	堅蹄羊人	4	0
 Goatman Fire-raiser	堅蹄羊人咒炎者	4	0
 Goatman Shaman	堅蹄羊人術師	4	0
 Goatman Stomper	重踏羊人	4	0
+Goatman Talisman	羊人魔符	8	1
 Goblinedge	妖精之緣	7	0
 Gold Amulet	帝金護身符	7	1
 Gold Flask	黃金藥劑	7	1
@@ -2278,6 +2327,7 @@ Goldrim	金縷帽	7	0
 Goldwyrm	龍炎足跡	7	0
 Goliath Gauntlets	巨靈護手	7	1
 Goliath Greaves	巨靈脛甲	7	1
+Goliath Talisman	巨人魔符	8	1
 Gorebreaker	血裂	7	0
 Goredrill	血鑿	7	0
 Gorgon's Gaze	戈耳戈的凝視	7	0
@@ -2307,6 +2357,7 @@ Grazing Taurus	牧金牛人	4	0
 Great Crown	強化巨盔	7	1
 Great Helmet	巨盔	7	1
 Great Mallet	剛猛巨錘	7	1
+Great Maw Talisman	巨口魔符	8	1
 Great Old One's Tentacles	偉大老者之觸	7	0
 Great Old One's Ward	邪神庇護	7	0
 Great White Claw	白靈之爪	7	1
@@ -2325,6 +2376,7 @@ Greater Spell Cascade Support	高階秘能爆發輔助	6	1
 Greater Spell Echo Support	高階施放迴響輔助	6	1
 Greater Unleash Support	高階釋放輔助	6	1
 Greater Volley Support	高階齊射輔助	6	1
+Greatwolf Talisman	巨狼魔符	7	1
 Greatwolf Talisman	狼王魔符	7	1
 Greed's Embrace	貪婪之擁	7	0
 Grelwood Shank	沃德步伐	7	0
@@ -2402,7 +2454,7 @@ Herald of Ice	冰霜之捷	6	1
 Herald of Purity	純淨之捷	6	1
 Herald of Thunder	閃電之捷	6	1
 Heretic's Veil	異教面紗	7	0
-Heroic Tragedy	英勇悲劇	7	0
+Heroic Tragedy	英勇的悲劇	7	0
 Heterochromia	陰陽眼	5	1
 Hex Bloom Support	咒術綻放輔助	6	1
 Hexblast	咒術枯萎	6	1
@@ -2432,11 +2484,31 @@ Holy Chainmail	聖語鎖甲	7	1
 Holy Flame Totem	神聖火舌圖騰	6	1
 Holy Flame Totem of Ire	神聖火舌圖騰．怒火	6	1
 Holy Hammers	神聖之錘	6	1
+Holy Hammers of Spirals	神聖之錘．螺旋	6	1
 Holy Strike	神聖打擊	6	1
 Holy Sweep	神聖橫掃	6	1
+Holy Sweep of Hammerfalls	神聖橫掃．錘落	6	1
 Home	家園	5	1
 Honed Cleaver	珩磨砍斧	7	1
 Honoured Incubator	榮耀的培育器	8	1
+Honoured Tattoo of the Barbarian	野蠻人的尊榮紋身	1	1
+Honoured Tattoo of the Berserker	暴徒的尊榮紋身	1	1
+Honoured Tattoo of the Dove	鴿子的尊榮紋身	1	1
+Honoured Tattoo of the Flock	群的尊榮紋身	1	1
+Honoured Tattoo of the Flood	水難的尊榮紋身	1	1
+Honoured Tattoo of the Hatungo	靈語者的尊榮紋身	1	1
+Honoured Tattoo of the Hunter	獵人的尊榮紋身	1	1
+Honoured Tattoo of the Makanga	馬坎加的尊榮紋身	1	1
+Honoured Tattoo of the Mountain	山巒的尊榮紋身	1	1
+Honoured Tattoo of the Oak	歐克的尊榮紋身	1	1
+Honoured Tattoo of the Pa	帕的尊榮紋身	1	1
+Honoured Tattoo of the Pillager	劫掠者的尊榮紋身	1	1
+Honoured Tattoo of the Sky	天際的尊榮紋身	1	1
+Honoured Tattoo of the Storm	風暴的尊榮紋身	1	1
+Honoured Tattoo of the Tuatara	蜥蜴人的尊榮紋身	1	1
+Honoured Tattoo of the Turtle	巨龜的尊榮紋身	1	1
+Honoured Tattoo of the Warlord	戰爭君王的尊榮紋身	1	1
+Honoured Tattoo of the Wise	智者的尊榮紋身	1	1
 Honourhome	私慾的光輝	7	0
 Hooded Cloak	連帽披風	4	1
 Hook Sword	鉤爪劍	7	1
@@ -2470,6 +2542,7 @@ Hunter's Reward	獵人的獎賞	5	1
 Hussar Brigandine	輕騎鎖甲	7	1
 Hyaon's Fury	海昂的狂怒	7	0
 Hybrid Arachnid	混血蜘蛛	4	0
+Hybrid Arachnid Talisman	混血蜘蛛魔符	8	1
 Hydra	九頭蛇	4	1
 Hydrascale Boots	火蝮鱗長靴	7	1
 Hydrascale Gauntlets	火蝮鱗手套	7	1
@@ -2490,7 +2563,7 @@ Ice Nova of Frostbolts	冰霜新星．寒冰彈	6	1
 Ice Shot	冰霜射擊	6	1
 Ice Shot of Penetration	冰霜射擊 ．穿透	6	1
 Ice Spear	冰矛	6	1
-Ice Spear of Splitting	冰矛．分裂	6	1
+Ice Spear of Splitting	冰矛．裂化	6	1
 Ice Trap	冰凍陷阱	6	1
 Ice Trap of Hollowness	冰凍陷阱．空心	6	1
 Icefang Orbit	冰風軌跡	7	0
@@ -2553,6 +2626,7 @@ Imperial Bow	帝國之弓	7	1
 Imperial Buckler	帝國輕盾	7	1
 Imperial Claw	帝國戰爪	7	1
 Imperial Delirium Orb	帝王之譫妄玉	1	1
+Imperial Enshrouding Crystal	永恆壟罩晶石	8	1
 Imperial Legacy	不朽聖物	5	1
 Imperial Maul	帝國重錘	7	1
 Imperial Skean	帝國雙刃匕	7	1
@@ -2663,6 +2737,7 @@ Jeweller's Orb	工匠石	1	1
 Jingling Spirit Shield	靈相魔盾	7	1
 Jiquani's Potential	吉卡尼的潛力	7	0
 Jorrhast's Blacksteel	喬赫黑鋼	7	0
+Journey Tattoo of Makanui	馬卡努伊的歷練紋身	1	1
 Journey Tattoo of the Body	軀體的歷練紋身	1	1
 Journey Tattoo of the Mind	心智的歷練紋身	1	1
 Journey Tattoo of the Soul	靈魂的歷練紋身	1	1
@@ -2690,9 +2765,11 @@ Kaom's Sign	岡姆的遠見	7	0
 Kaom's Spirit	岡姆之魂	7	0
 Karui Axe	卡魯古斧	7	1
 Karui Chopper	卡魯巨斧	7	1
+Karui Enshrouding Crystal	卡魯壟罩晶石	8	1
 Karui Maul	卡魯重錘	7	1
 Karui Sceptre	卡魯權杖	7	1
 Karui Ward	卡魯的戰徽	7	0
+Katakohi's Ducat	卡塔科希的達克特	8	1
 Keeper's Corruption	守護者的腐敗	5	1
 Khatal's Geyser	卡塔爾之泉	7	0
 Khatal's Weeping	卡塔爾之泣	7	0
@@ -2712,6 +2789,7 @@ Kinetic Wand	動能魔杖	8	1
 Kingmaker	王者之刃	7	0
 Kingsguard	皇家衛甲	7	0
 Kintsugi	金繕	7	0
+Kishara's Ducat	奇夏拉的達克特	8	1
 Kitava's Feast	奇塔弗之盛宴	7	0
 Kitava's Teachings	奇塔弗的教學	7	0
 Kitava's Thirst	奇塔弗之渴望	7	0
@@ -2850,6 +2928,16 @@ Love Through Ice	冰冷愛戀	5	1
 Loved by the Sun	太陽寵愛	7	0
 Lowlands Hopper	窪地蚱蜢	4	0
 Loyalty	忠誠	5	1
+Loyalty Tattoo of Ahuana	阿呼阿娜的忠誠紋身	1	1
+Loyalty Tattoo of Akoya	艾古亞的忠誠紋身	1	1
+Loyalty Tattoo of Ikiaho	伊基亞呼的忠誠紋身	1	1
+Loyalty Tattoo of Kahuturoa	卡胡圖羅亞的忠誠紋身	1	1
+Loyalty Tattoo of Kaom	岡姆的忠誠紋身	1	1
+Loyalty Tattoo of Kiloava	基洛阿瓦的忠誠紋身	1	1
+Loyalty Tattoo of Maata	瑪塔的忠誠紋身	1	1
+Loyalty Tattoo of Rakiata	萊基亞塔的忠誠紋身	1	1
+Loyalty Tattoo of Tawhanuku	塔瓦努庫的忠誠紋身	1	1
+Loyalty Tattoo of Utula	烏圖拉的忠誠紋身	1	1
 Lucent Fossil	明透化石	1	1
 Lucid Dreams	清醒夢境	7	0
 Lucky Bastion	幸運壁壘	5	1
@@ -2860,6 +2948,7 @@ Lunaris Circlet	月影之冠	7	1
 Lurking Venom	伏擊毒蛛	4	0
 Lustrous Ward	光輝法杖	4	1
 Lycosidae	狼蛛	7	0
+Lynx Talisman	山貓魔符	8	1
 Lysah's Respite	莉莎之息	5	1
 Maata's Teaching	瑪塔的教導	7	0
 Machina Mitts	詭計魔手	7	0
@@ -2870,6 +2959,7 @@ Maelström of Chaos	混沌之淵	7	0
 Mage's Vestment	博學長衣	7	1
 Mageblood	魔血	7	0
 Magistrate Crown	行政者戰冠	7	1
+Magma Hound Talisman	熔犬魔符	8	1
 Magmatic Tower Shield	熔岩塔盾	7	1
 Magna Eclipsis	堅毅之蝕	7	0
 Magnum Opus	巨著	5	1
@@ -2895,6 +2985,7 @@ Maloney's Nightfall	馬洛尼的暮光	7	0
 Maltreatment Axe	肆虐之斧	7	1
 Man With Bear	熊男	5	1
 Mana Leech Support	魔力偷取輔助	6	1
+Mana-Infused Staff	魔能長杖	6	1
 Manabond	魔能束縛	6	1
 Manaforged Arrows Support	魔改箭矢輔助	6	1
 Manastorm	魔能暴風	7	0
@@ -2904,6 +2995,7 @@ Mao Kun	賊窩	7	0
 Map	地圖	8	1
 Maple Round Shield	楓木圓盾	7	1
 Maraketh Bow	馬拉克斯弓	7	1
+Maraketh Enshrouding Crystal	馬拉克斯壟罩晶石	8	1
 Marble Amulet	理石護身符	7	1
 March of the Legion	軍閥行軍	7	0
 Mark On Hit Support	擊中時印記輔助	6	1
@@ -2923,7 +3015,7 @@ Mask of the Stitched Demon	惡縫之面	7	0
 Mask of the Tribunal	審判莊嚴	7	0
 Master Lockpick	專業鎖撬	4	1
 Maternal Rhex	大腹雛鳥	4	0
-Matryoshka	俄羅斯娃娃	5	1
+Matryoshka	套娃	5	1
 Matua Tupuna	遠祖之顱	7	0
 Maven's Chisel of Avarice	釋界之貪婪鑿	1	1
 Maven's Chisel of Divination	釋界之占卜鑿	1	1
@@ -2954,8 +3046,10 @@ Memory Vault	回憶寶庫	7	0
 Memory of Loneliness	孤獨之記憶	8	1
 Memory of Reverence	敬畏之記憶	8	1
 Memory of Trauma	創傷之記憶	8	1
+Mercenary Warrant	傭兵契約書	8	1
 Mercenary's Lot	僱用兵之命	7	0
 Merciless Armament	無情軍械	5	1
+Merrick's Ducat	莫里克的達克特	8	1
 Merveil's Attendant	莫薇兒的侍女	4	0
 Merveil's Blessed	莫薇兒的寵愛	4	0
 Merveil's Chosen	海妖愛女	4	0
@@ -2964,6 +3058,7 @@ Merveil's Favoured	莫薇兒的幼女	4	0
 Merveil's Retainer	海妖之僕	4	0
 Mesh Boots	網眼長靴	7	1
 Mesh Gloves	網眼手套	7	1
+Message in a Bottle	瓶中信	8	1
 Metallic Fossil	金鋼化石	1	1
 Meticulous Appraiser	細膩鑑定師	7	0
 Micro-Distillery Belt	微釀腰帶	7	1
@@ -3104,6 +3199,7 @@ Obsidian Eater	黑曜沙蟹	4	0
 Obsidian Sharpening Stone	黑曜磨刀石	4	1
 Occultist's Vestment	秘術長衣	7	1
 Ochre Sceptre	赤色權杖	7	1
+Octopus Talisman	章魚魔符	8	1
 Offering to the Goddess	女神祭品	3	1
 Offering to the Serpent	蛇皮獻祭	7	0
 Oiled Coat	防水外衣	7	1
@@ -3123,8 +3219,9 @@ Omen of Death-dancing	死舞之預兆	1	1
 Omen of Fortune	財富之預兆	1	1
 Omen of Refreshment	提神之預兆	1	1
 Omen of Return	返回之預兆	1	1
+Omen of Trichromatism	三色之預兆	8	1
 Omen of the Jeweller	工匠之預兆	1	1
-Omen of the Soul Devourer	嗜魂者之預兆	1	1
+Omen of the Soul Devourer	噬魂者之預兆	1	1
 Omeyocan	歐門悠根	7	0
 Ominous Silence	不祥的寂靜	7	0
 Ondar's Clasp	恩德的迅影	7	0
@@ -3178,6 +3275,10 @@ Overheat Support	過熱輔助	6	1
 Overloaded Intensity Support	超載強化輔助	6	1
 Pacifism	和平主義	7	0
 Pacifism Support	和平輔助	6	1
+Pact of Beidat	貝達特誓約	6	1
+Pact of Ghorr	戈沃誓約	6	1
+Pact of K'Tash	克塔什誓約	6	1
+Pact of Lycia	利希亞誓約	6	1
 Padded Jacket	長袖棉襖	7	1
 Padded Vest	薄襯衣	7	1
 Pagan Wand	異教法杖	7	1
@@ -3196,6 +3297,9 @@ Parasitic Passengers	寄生旅人	5	1
 Paua Amulet	海靈護身符	7	1
 Paua Ring	海靈戒指	7	1
 Peaceful Moments	平靜時刻	5	1
+Pearl of Tsoatha	特索塔之珠	7	0
+Pearlescent Amulet	珠光項鍊	8	1
+Pearls Before Swine	明珠投豕	5	1
 Pecoraro	寒光刺劍	7	1
 Penance Brand	贖罪烙印	6	1
 Penance Brand of Conduction	贖罪烙印．傳導	6	1
@@ -3267,9 +3371,11 @@ Pinnacle Tower Shield	堅毅塔盾	7	1
 Pinpoint Support	精確輔助	6	1
 Piscator's Vigil	皮斯卡托的慧眼	7	0
 Pitbull Demon	鬥牛犬魔	4	0
+Pitbull Talisman	鬥牛犬魔符	8	1
 Plague Bearer	病疫之難	6	1
 Plague Mask	疫災之面	7	1
 Plagued Arachnid	疫病蜘蛛	4	0
+Plagued Arachnid Talisman	瘟疫毒蛛魔符	8	1
 Plank Kite Shield	朽木鳶盾	7	1
 Plate Vest	鐵製背心	7	1
 Plated Gauntlets	堅鐵護手	7	1
@@ -3442,6 +3548,7 @@ Reach of the Council	議會之觸	7	0
 Reality Fragment	現實碎片	3	1
 Realmshaper	創域	7	0
 Reap	收割	6	1
+Reap of Butchery	收割．屠戮	6	1
 Reaper's Pursuit	死神的取魂器	7	0
 Rearguard	寒鋒之衛	7	0
 Reave	衝擊波	6	1
@@ -3456,6 +3563,7 @@ Rebuking Blade	鞭策之刃	7	1
 Reciprocation Staff	鐘擺長杖	7	1
 Reckless Ambition	魯莽的野心	5	1
 Reckless Defence	魯莽防禦	7	0
+Reclaimed Malevolence	重奪惡意	7	0
 Recurve Bow	反曲弓	7	1
 Redbeak	赤紅短刃	7	0
 Redblade Band	紅刃之環	7	0
@@ -3533,6 +3641,7 @@ Replica Lavianga's Spirit	贗品．拉維安加之泉	7	0
 Replica Leer Cast	贗品．共鳴之面	7	0
 Replica Lioneye's Paws	贗品．獅眼的鬥志	7	0
 Replica Loreweave	贗品．智者織衫	7	0
+Replica Maata's Teaching	贗品．瑪塔的教導	7	0
 Replica Malachai's Artifice	贗品．瑪拉凱的巧技	7	0
 Replica Maloney's Mechanism	贗品．馬洛尼的機關	7	0
 Replica Midnight Bargain	贗品．冥約	7	0
@@ -3576,12 +3685,15 @@ Replica Wings of Entropy	贗品．亂世之翼	7	0
 Replica Winterheart	贗品．冬之心	7	0
 Replica Witchfire Brew	贗品．巫火秘釀	7	0
 Retaliation Charm	復仇誘惑	7	0
+Retch Talisman	反芻鳥魔符	8	1
 Returning Projectiles Support	投射物返回輔助	6	1
 Reverberation Rod	混響	7	0
 Reverent Fragment	敬畏碎片	8	1
 Reverent Reliquary Key	敬畏遺鑰	8	1
 Rewritten Distant Memory	遙遠記憶：改寫	7	0
+Rhex Talisman	雛鳥魔符	8	1
 Rhoa Mare	雌性恐喙鳥	4	0
+Rhoa Talisman	恐喙鳥魔符	8	1
 Righteous Fire	正義之火	6	1
 Righteous Fire of Arcane Devotion	正義之火．秘能奉獻	6	1
 Rigwald's Charge	瑞佛的奮戰長劍	7	0
@@ -3619,6 +3731,8 @@ Rotblood Promise	敗血承諾	7	0
 Rotfeather Talisman	死羽魔符	7	1
 Rotgut	傷胃酒	7	0
 Roth's Reach	蘿絲之觸	7	0
+Rotmother's Ducat	腐母的達克特	8	1
+Rotmother's Mutiny	腐母的暴亂	7	0
 Rotted Round Shield	朽木圓盾	7	1
 Rotting Vulture	腐敗禿鷹	4	0
 Rough Sharpening Stone	低階磨刀石	4	1
@@ -3732,7 +3846,9 @@ Sand Leaper	沙地突躍獸	4	0
 Sand Scorpion	沙地毒蠍	4	0
 Sand Serpent	流沙巨蛇	4	0
 Sand Skitterer	沙地掠蛛	4	0
+Sand Spitter Talisman	噴砂爪蟹魔符	8	1
 Sandstorm Visage	沙瀑面紗	7	0
+Sandy Seabed Chart	沙質海床海圖	8	1
 Sanguimancer Demon	占血惡魔	4	1
 Sanguine Raiment	樂觀之衣	7	1
 Sap of the Seasons	季節樹液	7	0
@@ -3749,11 +3865,13 @@ Saqawine Cobra	斯卡沃眼鏡蛇	4	0
 Saqawine Retch	斯卡沃反芻鳥	4	0
 Saqawine Rhex	斯卡沃雛鳥	4	0
 Saqawine Rhoa	斯卡沃恐喙鳥	4	0
+Saqawine Talisman	斯卡沃魔符	8	1
 Saqawine Vulture	斯卡沃禿鷹	4	0
 Saresh's Darkness	薩雷許之闇	7	0
 Satin Gloves	緞布手套	7	1
 Satin Slippers	緞布便鞋	7	1
 Savage Crab	殘暴的蟹	4	0
+Savage Crab Talisman	殘暴蟹魔符	8	1
 Savant's Robe	智者之袍	7	1
 Sawblade Horror	奪魂鋸	4	1
 Scaeva	食蚜	7	0
@@ -3782,9 +3900,11 @@ Scorching Ray	熾灼奔流	6	1
 Scorching Ray of Immolation	熾灼奔流．焚燒	6	1
 Scornflux	蔑視之流	7	0
 Scornful Herald Support	輕蔑先鋒輔助	6	1
+Scorpion Talisman	毒蠍魔符	8	1
 Scorpion's Call	毒蠍之喚	7	0
 Scourge Arrow	天譴之箭	6	1
 Scourge Arrow of Menace	天譴之箭．威脅	6	1
+Scrabbler Talisman	搗亂者魔符	8	1
 Scrap Metal	廢金屬	1	1
 Screaming Essence of Anger	憤怒之咆哮精髓	1	1
 Screaming Essence of Anguish	煎熬之咆哮精髓	1	1
@@ -3809,7 +3929,9 @@ Screaming Essence of Zeal	熱情之咆哮精髓	1	1
 Screaming Invitation	尖嘯之邀	4	1
 Screams of the Desiccated	塵燥之吼	7	0
 Scroll of Wisdom	知識卷軸	1	1
+Scrying Orb	占卜寶珠	8	1
 Scum Crawler	汙泥食腐蟲	4	0
+Seablister	潮壺絞者	7	0
 Seaglass Amulet	海鏡項鍊	7	1
 Sealed Domain	領域封鎖	7	0
 Searching Eye Jewel	勘查之眼珠寶	7	1
@@ -3882,6 +4004,7 @@ Shavronne's Pace	薛朗的秘術長靴	7	0
 Shavronne's Revelation	薛朗的啟示之環	7	0
 Shavronne's Wrappings	薛朗的護身長袍	7	0
 Shield Charge	重盾衝鋒	6	1
+Shield Crab Talisman	盾螯魔符	8	1
 Shield Crush	重盾粉碎	6	1
 Shield Crush of the Chieftain	重盾粉碎．酋長	6	1
 Shield of Light	聖光盾擊	6	1
@@ -3939,6 +4062,7 @@ Silken Vest	綢緞背心	7	1
 Silken Wrap	絲絨背心	7	1
 Silkweave Sole	絲織鞋底	4	1
 Silver Brooch	白銀胸針	4	1
+Silver Coin	銀幣	1	1
 Silver Flask	真銀藥劑	7	1
 Silver Oil	純銀油瓶	1	1
 Silverbranch	幻銀之弦	7	0
@@ -4014,7 +4138,7 @@ Somatic Shell	心靈壁壘	6	1
 Somatic Wand	軀體魔杖	8	1
 Something Dark	黑暗物質	5	1
 Sorcerer Boots	術士長靴	7	1
-Sorcerer Gloves	術士手套	7	1
+Sorcerer Gloves	術者手套	7	1
 Sorrow Mask	悲鳴面具	7	1
 Soul Ascension	靈魂昇華	7	0
 Soul Catcher	追魂者	7	0
@@ -4054,6 +4178,7 @@ Spell Echo Support	施放迴響輔助	6	1
 Spell Totem Support	法術圖騰輔助	6	1
 Spellblade Support	魔刃輔助	6	1
 Spellslinger	法術回音	6	1
+Spider Crab Talisman	蛛蛛蟹魔符	8	1
 Spider Matriarch	蜘蛛女族長	4	1
 Spidersilk Robe	蛛絲之袍	7	1
 Spike-Point Arrow Quiver	刺鋒箭袋	7	1
@@ -4066,6 +4191,7 @@ Spine Bow	脊弓	7	1
 Spine Serpent	脊刺巨蛇	4	0
 Spinefuse Talisman	潛能魔符	7	1
 Spinehail	脊雹	7	0
+Spinesnatch	脊骨劫奪	7	0
 Spiny Maul	凶刺巨錘	7	1
 Spiny Round Shield	棘刺圓盾	7	1
 Spiraled Foil	螺紋細劍	7	1
@@ -4075,8 +4201,8 @@ Spirit of Fortune	財富之魂	4	1
 Spitting Parasite	酸液寄生蟲	4	0
 Splendid Round Shield	光輝圓盾	7	1
 Splintered Tower Shield	朽木塔盾	7	1
-Split Arrow	分裂箭矢	6	1
-Split Arrow of Splitting	分裂箭矢．分裂	6	1
+Split Arrow	裂化箭矢	6	1
+Split Arrow of Splitting	裂化箭矢．裂化	6	1
 Split Personality	人格分裂	7	0
 Splitnewt Talisman	斷螈魔符	7	1
 Splitting Steel	鋼之裂化	6	1
@@ -4085,6 +4211,7 @@ Sporebloom Tincture	孢子花萃取物	7	1
 Sporeguard	毒孢守衛	7	0
 Springleaf	新生之徽	7	0
 Squandered Prosperity	失落的繁華	5	1
+Squid Talisman	烏賊魔符	8	1
 Squirming Terror	扭曲恐懼	7	0
 Stabilising Sceptre	安定權杖	7	1
 Stacked Deck	豐裕牌組	1	1
@@ -4136,6 +4263,7 @@ Storm's Gift	風暴之贈	7	0
 Stormbind	風暴術符	6	1
 Stormbind of Teleportation	風暴術符．傳送	6	1
 Stormblast Mine	風暴地雷	6	1
+Stormblood	浪潮之血	7	0
 Stormcharger	暴充	7	0
 Stormfire	烈風暴	7	0
 Stormrider Boots	風暴者短靴	7	1
@@ -4157,6 +4285,7 @@ Stygian Ape	冥渡狂猿	4	0
 Stygian Silverback	冥界銀背獸	4	0
 Stygian Vise	冥河腰帶	7	1
 Sublime Vision	崇高願景	7	0
+Subsume the Source	歸入起源	7	0
 Subsuming Spirit Shield	靈吸魔盾	7	1
 Succor of the Sinless	無罪救贖	5	1
 Sudden Dawn	黎明驟起	7	0
@@ -4243,56 +4372,67 @@ Taryn's Shiver	塔林的顫慄之語	7	0
 Tasalio's Sign	塔薩里之印	7	0
 Taste of Hate	恨意	7	0
 Tattered Cloak	破損披風	4	1
+Tattoo of the Arohongui Makanga	艾蘿紅薇馬坎加的紋身	1	1
 Tattoo of the Arohongui Moonwarden	艾蘿紅薇月護衛的紋身	1	1
 Tattoo of the Arohongui Scout	艾蘿紅薇哨兵的紋身	1	1
 Tattoo of the Arohongui Shaman	艾蘿紅薇薩滿的紋身	1	1
 Tattoo of the Arohongui Warmonger	艾蘿紅薇戰鬥王的紋身	1	1
 Tattoo of the Arohongui Warrior	艾蘿紅薇戰士的紋身	1	1
 Tattoo of the Hinekora Deathwarden	悉妮蔻拉死護衛的紋身	1	1
+Tattoo of the Hinekora Makanga	悉妮蔻拉馬坎加的紋身	1	1
 Tattoo of the Hinekora Shaman	悉妮蔻拉薩滿的紋身	1	1
 Tattoo of the Hinekora Storyteller	悉妮蔻拉說書人的紋身	1	1
 Tattoo of the Hinekora Warmonger	悉妮蔻拉戰鬥王的紋身	1	1
 Tattoo of the Hinekora Warrior	悉妮蔻拉戰士的紋身	1	1
 Tattoo of the Kitava Blood Drinker	奇塔弗飲血者的紋身	1	1
 Tattoo of the Kitava Heart Eater	奇塔弗嗜心者的紋身	1	1
+Tattoo of the Kitava Makanga	奇塔弗馬坎加的紋身	1	1
 Tattoo of the Kitava Rebel	奇塔弗叛亂的紋身	1	1
 Tattoo of the Kitava Shaman	奇塔弗薩滿的紋身	1	1
 Tattoo of the Kitava Warrior	奇塔弗戰士的紋身	1	1
 Tattoo of the Ngamahu Firewalker	拿瑪乎火行者的紋身	1	1
+Tattoo of the Ngamahu Makanga	拿瑪乎馬坎加的紋身	1	1
 Tattoo of the Ngamahu Shaman	拿瑪乎薩滿的紋身	1	1
 Tattoo of the Ngamahu Warmonger	拿瑪乎戰鬥王的紋身	1	1
 Tattoo of the Ngamahu Warrior	拿瑪乎戰士的紋身	1	1
 Tattoo of the Ngamahu Woodcarver	拿瑪乎木工的紋身	1	1
 Tattoo of the Ramako Archer	雷默科射手的紋身	1	1
 Tattoo of the Ramako Fleetfoot	雷默科偵瞬步的紋身	1	1
+Tattoo of the Ramako Makanga	雷默科馬坎加的紋身	1	1
 Tattoo of the Ramako Scout	雷默科哨兵的紋身	1	1
 Tattoo of the Ramako Shaman	雷默科薩滿的紋身	1	1
 Tattoo of the Ramako Sniper	雷默科狙擊手的紋身	1	1
 Tattoo of the Rongokurai Brute	隆格庫萊暴徒的紋身	1	1
 Tattoo of the Rongokurai Goliath	隆格庫萊巨獸的紋身	1	1
 Tattoo of the Rongokurai Guard	隆格庫萊守衛的紋身	1	1
+Tattoo of the Rongokurai Makanga	隆格庫萊馬坎加的紋身	1	1
 Tattoo of the Rongokurai Turtle	隆格庫萊巨龜的紋身	1	1
 Tattoo of the Rongokurai Warrior	隆格庫萊戰士的紋身	1	1
 Tattoo of the Tasalio Bladedancer	塔薩里奧舞劍者的紋身	1	1
+Tattoo of the Tasalio Makanga	塔薩里奧馬坎加的紋身	1	1
 Tattoo of the Tasalio Scout	塔薩里奧哨兵的紋身	1	1
 Tattoo of the Tasalio Shaman	塔薩里奧薩滿的紋身	1	1
 Tattoo of the Tasalio Tideshifter	塔薩里奧潮汐變幻者的紋身	1	1
 Tattoo of the Tasalio Warrior	塔薩里奧戰士的紋身	1	1
 Tattoo of the Tawhoa Herbalist	塔赫亞藥草師的紋身	1	1
+Tattoo of the Tawhoa Makanga	塔赫亞馬坎加的紋身	1	1
 Tattoo of the Tawhoa Naturalist	塔赫亞自然的紋身	1	1
 Tattoo of the Tawhoa Scout	塔赫亞哨兵的紋身	1	1
 Tattoo of the Tawhoa Shaman	塔赫亞薩滿的紋身	1	1
 Tattoo of the Tawhoa Warrior	塔赫亞戰士的紋身	1	1
 Tattoo of the Tukohama Brawler	圖克哈瑪鬥士的紋身	1	1
+Tattoo of the Tukohama Makanga	圖克哈瑪馬坎加的紋身	1	1
 Tattoo of the Tukohama Shaman	圖克哈瑪薩滿的紋身	1	1
 Tattoo of the Tukohama Warcaller	圖克哈瑪戰爭喚者的紋身	1	1
 Tattoo of the Tukohama Warmonger	圖克哈瑪戰鬥王的紋身	1	1
 Tattoo of the Tukohama Warrior	圖克哈瑪戰士的紋身	1	1
+Tattoo of the Valako Makanga	瓦拉庫馬坎加的紋身	1	1
 Tattoo of the Valako Scout	瓦拉庫哨兵的紋身	1	1
 Tattoo of the Valako Shaman	瓦拉庫薩滿的紋身	1	1
 Tattoo of the Valako Shieldbearer	瓦拉庫護盾大師的紋身	1	1
 Tattoo of the Valako Stormrider	瓦拉庫風暴馭者的紋身	1	1
 Tattoo of the Valako Warrior	瓦拉庫戰士的紋身	1	1
+Taurus Talisman	金牛人魔符	8	1
 Tavukai	狂靈之怒	7	0
 Tawhanuku's Timing	塔瓦努庫的時機	7	0
 Tawhoa's Felling	塔赫亞的殞落	7	0
@@ -4302,6 +4442,7 @@ Tear of Purity	純淨之淚	7	0
 Tecrod's Gaze	特克羅德的邪眼	7	0
 Tectonic Slam	破體之擊	6	1
 Tectonic Slam of Cataclysm	破體之擊．災變	6	1
+Telesia's Ducat	特雷西亞的達克特	8	1
 Temperance	自我約束	5	1
 Tempered Flesh	冶鍊之體	7	0
 Tempered Foil	強化細劍	7	1
@@ -4311,6 +4452,7 @@ Tempering Catalyst	冶鍊的催化劑	1	1
 Tempering Orb	淬鍊石	1	1
 Tempest Shield	暴風之盾	6	1
 Templar Astrolabe	聖堂星盤	8	1
+Templar Enshrouding Crystal	聖宗壟罩晶石	8	1
 Temporal Chains	時空鎖鏈	6	1
 Temporal Rift	時空裂隙	6	1
 Temptation Step	誘惑步伐	7	0
@@ -4393,12 +4535,13 @@ The Card Sharp	老千	5	1
 The Carrion Crow	食腐掠鴉	5	1
 The Cataclysm	巨變	5	1
 The Catalyst	災變	5	1
-The Catch	姜太公釣魚	5	1
+The Catch	垂釣	5	1
 The Celestial Brace	眾星援護	7	0
 The Celestial Justicar	天堂執法官	5	1
 The Celestial Stone	璀璨之石	5	1
 The Chains of Castigation	懲戒鎖鏈	7	0
 The Chains that Bind	束縛之鍊	5	1
+The Changeling's Ducat	變形靈的達克特	8	1
 The Chosen	天選之人	5	1
 The Coming Calamity	災難臨頭	7	0
 The Coming Storm	風暴將至	5	1
@@ -4408,6 +4551,7 @@ The Covenant	血誓	7	0
 The Coward's Trial	懦者的試驗	7	0
 The Craving	想要	5	1
 The Crimson Storm	緋紅風暴	7	0
+The Crustacean's Call	甲殼之喚	7	0
 The Cursed King	詛咒之王	5	1
 The Damned	滅世之咒	5	1
 The Dancing Dervish	狂舞德爾維希	7	0
@@ -4430,6 +4574,7 @@ The Doctor	瘋醫	5	1
 The Doppelganger	傀儡	5	1
 The Dragon	巨龍	5	1
 The Dragon's Heart	龍之心	5	1
+The Draugur's Lantern	屍鬼提燈	7	0
 The Dreamer	夢想家	5	1
 The Dreamland	夢之國度	5	1
 The Druggery	純貨	7	0
@@ -4485,6 +4630,7 @@ The Fulcrum	支點	7	0
 The Gambler	賭徒	5	1
 The Garish Power	裝飾之力	5	1
 The Gemcutter	珠寶匠	5	1
+The Genteel's Ducat	文雅者的達克特	8	1
 The Gentleman	紳士之風	5	1
 The Ghastly Theatre	恐怖劇院	7	0
 The Gilded Chalice	鍍金聖杯	7	0
@@ -4587,6 +4733,7 @@ The Pandemonius	群魔殿	7	0
 The Pariah	草民	7	0
 The Patient	病患	5	1
 The Penitent	懺悔者	5	1
+The Perandus Pact	普蘭德斯協議	7	0
 The Perfect Form	完美姿態	7	0
 The Poet	詩人	5	1
 The Poet's Pen	學富之筆	7	0
@@ -4694,6 +4841,7 @@ The Twilight Moon	暮光之月	5	1
 The Twilight Temple	暮色神廟	7	0
 The Twins	孿生	5	1
 The Tyrant	暴君	5	1
+The Unblinking Eye	不眨之眼	7	0
 The Undaunted	不怕不怕	5	1
 The Undisputed	不許你胡說	5	1
 The Unexpected Prize	飛來橫財	5	1
@@ -4714,6 +4862,7 @@ The Wasp Nest	蜂巢浪湧	7	0
 The Watcher	凝視者	5	1
 The Web	蛛網	5	1
 The Wedding Gift	結婚禮物	5	1
+The Wellhook	深井之鉤	7	0
 The Whispering Ice	冰點低語	7	0
 The White Knight	白騎士	5	1
 The Whiteout	白化	5	1
@@ -4770,6 +4919,7 @@ Thwarting Gauntlets	阻擾手套	7	1
 Tidebreaker	破浪者	7	0
 Tiger Hook	虎鉤	7	1
 Tiger Sword	虎牙巨劍	7	1
+Tiger Talisman	猛虎魔符	8	1
 Tiger's Paw	虎爪刃	7	1
 Timber Axe	裂木巨斧	7	1
 Time-Lost Incubator	時間遺忘的培育器	4	1
@@ -4843,6 +4993,10 @@ Trapper Boots	獵人之靴	7	1
 Trapper Mitts	獵人護手	7	1
 Trapsetter Gloves	設陷者手套	7	1
 Trarthan Flashpowder	查爾森閃光粉	4	1
+Trarthan Scarab	特拉特斯聖甲蟲	8	1
+Trarthan Scarab of Infamy	聖甲蟲：萬惡傭兵	8	1
+Trarthan Scarab of Renown	聖甲蟲：聲名傭兵	8	1
+Trarthan Scarab of Surprising Alliances	聖甲蟲：意外盟友傭兵	8	1
 Trauma Support	創傷輔助	6	1
 Traumatic Fragment	創傷碎片	8	1
 Traumatic Reliquary Key	創傷遺鑰	8	1
@@ -4881,6 +5035,8 @@ Two-Stone Ring	雙玉戒指	7	1
 Two-Toned Boots	異色鞋	7	1
 Twyzel	峽灣之星	7	0
 Tyrant's Sekhem	暴君之統	7	1
+Tzamoto's Ducat	薩摩特的達克特	8	1
+Ukatoa's Ducat	烏卡托瓦的達克特	8	1
 Ulaman's Gaze	烏拉曼的邪眼	7	0
 Ultimatum Scarab	聖甲蟲：通牒	3	1
 Ultimatum Scarab of Bribing	聖甲蟲：賄賂通牒	3	1
@@ -4897,6 +5053,7 @@ Unending Hunger	無盡飢餓	7	0
 Unending Nightmare	無盡惡夢	7	0
 Ungil's Gauche	恩吉爾的叉刃	7	0
 Ungil's Harmony	恩吉爾的和諧	7	0
+Unholy Accomplice	不潔共犯	7	0
 Unholy Trinity Support	不潔三體輔助	6	1
 United in Dream	合流夢寐	7	0
 Unleash Support	釋放輔助	6	1
@@ -4915,6 +5072,7 @@ Untainted Paradise	純淨樂園	7	0
 Unyielding Flame	不屈惡火	7	0
 Urgent Orders Support	緊急詔令輔助	6	1
 Urn Relic	古甕聖物	7	1
+Ursa Talisman	墮落之爪魔符	8	1
 Ursine Pelt	熊首皮盔	7	1
 Usurper's Penance	篡位者的懺悔	7	0
 Utula's Hunger	烏圖拉的飢餓	7	0
@@ -4950,6 +5108,7 @@ Vaal Discipline	瓦爾．紀律	6	1
 Vaal Domination	瓦爾．霸氣	6	1
 Vaal Double Strike	瓦爾．雙重打擊	6	1
 Vaal Earthquake	瓦爾．震地	6	1
+Vaal Enshrouding Crystal	瓦爾壟罩晶石	8	1
 Vaal Fireball	瓦爾．火球	6	1
 Vaal Firestorm	瓦爾．烈炎風暴	6	1
 Vaal Flameblast	瓦爾．烈焰爆破	6	1
@@ -5081,7 +5240,7 @@ Void Manipulation Support	虛空操縱輔助	6	1
 Void Sceptre	虛影權杖	7	1
 Void Shockwave Support	虛空震波輔助	6	1
 Void Sphere	虛無玉	6	1
-Void Sphere of Rending	虛無玉．分裂	6	1
+Void Sphere of Rending	虛無玉．撕裂	6	1
 Void of the Elements	虛空元素	5	1
 Voidborn Reliquary Key	虛誕遺鑰	4	1
 Voidbringer	虛空之力	7	0
@@ -5113,6 +5272,7 @@ Vortex	漩渦	6	1
 Vortex of Projection	漩渦．投射	6	1
 Vulconus	祝融鍛冶	7	0
 Vulnerability	脆弱	6	1
+Vulture Talisman	禿鷹魔符	8	1
 Wailing Essence of Anger	憤怒之哀嚎精髓	1	1
 Wailing Essence of Anguish	煎熬之哀嚎精髓	1	1
 Wailing Essence of Contempt	輕視之哀嚎精髓	1	1
@@ -5148,10 +5308,12 @@ Warlord's Mark	督軍印記	6	1
 Warped Timepiece	扭曲之鐘	7	0
 Warrior's Legacy	戰士遺物	7	0
 Waste Lurcher	虐靈蝦獸	4	0
+Watcher Talisman	觀察者魔符	8	1
 Watcher's Eye	看守之眼	7	0
 Wave of Conviction	信念浪湧	6	1
 Wave of Conviction of Trarthus	特拉特斯信念浪湧	6	1
 Waxed Garb	蠟封束衣	7	1
+Waxen Soul	熔燭之魂	7	0
 Wealth and Power	錢與權	5	1
 Webbed Spider	網床之母	4	0
 Weeping Essence of Anger	憤怒之啼泣精髓	1	1
@@ -5224,6 +5386,7 @@ Wither	死亡凋零	6	1
 Withering Step	凋零之步	6	1
 Withering Touch Support	凋零之觸輔助	6	1
 Woespike	悲嘆之刺	7	0
+Wolf Alpha Talisman	狼王魔符	8	1
 Wolf Pelt	狼首皮盔	7	1
 Wondertrap	迴光之跡	7	0
 Woodful Staff	堅木長杖	7	1
@@ -5263,6 +5426,7 @@ Ynda's Stand	英達的小販	7	0
 Yoke of Suffering	磨難之軛	7	0
 Yriel's Fostering	伊瑞的栽培	7	0
 Zahndethus' Cassock	札德圖斯的聖衣	7	0
+Zana's Ingenuity	札娜的獨創	7	0
 Zealot Boots	狂熱者長靴	7	1
 Zealot Gloves	狂熱者手套	7	1
 Zealot Helmet	熱戰之盔	7	1
@@ -5270,7 +5434,11 @@ Zealotry	狂熱	6	1
 Zeel's Amplifier	薩爾的揚音	7	0
 Zerphi's Heart	澤佛伊之心	7	0
 Zerphi's Last Breath	澤佛伊的終息	7	0
-Zodiac Leather	星辰皮甲	7	1</script>
+Zodiac Leather	星辰皮甲	7	1
+Zorath's Eye of Authority	澤洛斯的強權之眼	8	1
+Zorath's Eye of Malevolence	澤洛斯的惡意之眼	8	1
+Zorath's Eye of the Endless	澤洛斯的無盡之眼	8	1
+Zorath's Eye of the Inevitable	澤洛斯的必然之眼	8	1</script>
 <script id="carddata" type="text/plain">A Chilling Wind	4	Lv21 瓦爾．霜暴	0
 A Dab of Ink	9	學富之筆	1
 A Dusty Memory	5	物品 物品等級: 100 已破裂	0
@@ -6297,7 +6465,7 @@ Wild Wisps	50000</script>
    更新偵測會重新抓取這個頁面、用正規式讀出上面那行的版本字串來比對，
    所以這兩個常數必須放在整份程式的最前面。
    ================================================================== */
-const APP_VERSION='1.12.3';
+const APP_VERSION='1.14.1';
 const APP_BUILD='2026-08-18';
 
 /* ======================================================================
@@ -6532,7 +6700,18 @@ function parseDoc(text,name){
       i++;
       while(i<lines.length){
         const c=lines[i];
-        if(c.trim()===''||!/^[ \t]/.test(c)) break;
+        if(c.trim()===''){
+          /* 區塊中間夾空行時，先往下看還有沒有縮排的規則。
+             有的話把空行收進區塊繼續讀，這些規則才不會變成編輯器看不到的孤兒。 */
+          let j=i;
+          while(j<lines.length&&lines[j].trim()==='') j++;
+          if(j<lines.length&&/^[ \t]/.test(lines[j])&&!/^\s*(Show|Hide)\b/.test(lines[j])){
+            for(;i<j;i++) b.rules.push({raw:lines[i],unknown:true});
+            continue;
+          }
+          break;
+        }
+        if(!/^[ \t]/.test(c)) break;
         b.rules.push(parseRule(c)); i++;
       }
       nodes.push(b); blocks.push(b);
@@ -7763,7 +7942,7 @@ bind('#toolsMenu','click',e=>{
   const fn=TOOL_ACTIONS[b.dataset.tool];
   if(fn) fn();
 });
-document.addEventListener('click',e=>{ if(!e.target.closest('.menuwrap')) closeMenu(); });
+document.addEventListener('click',e=>{ const t=e.target; if(!(t&&t.closest&&t.closest('.menuwrap'))) closeMenu(); });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeMenu(); });
 
 /* 左右面板收合：規則列表是主工作區，需要時可以把兩側讓出來 */
@@ -7966,25 +8145,6 @@ function rangeText(b){
   if(lo!==null&&hi!==null) return `${lo} ~ ${hi} 個`+(capped?'（上限由前面的門檻決定）':'');
   if(lo!==null) return `${lo} 個以上`;
   return `${hi} 個以下`;
-}
-function stackEditorHTML(b){
-  const s=stackRules(b);
-  if(!s.all.length) return '';
-  if(s.other.length||s.all.length>2)
-    return `<div class="stackedit ro">掉落數量　<b>${esc(s.all.map(r=>(r.op||'=')+' '+r.values.map(v=>v.v).join(' ')).join('　'))}</b>
-      <small>這組條件比較特殊，請到下方「條件」直接修改</small></div>`;
-  const lo=stackNum(s.lo), hi=stackNum(s.hi);
-  return `<div class="stackedit">
-    <label>掉落數量</label>
-    <div class="stackrange">
-      <input type="number" id="stackLo" min="1" step="1" placeholder="不限" value="${lo===null?'':lo}">
-      <span class="tilde">～</span>
-      <input type="number" id="stackHi" min="1" step="1" placeholder="不限" value="${hi===null?'':hi}">
-      <span class="unit">個</span>
-    </div>
-    <button class="x" id="stackDel" title="移除數量條件">✕</button>
-    <div class="stackeff">實際攔截：<b>${esc(rangeText(b)||'未設定')}</b></div>
-  </div>`;
 }
 
 /* 配色盤（彈出式）：選一組配色套到目前區塊 */

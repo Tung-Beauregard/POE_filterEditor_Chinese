@@ -1,0 +1,52 @@
+The MIT License (MIT)
+
+Copyright (c) 2026 Tung-Beauregard
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+================================================================================
+本專案使用的第三方資料（各自的授權另列）
+================================================================================
+
+本專案的原始碼採 MIT 授權。內建的以下資料來自第三方專案，
+其著作權仍屬各原作者所有，並依其各自的授權條款使用：
+
+* NeverSink's Item Filter — MIT License, Copyright (c) NeverSink
+  https://github.com/NeverSinkDev/NeverSink-Filter
+  用途：載入與比對官方過濾器範本。
+
+* Awakened PoE Trade — MIT License, Copyright (c) Alexander Drozdov
+  https://github.com/SnosMe/awakened-poe-trade
+  用途：台服繁體中文物品名稱對照表（cmn-Hant 資料集）。
+
+* RePoE — MIT License
+  https://github.com/lvlvllvlvllvlvl/RePoE
+  用途：通貨堆疊上限與物品分類資料。
+
+* maps-of-exile — MIT License, Copyright (c) Tomas Slusny
+  https://github.com/deathbeam/maps-of-exile
+  用途：命運卡所需張數與獎勵對照。
+
+命運卡獎勵的繁體中文譯文對照自 poedb.tw 所呈現的台服客戶端字串。
+
+Path of Exile 及其相關名稱、物品名稱、圖像與素材為 Grinding Gear Games
+之商標或著作權所有，於本專案中僅作資訊識別之用。本專案為玩家自製之
+第三方獨立工具，與 Grinding Gear Games 及其台灣代理商並無任何關聯，
+亦未獲得其授權或背書。
