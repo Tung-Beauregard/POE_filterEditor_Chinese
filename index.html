@@ -246,6 +246,9 @@ input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--gold
 .menu button small{display:block;font-size:10px;color:var(--faint);margin-top:2px}
 .menu button:disabled{opacity:.45;cursor:default}
 .menu button:disabled:hover{background:none;color:var(--text)}
+.tools .ico{padding:6px 9px;font-size:13px;line-height:1}
+.tsep{width:1px;height:20px;background:var(--rule-lit);margin:0 3px;flex:0 0 auto}
+@media (max-width:820px){ .tsep{display:none} .tools .ico{padding:6px 7px} }
 
 .railtoggle{flex:0 0 auto;width:20px;height:26px;color:var(--faint);font-size:13px;
   border:1px solid transparent;transition:.12s;line-height:1}
@@ -473,6 +476,8 @@ input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--gold
 .tabs button{flex:1 1 0;padding:9px;font-size:11.5px;color:var(--muted);letter-spacing:.08em;border-bottom:2px solid transparent}
 .tabs button.on{color:var(--gold-hi);border-bottom-color:var(--gold)}
 .tabs button:hover{background:#ffffff06}
+/* 窄螢幕上屬性面板會蓋住清單，這顆鈕是唯一的退路，只在那時顯示 */
+.tabs .benchclose{display:none;flex:0 0 auto;padding:9px 12px;color:var(--gold-dim);border-right:1px solid var(--rule);letter-spacing:0}
 .srcbox{width:100%;min-height:330px;background:#00000059;border:1px solid var(--rule);padding:11px;font-family:var(--mono);
   font-size:11.5px;line-height:1.8;outline:none;resize:vertical;white-space:pre;overflow-x:auto}
 .srcbox:focus{border-color:var(--gold-dim)}
@@ -519,12 +524,84 @@ h1{font-family:var(--ui);font-size:27px;font-weight:500;color:var(--gold-hi);mar
 .issue .tx{flex:1 1 auto;min-width:0;font-size:12px}
 .issue .tx b{display:block;color:var(--muted);font-weight:400;font-size:10.5px;font-family:var(--mono);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
+/* ==== 對話框：關於、連結資料夾、與原版比較、價值門檻 ==== */
+.phint{font-size:10.5px;color:var(--faint)}
+.abh{margin:14px 0 6px;font-size:11px;color:var(--faint);font-weight:500;letter-spacing:.12em;text-transform:uppercase}
+.abtbl{width:100%;border-collapse:collapse;font-size:12px}
+.abtbl td{padding:5px 6px;border-top:1px solid #ffffff0d;vertical-align:top}
+.abtbl td:first-child{white-space:nowrap}
+.abtbl td:nth-child(2){color:var(--muted);width:99%}
+.abtbl td:last-child{font-family:var(--mono);font-size:10px;color:var(--gold-dim);text-align:right}
+.abtbl a{color:var(--gold-hi);text-decoration:none}
+.abtbl a:hover{text-decoration:underline}
+.abnote{margin:8px 0 0;font-size:11px;color:var(--faint);line-height:1.85}
+.abnote a{color:var(--gold-dim)}
+.fswarn{border:1px solid var(--warn);background:#d093410f;padding:10px 11px;margin-bottom:11px;
+  display:flex;flex-direction:column;gap:5px}
+.fswarn b{color:#dcb87f;font-size:12px;font-weight:500}
+.fswarn span{font-size:11.5px;color:var(--muted);line-height:1.7}
+.fswarn code{font-family:var(--mono);font-size:11px;color:var(--gold-hi);background:#00000059;
+  padding:5px 7px;border:1px solid var(--rule)}
+.fslist{margin:0;padding-left:18px;color:var(--muted);font-size:11.5px;line-height:1.95}
+.dftabs{display:flex;gap:2px;border-bottom:1px solid var(--rule);margin-bottom:10px}
+.dftabs button{padding:7px 12px;font-size:11.5px;color:var(--muted);border-bottom:2px solid transparent;display:flex;gap:6px;align-items:baseline}
+.dftabs button b{font-family:var(--mono);font-size:10px;color:var(--faint);font-weight:400}
+.dftabs button:hover{background:#ffffff08}
+.dftabs button.on{color:var(--gold-hi);border-bottom-color:var(--gold)}
+.dftabs button.on b{color:var(--gold-dim)}
+.dflist{max-height:52vh;overflow-y:auto;display:flex;flex-direction:column;gap:6px}
+.dfrow{border:1px solid var(--rule);background:#00000030;padding:8px 9px;border-left:3px solid transparent}
+.dfrow.changed{border-left-color:var(--warn)}
+.dfrow.onlyTheirs{border-left-color:var(--show)}
+.dfrow.onlyMine{border-left-color:#5b8bd0}
+.dfrow.same{border-left-color:var(--rule-lit);opacity:.65}
+.dfhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dfbadge{flex:0 0 auto;font-size:9px;font-family:var(--mono);letter-spacing:.06em;color:var(--faint);
+  border:1px solid var(--rule-lit);padding:1px 5px}
+.dfhead .gl{font-size:12px;max-width:200px}
+.dftag{flex:1 1 auto;text-align:right;font-family:var(--mono);font-size:9px;color:var(--faint);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.dfcols{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.dfcol h4{margin:0 0 4px;font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em}
+.dfcol pre,.dfone pre{margin:0 0 6px;background:#00000059;border:1px solid var(--rule);padding:6px 7px;
+  font-family:var(--mono);font-size:10px;line-height:1.6;color:var(--text);max-height:150px;
+  overflow:auto;white-space:pre-wrap;word-break:break-all}
+.dfone{margin-top:8px}
+.dfone .phint{display:block;margin-bottom:6px}
+@media (max-width:640px){.dfcols{grid-template-columns:1fr}}
+.econbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--rule)}
+.econbar > label{font-size:12px;color:var(--gold-hi)}
+.econbar input{width:86px;background:#00000059;border:1px solid var(--rule-lit);padding:5px 7px;
+  font-family:var(--mono);font-size:13px;color:var(--gold-hi);outline:none;text-align:center}
+.econbar input:focus{border-color:var(--gold)}
+.econbar > span{font-size:11.5px;color:var(--muted)}
+.econempty{padding:24px;text-align:center;color:var(--faint);font-size:12px;line-height:1.9;border:1px dashed var(--rule-lit)}
+.econsum{display:flex;gap:4px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin:10px 0}
+.econsum span{font-family:var(--mono);font-size:13px}
+.econsum .a{color:var(--gold-hi)}
+.econsum .b{color:#dd9d92}
+.econsum .c{color:#a9cf90}
+.econlist{max-height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+.econrow{display:flex;align-items:center;gap:8px;padding:5px 7px;border-left:3px solid transparent;background:#00000030}
+.econrow.stack{border-left-color:var(--gold)}
+.econrow.hide{border-left-color:var(--hide)}
+.econrow.show{border-left-color:var(--show)}
+.econrow.ex{border-left-color:#c8843c;background:#c8843c0f}
+.econex{flex:0 0 auto;color:var(--faint);font-size:13px;padding:0 2px;line-height:1}
+.econrow.ex .econex{color:#e8a768}
+.econn{flex:1 1 auto;font-size:12px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.econv{flex:0 0 auto;font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+.econa{flex:0 0 190px;font-size:11px;color:var(--gold-dim);text-align:right}
+.econfmt{background:#00000059;border:1px solid var(--rule);padding:8px;font-family:var(--mono);
+  font-size:10.5px;color:var(--muted);line-height:1.7;margin:0 0 10px;white-space:pre-wrap;word-break:break-all}
+
 @media (max-width:1240px){.stage{grid-template-columns:212px minmax(0,1fr) 348px}}
 @media (max-width:960px){
   .stage{grid-template-columns:1fr}
   .rail{display:none}
   .bench{position:fixed;inset:54px 0 0;z-index:20;border-left:none;display:none}
   .bench.open{display:flex}
+  .tabs .benchclose{display:block}
   .gitems{grid-template-columns:1fr}
   .tierrow{grid-template-columns:1fr 1fr}
   .tierremove{grid-column:2}
@@ -627,6 +704,7 @@ h1{font-family:var(--ui);font-size:27px;font-weight:500;color:var(--gold-hi);mar
     <aside class="bench" id="bench">
       <div class="stagefloor" id="floor"></div>
       <div class="tabs">
+        <button class="benchclose" id="benchClose" title="回到規則清單">‹ 清單</button>
         <button data-tab="props" class="on">屬性</button>
         <button data-tab="src">原始碼</button>
       </div>
@@ -6465,8 +6543,8 @@ Wild Wisps	50000</script>
    更新偵測會重新抓取這個頁面、用正規式讀出上面那行的版本字串來比對，
    所以這兩個常數必須放在整份程式的最前面。
    ================================================================== */
-const APP_VERSION='1.14.1';
-const APP_BUILD='2026-08-18';
+const APP_VERSION='1.15.0';
+const APP_BUILD='2026-09-23';
 
 /* ======================================================================
    1. 譯名資料
@@ -6870,11 +6948,13 @@ function setHexColor(b,key,hex){
 function isUnconditional(b){
   return !b.rules.some(r=>!r.unknown&&!isActionRule(r)&&r.key.toLowerCase()!=='continue');
 }
-function isUnconditionalShow(b){ return b.type==='Show'&&isUnconditional(b); }
 /* 帶 Continue 的無條件區塊會繼續往下比對，不算攔截 */
 function isCatchAll(b){ return isUnconditional(b)&&!findRule(b,'Continue'); }
+/* 防呆層候選：最後一條沒有 Continue 的無條件 Show。
+   帶 Continue 的無條件 Show 是全域樣式層（例如統一字級），不是兜底規則，
+   不能拿來當防呆層，否則「立即修復」會把它搬到檔尾，全域設定就沒了 */
 function safetyCandidate(){
-  return state.doc?.blocks.slice().reverse().find(isUnconditionalShow)||null;
+  return state.doc?.blocks.slice().reverse().find(b=>b.type==='Show'&&isCatchAll(b))||null;
 }
 /* 排在防呆層前面的無條件規則會先吃掉所有物品，讓防呆層變成死規則 */
 function blockersBefore(b){
@@ -6895,7 +6975,8 @@ function safetyState(){
   const b=safetyCandidate();
   const atEnd=!!b&&b===d.blocks[d.blocks.length-1];
   const special=safetyIsSpecial(b);
-  const blockers=blockersBefore(b);
+  /* 沒有候選時，新的防呆層會補在檔尾，所以檔內任何無條件規則（常見的是檔尾的無條件 Hide）都會擋住它 */
+  const blockers=b?blockersBefore(b):d.blocks.filter(isCatchAll);
   /* 真正有效 = 是無條件 Show + 有特殊樣式 + 前面沒有東西攔截 */
   return {b,ok:!!b&&special&&!blockers.length,atEnd,special,blockers,dead:deadAfter(b)};
 }
@@ -6925,24 +7006,32 @@ function moveBlockToEnd(b){
   if(bi>=0) d.blocks.splice(bi,1);
   d.nodes.push(b); d.blocks.push(b); d.dirty=true;
 }
-function addSafetyLayer(){
+/* before：要插在哪個區塊前面；不給就補在檔尾 */
+function addSafetyLayer(before){
   const d=state.doc;
   const sid='s_safety_'+(++state.blockUid);
   const sec={kind:'section',id:sid,num:'9.99',title:'防呆層',depth:2,count:1};
   const b={kind:'block',id:nextBlockId(),type:'Show',indent:'',headComment:' 防呆層 - 未分類／未命中物品',
     headRaw:null,rules:[],section:sid,dirty:true};
-  d.nodes.push({kind:'raw',text:''},
+  const nodes=[{kind:'raw',text:''},
     {kind:'raw',text:'# 9.99 防呆層'},
     {kind:'raw',text:'# 未命中前方任何規則的物品會以紫紅色、粉紅光柱與星形圖示顯示'},
-    {kind:'raw',text:'# 看到此樣式代表 Filter 需要補充分類或更新版本'},b);
-  d.blocks.push(b); d.sections.push(sec); d.dirty=true;
+    {kind:'raw',text:'# 看到此樣式代表 Filter 需要補充分類或更新版本'},b];
+  const ni=before?d.nodes.indexOf(before):-1, bi=before?d.blocks.indexOf(before):-1;
+  if(ni>=0){ d.nodes.splice(ni,0,...nodes); d.blocks.splice(bi<0?d.blocks.length:bi,0,b); }
+  else{ d.nodes.push(...nodes); d.blocks.push(b); }
+  d.sections.push(sec); d.dirty=true;
   applySafetyStyle(b);
   return b;
 }
 function ensureSafetyLayer(opts){
   const o=opts||{};
   let s=safetyState(),changed=false,b=s.b;
-  if(!b){ b=addSafetyLayer(); changed=true; }
+  if(!b){
+    /* 沒有候選時新層會補在檔尾；使用者同意跳過攔截規則的話，直接建在第一條攔截規則前面 */
+    const blk=o.overrideBlockers?state.doc.blocks.filter(isCatchAll):[];
+    b=addSafetyLayer(blk[0]||null); changed=true;
+  }
   else{
     if(!safetyIsSpecial(b)){ applySafetyStyle(b); changed=true; }
     if(b!==state.doc.blocks[state.doc.blocks.length-1]){ moveBlockToEnd(b); changed=true; }
@@ -7744,14 +7833,14 @@ bind('#list','scroll',()=>{
 });
 let qt;
 bind('#q','input',e=>{ clearTimeout(qt); qt=setTimeout(()=>{ state.query=e.target.value; renderList(true); $('#list').scrollTop=0; },160); });
-document.querySelectorAll('.tabs button').forEach(btn=>btn.addEventListener('click',()=>{
-  document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('on'));
+document.querySelectorAll('.tabs button[data-tab]').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.tabs button[data-tab]').forEach(x=>x.classList.remove('on'));
   btn.classList.add('on'); state.tab=btn.dataset.tab; renderInspector();
 }));
 bind('#files','click',e=>{
   const x=e.target.closest('[data-close]');
   if(x){ e.stopPropagation(); closeDoc(+x.dataset.close); return; }
-  const t=e.target.closest('.ftab'); if(t) selectDoc(state.docs[+t.dataset.i]);
+  const t=e.target.closest('.ftab'); if(t){ const d=state.docs[+t.dataset.i]; if(d&&d!==state.doc) selectDoc(d); }
 });
 
 bind('#inspector','click',e=>{
@@ -7769,6 +7858,24 @@ bind('#inspector','click',e=>{
   if(e.target.closest('#groupToggle')){
     state.groupOpen = state.groupOpen===b.id ? null : b.id;
     renderInspector(); return;
+  }
+  /* 原始碼分頁：整段重新解析後取代這個區塊 */
+  if(e.target.closest('#applysrc')){
+    const txt=$('#srcbox').value.replace(/\r\n/g,'\n').split('\n');
+    const head=txt[0].match(/^([ \t]*)(Show|Hide)\b(.*)$/);
+    if(!head){ toast('第一行必須是 Show 或 Hide，沒有寫入'); return; }
+    /* 沒縮排的行補上這個區塊原本用的縮排（NeverSink 是 Tab） */
+    const ind=(b.rules.find(r=>!r.unknown&&r.indent)||{}).indent||(b.indent==='\t'?'\t':'    ');
+    snap([b],'src');
+    b.indent=head[1]; b.type=head[2]; b.headComment=splitComment(head[3]).comment;
+    b.rules=txt.slice(1).filter(l=>l.trim()!=='').map(l=>{
+      const r=parseRule(/^[ \t]/.test(l)?l:ind+l);
+      if(!r.unknown){ r.dirty=true; r.raw=null; }   /* 註解行保留原文 */
+      return r;
+    });
+    touch(b); state.tab='props';
+    document.querySelectorAll('.tabs button[data-tab]').forEach(x=>x.classList.toggle('on',x.dataset.tab==='props'));
+    renderInspector(); refreshSelected(); toast('已套用'); return;
   }
   if(e.target.closest('#stackDel')){
     snapDoc('stack-remove');
@@ -7922,7 +8029,7 @@ function openAbout(){
   $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
 }
 const TOOL_ACTIONS={
-  nsBtn:()=>openNeverSink(), diffBtn:()=>openDiff(),
+  nsBtn:()=>openNeverSink(), diffBtn:()=>openNsDiff(),
   tierBtn:()=>openStylePresetManager(), econBtn:()=>openEconomyTool(),
   safetyBtn:()=>openSafetyManager(), lintBtn:()=>openLint(),
   folderBtn:()=>openFolderDialog(), copyBtn:()=>copyAll(),
@@ -7943,7 +8050,14 @@ bind('#toolsMenu','click',e=>{
   if(fn) fn();
 });
 document.addEventListener('click',e=>{ const t=e.target; if(!(t&&t.closest&&t.closest('.menuwrap'))) closeMenu(); });
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeMenu(); });
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape') return;
+  closeMenu();
+  /* Esc 依序關：對話框 → 窄螢幕上蓋住清單的屬性面板 */
+  const modal=$('#modal');
+  if(modal.classList.contains('on')){ modal.classList.remove('on'); return; }
+  $('#bench').classList.remove('open');
+});
 
 /* 左右面板收合：規則列表是主工作區，需要時可以把兩側讓出來 */
 function toggleRail(){ $('.stage').classList.toggle('norail');
@@ -7952,6 +8066,7 @@ function toggleBench(){ $('.stage').classList.toggle('nobench');
   $('#benchBtn').textContent=$('.stage').classList.contains('nobench')?'‹':'›'; }
 bind('#railBtn','click',toggleRail);
 bind('#benchBtn','click',toggleBench);
+bind('#benchClose','click',()=>$('#bench').classList.remove('open'));
 
 bind('#undoBtn','click',doUndo);
 bind('#redoBtn','click',doRedo);
@@ -8349,56 +8464,6 @@ function openItemRulesFor(b){
 }
 
 /* ======================================================================
-   與 NeverSink 原版比對
-   ---------------------------------------------------------------------
-   NeverSink 每個區塊的註解都帶 $type->x $tier->y 標籤，實測 754 個區塊
-   有 754 個不同簽章、零重複，所以拿它當識別碼配對兩邊的規則最準確。
-   沒有標籤的檔案（例如自己寫的）退回用 BaseType＋其他條件當鍵。
-   ================================================================== */
-function blockSig(b){
-  const tags=[...String(b.headComment||'').matchAll(/\$(\w+)->(\S+)/g)];
-  if(tags.length) return 'tag:'+tags.map(m=>m[1]+'='+m[2]).join('|');
-  return 'cond:'+b.type+'|'+baseTypeKey(b)+'|'+selectorKey(b);
-}
-/* 只比較實際會影響遊戲行為的部分，忽略註解與縮排差異 */
-function blockFingerprint(b){
-  return b.type+'\n'+b.rules.filter(r=>!r.unknown)
-    .map(r=>r.key.toLowerCase()+' '+(r.op||'')+' '+r.values.map(v=>v.v).join(' '))
-    .sort().join('\n');
-}
-function blockLines(b){
-  return [b.type].concat(b.rules.filter(r=>!r.unknown)
-    .map(r=>'    '+r.key+(r.op?' '+r.op:'')+' '+r.values.map(v=>quoteVal(r.key,v)?'"'+v.v+'"':v.v).join(' ')));
-}
-function diffDocs(mine,theirs){
-  const mineMap=new Map(), theirsMap=new Map();
-  for(const b of mine.blocks){ const s=blockSig(b); if(!mineMap.has(s)) mineMap.set(s,b); }
-  for(const b of theirs.blocks){ const s=blockSig(b); if(!theirsMap.has(s)) theirsMap.set(s,b); }
-  const changed=[],onlyMine=[],onlyTheirs=[];
-  for(const [s,b] of mineMap){
-    const t=theirsMap.get(s);
-    if(!t){ onlyMine.push({sig:s,mine:b}); continue; }
-    if(blockFingerprint(b)!==blockFingerprint(t)) changed.push({sig:s,mine:b,theirs:t});
-  }
-  for(const [s,t] of theirsMap) if(!mineMap.has(s)) onlyTheirs.push({sig:s,theirs:t,idx:theirs.blocks.indexOf(t)});
-  return {changed,onlyMine,onlyTheirs,mineMap,theirsMap};
-}
-/* 逐行比對，標出哪幾行不同 */
-function lineDiff(a,b){
-  const setB=new Set(b), setA=new Set(a);
-  return {
-    left:a.map(l=>({t:l,d:!setB.has(l)})),
-    right:b.map(l=>({t:l,d:!setA.has(l)}))
-  };
-}
-function sigLabel(sig){
-  if(sig.startsWith('tag:')) return sig.slice(4).replace(/\|/g,'　');
-  return sig.slice(5).split('|')[1].split('\u001f').slice(0,3).join('、')||'（無 BaseType）';
-}
-
-let diffState=null;
-
-/* ======================================================================
    發布到 PoE 帳號
    ---------------------------------------------------------------------
    GGG 的 account:item_filter 權限需要 confidential client，也就是要有自己的
@@ -8454,134 +8519,6 @@ function openPublish(){
       st.style.color='var(--gold-hi)'; st.textContent='已下載 '+nm+'.filter';
     }
   };
-}
-function openDiff(){
-  if(!state.doc) return;
-  const meta=nsMeta(serializeDoc(state.doc,false));
-  const guess=NS_LEVELS.find(L=>meta.TYPE&&meta.TYPE.indexOf(L.f)>=0)||NS_LEVELS[2];
-  $('#modalTitle').textContent='與 NeverSink 原版比對';
-  $('#modalBody').innerHTML=`
-    <p style="margin:0 0 10px;color:var(--muted)">抓取 NeverSink 最新版，跟你目前這份逐條比對。
-    ${meta.TYPE?`偵測到這份是 <b style="color:var(--gold-hi)">${esc(meta.TYPE)}</b>${meta.VERSION?`（v${esc(meta.VERSION)}）`:''}。`:''}</p>
-    <div class="nslist">${NS_LEVELS.map((L,i)=>`
-      <button class="nsrow" data-diff="${i}"><span class="nsn">${L.n}</span>
-        <span class="nsd">${L===guess?'偵測到的對應版本':esc(L.d)}</span>
-        <span class="nsf">${L.f}</span></button>`).join('')}</div>
-    <div id="diffStatus" class="hintline"></div>`;
-  $('#modalFoot').innerHTML='';
-  $('#modal').classList.add('on');
-  $('#modalBody').onclick=async e=>{
-    const row=e.target.closest('[data-diff]'); if(!row) return;
-    const L=NS_LEVELS[+row.dataset.diff];
-    const st=$('#diffStatus');
-    $('#modalBody').querySelectorAll('.nsrow').forEach(x=>x.disabled=true);
-    row.classList.add('loading'); st.textContent='下載 '+L.f+' 並比對中…';
-    try{
-      const res=await fetch(nsUrl(L.f),{cache:'no-store'});
-      if(!res.ok) throw new Error('HTTP '+res.status);
-      const text=await res.text();
-      const theirs=parseDoc(text,'NeverSink '+L.f);
-      diffState={theirs,result:diffDocs(state.doc,theirs),level:L,meta:nsMeta(text)};
-      renderDiff();
-    }catch(err){
-      row.classList.remove('loading');
-      $('#modalBody').querySelectorAll('.nsrow').forEach(x=>x.disabled=false);
-      st.style.color='#e2a89e'; st.textContent='下載失敗：'+(err.message||err);
-    }
-  };
-}
-function renderDiff(){
-  const {result:R,level:L,meta}=diffState;
-  const tabs=[['changed','兩邊都有但不同',R.changed.length],
-              ['theirs','原版新增／我沒有',R.onlyTheirs.length],
-              ['mine','只有我有',R.onlyMine.length]];
-  const tab=diffState.tab||'changed';
-  $('#modalTitle').textContent=`與 NeverSink ${L.n} 比對${meta.VERSION?'（原版 v'+meta.VERSION+'）':''}`;
-  const rows=(tab==='changed'?R.changed:tab==='theirs'?R.onlyTheirs:R.onlyMine);
-  $('#modalBody').innerHTML=`
-    <div class="difftabs">${tabs.map(([k,n,c])=>
-      `<button class="${k===tab?'on':''}" data-dtab="${k}">${n}<b>${c}</b></button>`).join('')}</div>
-    ${rows.length?`<div class="difflist">${rows.slice(0,120).map((r,i)=>diffRow(r,tab,i)).join('')}
-      ${rows.length>120?`<p style="color:var(--faint);font-size:11.5px">只列出前 120 筆，處理完再開一次會看到其餘的。</p>`:''}</div>`
-      :'<p style="color:var(--muted);padding:18px 0">這一類沒有差異。</p>'}`;
-  $('#modalFoot').innerHTML='<button class="btn" id="diffBack">換一個版本</button>';
-  $('#diffBack').onclick=openDiff;
-  $('#modalBody').onclick=e=>{
-    const t=e.target.closest('[data-dtab]');
-    if(t){ diffState.tab=t.dataset.dtab; renderDiff(); return; }
-    const act=e.target.closest('[data-dact]');
-    if(!act) return;
-    applyDiffAction(act.dataset.dact,+act.dataset.di,tab);
-  };
-}
-function diffRow(r,tab,i){
-  const name=r.mine?displayName(r.mine):displayName(r.theirs);
-  if(tab==='changed'){
-    const d=lineDiff(blockLines(r.mine),blockLines(r.theirs));
-    return `<div class="drow">
-      <div class="dhead"><b>${esc(name)}</b><span>${esc(sigLabel(r.sig))}</span></div>
-      <div class="dcols">
-        <div class="dcol"><div class="dct">我的版本</div>
-          <pre>${d.left.map(l=>`<span class="${l.d?'df':''}">${esc(l.t)}</span>`).join('\n')}</pre>
-          <button class="chip" data-dact="keep" data-di="${i}">保留我的</button></div>
-        <div class="dcol"><div class="dct">NeverSink 原版</div>
-          <pre>${d.right.map(l=>`<span class="${l.d?'df':''}">${esc(l.t)}</span>`).join('\n')}</pre>
-          <button class="chip lit" data-dact="take" data-di="${i}">改用原版</button></div>
-      </div></div>`;
-  }
-  if(tab==='theirs'){
-    return `<div class="drow">
-      <div class="dhead"><b>${esc(name)}</b><span>${esc(sigLabel(r.sig))}</span></div>
-      <div class="dcols one">
-        <div class="dcol"><div class="dct">原版有、你的檔案沒有</div>
-          <pre>${blockLines(r.theirs).map(l=>esc(l)).join('\n')}</pre>
-          <button class="chip lit" data-dact="add" data-di="${i}">加進我的檔案</button></div>
-      </div></div>`;
-  }
-  return `<div class="drow">
-    <div class="dhead"><b>${esc(name)}</b><span>${esc(sigLabel(r.sig))}</span></div>
-    <div class="dcols one">
-      <div class="dcol"><div class="dct">只有你的檔案有（原版已移除或你自己加的）</div>
-        <pre>${blockLines(r.mine).map(l=>esc(l)).join('\n')}</pre>
-        <button class="chip" data-dact="del" data-di="${i}">刪除這條</button></div>
-    </div></div>`;
-}
-function applyDiffAction(act,i,tab){
-  const R=diffState.result;
-  const rows=(tab==='changed'?R.changed:tab==='theirs'?R.onlyTheirs:R.onlyMine);
-  const r=rows[i]; if(!r) return;
-  if(act==='keep'){ R.changed.splice(i,1); renderDiff(); return; }
-  snapDoc('diff-'+act);
-  if(act==='take'){
-    r.mine.type=r.theirs.type;
-    r.mine.rules=r.theirs.rules.map(x=>({...x,dirty:true,raw:null}));
-    touch(r.mine);
-    R.changed.splice(i,1);
-    toast('已改用原版');
-  }else if(act==='add'){
-    /* 插到「原版裡它前一個、而我也有的區塊」後面，位置才不會亂 */
-    const T=diffState.theirs;
-    let anchor=null;
-    for(let k=r.idx-1;k>=0;k--){
-      const cand=R.mineMap.get(blockSig(T.blocks[k]));
-      if(cand){ anchor=cand; break; }
-    }
-    const nb=cloneBlock(r.theirs);
-    if(anchor){
-      const ni=state.doc.nodes.indexOf(anchor), bi=state.doc.blocks.indexOf(anchor);
-      state.doc.nodes.splice(ni+1,0,nb); state.doc.blocks.splice(bi+1,0,nb);
-    }else{ insertBlockBefore(state.doc.blocks[0],nb); }
-    state.doc.dirty=true;
-    R.mineMap.set(r.sig,nb);
-    R.onlyTheirs.splice(i,1);
-    toast('已加入：'+displayName(nb));
-  }else if(act==='del'){
-    removeBlock(r.mine);
-    R.mineMap.delete(r.sig);
-    R.onlyMine.splice(i,1);
-    toast('已刪除');
-  }
-  renderDiff(); renderAll();
 }
 
 /* ======================================================================
@@ -9150,17 +9087,21 @@ function openSafetyManager(){
   $('#modalTitle').textContent='未分類物品防呆層';
   if(s.blockers.length){
     const blk=s.blockers[0],idx=state.doc.blocks.indexOf(blk)+1;
+    /* 有候選：現有防呆層被擋住；沒候選：連新增都會被擋住，所以要建在攔截規則前面 */
+    const hasLayer=!!s.b;
+    const action=hasLayer?'把防呆層移到它前面':'在它前面新增防呆層';
     $('#modalBody').innerHTML=`
-      <p style="margin:0 0 10px;color:#e2a89e">防呆層目前是死規則。</p>
+      <p style="margin:0 0 10px;color:#e2a89e">${hasLayer?'防呆層目前是死規則。':'這份 Filter 沒有防呆層，而且直接補在檔尾也不會生效。'}</p>
       <p style="margin:0 0 10px;color:var(--muted)">第 ${idx} 個區塊「<b style="color:var(--gold-hi)">${esc(displayName(blk))}</b>」是無條件 ${blk.type}，
-      沒有任何判斷條件，所有還沒被前面規則攔截的物品都會停在那裡，後面的防呆層永遠不會執行。</p>
+      沒有任何判斷條件，所有還沒被前面規則攔截的物品都會停在那裡，排在它後面的防呆層永遠不會執行。</p>
       <p style="margin:0;color:var(--muted)">這通常是原作者刻意的設計（把未命中的東西全部藏起來）。你可以：</p>
       <ul style="color:var(--muted);font-size:12.5px;line-height:1.9;margin:8px 0 0;padding-left:20px">
         <li><b style="color:var(--text)">保留現狀</b>：接受這份 Filter 會靜靜隱藏未命中的物品</li>
-        <li><b style="color:var(--text)">把防呆層移到它前面</b>：未命中的物品改成醒目顯示，但「${esc(displayName(blk))}」以及它後面的
+        <li><b style="color:var(--text)">${action}</b>：未命中的物品改成醒目顯示，但「${esc(displayName(blk))}」以及它後面的
         ${state.doc.blocks.length-idx} 個區塊會全部失效</li>
       </ul>`;
-    $('#modalFoot').innerHTML='<button class="btn" id="cbNo">保留現狀</button><button class="btn primary" id="safetyOverride">把防呆層移到它前面</button>';
+    $('#modalFoot').innerHTML='<button class="btn" id="cbNo">保留現狀</button>'+
+      `<button class="btn primary" id="safetyOverride">${action}</button>`;
     $('#modal').classList.add('on');
     $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
     $('#safetyOverride').onclick=()=>{
@@ -9168,7 +9109,7 @@ function openSafetyManager(){
       const r=ensureSafetyLayer({overrideBlockers:true});
       state.sel=r.b.id;
       $('#modal').classList.remove('on'); renderAll();
-      toast('防呆層已移到攔截規則之前');
+      toast(hasLayer?'防呆層已移到攔截規則之前':'已在攔截規則之前新增防呆層');
     };
     return;
   }
@@ -9178,7 +9119,7 @@ function openSafetyManager(){
        <span class="gl previewlabel" style="${labelStyle(s.b,24)}">${esc(officialName(s.b)||authorName(s.b)||'未分類／新物品')}</span></div>
        <div class="hintline">遊戲中若出現這個醒目樣式，代表物品沒有命中前方分類，應回到編輯器把它加入正確階級。</div>`
     : `<p style="margin:0 0 10px;color:#e2a89e">目前防呆層不完整：${!s.b?'找不到無條件 Show 兜底規則。':(!s.atEnd?'兜底規則不在 Filter 最後。':'兜底規則沒有特殊色、光柱、圖示或提示音。')}</p>
-       <p style="margin:0;color:var(--muted)">修復後，所有未命中規則的物品會使用紫紅背景、白字、粉紅光柱、星形小地圖圖示與內建提示音。匯出時也會自動檢查並補上。</p>`;
+       <p style="margin:0;color:var(--muted)">修復後，所有未命中規則的物品會使用紫紅背景、白字、粉紅光柱、星形小地圖圖示與內建提示音。匯出前如果防呆層還是不完整，只會提醒，不會自動修改檔案。</p>`;
   $('#modalFoot').innerHTML=s.ok
     ? '<button class="btn" id="cbNo">關閉</button><button class="btn" id="safetyRestyle">改用內建防呆樣式</button>'
     : '<button class="btn" id="cbNo">取消</button><button class="btn primary" id="safetyFix">立即修復</button>';
@@ -9334,8 +9275,10 @@ function addDoc(text,name){
   $('#gate').classList.add('off'); $('#app').classList.add('on');
 }
 function selectDoc(d){
+  /* 復原紀錄跟著各自的檔案走，切換分頁不會清掉 */
+  if(state.doc){ state.doc.undo=state.undo; state.doc.redo=state.redo; }
   state.doc=d; state.sel=null; state.section=null; state.cat=null; state.query=''; state.open=new Set();
-  state.undo=[]; state.redo=[]; state.palFrom=d.name;
+  state.undo=d.undo||[]; state.redo=d.redo||[]; state.palFrom=d.name;
   const first=d.sections.find(s=>s.depth===1); if(first) state.open.add(first.num);
   $('#q').value=''; syncUndo(); renderAll();
 }
@@ -9580,7 +9523,7 @@ function openFolderDialog(){
     <div class="fswarn">
       <b>請選過濾器資料夾本身，不要選 Documents 根目錄</b>
       <span>授權範圍是整個資料夾，程式可以覆蓋裡面的檔案。選得越精確越安全。</span>
-      <code>文件\My Games\Path of Exile\</code>
+      <code>文件\\My Games\\Path of Exile\\</code>
     </div>
     <div class="field" style="margin-top:2px">
       <label>寫入的檔名（預設沿用原檔名，直接覆蓋）</label>
@@ -9622,7 +9565,8 @@ document.addEventListener('keydown',e=>{
   if(!state.doc) return;
   if(mod&&e.key==='\\'){ e.preventDefault(); toggleRail(); return; }
   if(mod&&e.key.toLowerCase()==='s'){ e.preventDefault(); download(false); return; }
-  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){ e.preventDefault(); e.shiftKey?doRedo():doUndo(); return; }
+  /* 在輸入框裡按 Ctrl+Z 是要復原剛打的字，交給瀏覽器處理，不動過濾器的復原紀錄 */
+  if(mod&&e.key.toLowerCase()==='z'){ if(typing) return; e.preventDefault(); e.shiftKey?doRedo():doUndo(); return; }
   if(typing) return;
   if(e.key!=='ArrowDown'&&e.key!=='ArrowUp') return;
   const arr=visibleBlocks(); if(!arr.length) return;
