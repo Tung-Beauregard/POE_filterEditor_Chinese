@@ -7,10 +7,11 @@ npm test        全部
 
 | 檔案 | 檢查什麼 | 抓過什麼 bug |
 |---|---|---|
-| boot.test.js | 頁面載入零錯誤、起始按鈕可點、開檔、CSS 沒有孤兒屬性 | 刪按鈕沒刪綁定造成全白；正規式砍壞 CSS |
+| boot.test.js | 頁面載入零錯誤、起始按鈕可點、開檔、CSS 沒有孤兒屬性、用到的 class 都有 CSS、function 沒有重複宣告 | 刪按鈕沒刪綁定造成全白；正規式砍壞 CSS；四個對話框的 CSS 整段遺失；diffDocs 宣告兩次 |
 | roundtrip.test.js | 每個 fixture 往返逐位元組一致、防呆判斷、解析邊界 | 區塊中間空行後的規則變孤兒 |
-| inspector.test.js | 右側每個控制項真的改到資料、全部復原回到原檔 | |
+| inspector.test.js | 右側每個控制項真的改到資料、全部復原回到原檔 | 自訂音效開關先寫進不存在的路徑 |
 | ui.test.js | 選單顯示與觸發、篩選、快捷鍵、內建資料筆數 | 選單 CSS 遺失導致項目攤在工具列 |
+| regress.test.js | 原始碼套用、與原版比對、輸入框內 Ctrl+Z、復原紀錄跟著檔案、防呆層邊界、關鍵字與提示音檢查 | 「套用原始碼」的處理程式整段不見；比對永遠失敗；Continue 全域區塊被當成防呆層搬走 |
 
 `tests/fixtures/` 放測試用的 `.filter`，目前是 NeverSink 3-STRICT（MIT）。
 可以再放自己的過濾器進去，`roundtrip` 會自動跑全部。

@@ -4,8 +4,8 @@
 
 ## 開始工作前
 
-1. 跑 `npm test`。四支測試都要綠，尤其 `boot`（頁面能不能載入）。
-2. 改完任何東西再跑一次 `npm test`，全綠才算完成。
+1. 跑 `npm test`。五支測試都要綠，尤其 `boot`（頁面能不能載入）。
+2. 改完任何東西再跑一次 `npm test`，全綠才算完成。本機沒有 Node 的話，推上去後看 GitHub Actions 的「測試」結果。
 3. 每次改動都要把 `APP_VERSION` 與 `APP_BUILD`（在主 `<script>` 最前面）往上調。更新偵測靠正規式讀這兩行，所以它們必須留在程式最前面。
 
 ## 檔案結構
@@ -15,7 +15,7 @@ index.html                 整個應用。四個 <script>：namedata、carddata�
 tests/                     jsdom 測試，npm test 執行
 tests/fixtures/*.filter    測試用過濾器，可自行放更多
 tools/update-data.py       從上游重抓譯名與堆疊上限並寫回 index.html
-.github/workflows/         每週檢查上游資料，有更新就開 PR
+.github/workflows/         test.yml 每次推送跑 npm test；update-data.yml 每週一檢查上游資料，有更新就開 PR
 README_防呆與操作說明.md    使用者說明，工具選單裡的「說明」連到它
 LICENSE                    MIT，附第三方資料授權清單
 ```
@@ -28,7 +28,7 @@ LICENSE                    MIT，附第三方資料授權清單
 
 **規則物件不可原地修改**：所有異動走 `patchRule` / `putRule` / `dropRule`，它們會建新物件與新陣列。復原系統靠這個共用未變動的規則，改成原地修改會讓快照互相污染，而且記憶體會爆。
 
-**只寫遊戲支援的語法**：不要發明 PoE 不接受的關鍵字或參數。`CustomAlertSound` 沒有音量參數（音量屬於 `PlayAlertSound`）。字級 18–45。`StackSize` 可在同一區塊寫兩條形成範圍（NeverSink 對 ItemLevel 就這樣用）。不確定就去 `tests/fixtures` 的真實檔案裡找有沒有人這樣寫。
+**只寫遊戲支援的語法**：不要發明 PoE 不接受的關鍵字或參數。關鍵字清單以 [pathofexile.com/item-filter/about](https://www.pathofexile.com/item-filter/about) 為準，`KNOWN`（PoE 1 認得的）與 `POE2_ONLY`（官方頁標 PoE2-only 的）都對著那頁維護，別憑印象加。`PlayAlertSound 編號 [音量]`：編號 1–16 或 Sh 開頭的塑者語音名稱，音量 0–300（省略時官方預設 50）；`CustomAlertSound "檔名" [音量]`：音量選填，預設 100，檔案不存在遊戲會拒絕載入，`CustomAlertSoundOptional` 才會略過。字級 18–45。`StackSize` 可在同一區塊寫兩條形成範圍（NeverSink 對 ItemLevel 就這樣用）。不確定就去 `tests/fixtures` 的真實檔案裡找有沒有人這樣寫。
 
 **防呆層的定義**：最後一條無條件 `Show`，且前面沒有任何無條件規則攔截它。判斷靠結構（`safetyState()`），不靠註解文字，所以改名不會讓舊檔失效。同一條規則不可同時被防呆面板說正確、又被全檔檢查報錯。
 
@@ -43,6 +43,8 @@ LICENSE                    MIT，附第三方資料授權清單
 - **測試用假 DOM 對任何 id 都回傳空物件**：所以抓不到 null 錯誤。現在用 jsdom 真的載入，`tests/lib.js` 的 `boot()`。
 - **重複的 `id`**：兩顆按鈕同 id，第二顆點了沒反應。
 - **檔名策略**：寫入遊戲資料夾要沿用原檔名直接覆蓋（遊戲裡不用重選）；瀏覽器下載才加 `_edited` 後綴。
+- **整份改寫時漏掉一段**：v1.6 到 v1.14 一連串大改把「套用原始碼」的處理程式與四個對話框的 CSS 弄丟，還留下重複宣告的 `diffDocs`（後者蓋掉前者，比對永遠失敗）。頁面照常載入、四支測試全綠，肉眼點過才發現。現在 `boot.test.js` 會檢查用到的 class 都有 CSS、function 沒有重複宣告，`regress.test.js` 會實際走過這些流程；大改之後除了 `npm test`，還是要在瀏覽器把工具選單每一項點一遍。
+- **檔案是 CRLF**：`index.html` 全檔 CRLF。用腳本寫回時要維持，混進 LF 之後 diff 會整檔爆掉。
 
 ## 資料來源與更新
 
@@ -81,6 +83,7 @@ LICENSE                    MIT，附第三方資料授權清單
 ```
 npm test              全部測試
 npm run test:boot     只測載入（最快，改 UI 後先跑這個）
+npm run test:regress  回歸測試（原始碼套用、比對、復原、防呆層、關鍵字檢查）
 npm run data:check    檢查上游資料有無更新，不寫檔
 npm run data:update   更新資料並寫回 index.html
 ```

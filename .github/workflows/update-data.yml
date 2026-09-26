@@ -1,0 +1,37 @@
+# 每週一檢查上游資料（台服譯名、堆疊上限、新命運卡），有變動就開 PR。
+# 需要在 repo 的 Settings → Actions → General 勾選「Allow GitHub Actions to create and approve pull requests」。
+name: 檢查上游資料
+on:
+  schedule:
+    - cron: '0 1 * * 1'   # UTC 01:00 = 台灣時間週一 09:00
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: 更新譯名與堆疊上限
+        id: upd
+        run: |
+          python tools/update-data.py
+          if git diff --quiet -- index.html; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            { printf '合併前記得把 index.html 檔頭的 APP_VERSION 與 APP_BUILD 往上調，已開著頁面的人才會收到更新提示。\n\n'; cat data-report.md; } > pr-body.md
+          fi
+      - name: 開 PR
+        if: steps.upd.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: 更新內建資料（譯名／堆疊上限）
+          title: 上游資料有更新
+          body-path: pr-body.md
+          branch: auto/update-data
+          add-paths: index.html

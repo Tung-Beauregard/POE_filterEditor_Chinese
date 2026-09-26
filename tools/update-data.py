@@ -219,8 +219,9 @@ def main() -> int:
         INDEX.write_text(html, encoding="utf-8")
         print(f"\n已更新 index.html（譯名 {len(names_new.splitlines())} 筆、"
               f"堆疊上限 {len(stack_new.splitlines())} 筆）")
-    return 1
+    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(0 if main() == 0 else 0)
+    # --check 有變動回 1，其餘情況 0（以前這行永遠回 0，--check 的結束碼形同虛設）
+    sys.exit(main())

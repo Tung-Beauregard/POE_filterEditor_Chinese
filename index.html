@@ -1,6 +1,14 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>POE 過濾器編輯器 · 流亡黯道 1 繁體中文</title>
+<meta name="description" content="流亡黯道 1（台服）的繁體中文掉落過濾器編輯器：開啟自己的過濾器或載入 NeverSink，套用台服官方譯名，調整顏色、字級、光柱、小地圖圖示與提示音，並檢查防呆層。單一網頁，不上傳任何資料。">
+<meta property="og:title" content="POE 過濾器編輯器 · 流亡黯道 1 繁體中文">
+<meta property="og:description" content="開啟自己的過濾器或載入 NeverSink，套用台服官方譯名，調整外觀與提示，檢查防呆層。不上傳任何資料。">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0a0806">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Alegreya:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -650,13 +658,14 @@ h1{font-family:var(--ui);font-size:27px;font-weight:500;color:var(--gold-hi);mar
           <b class="mgrp">檔案</b>
           <button data-tool="folderBtn"><span id="folderLabel">連結資料夾</span></button>
           <button data-tool="copyBtn">複製全文</button>
+          <button data-tool="saveTwBtn">匯出繁體版<small>只把註解簡轉繁，規則原樣不動；英文過濾器的結果跟「匯出」相同</small></button>
           <button data-tool="newBtn">新建 Filter</button>
           <button data-tool="pubBtn">發布到 PoE 帳號</button>
           <b class="mgrp">說明</b>
           <a href="README_防呆與操作說明.md" target="_blank" rel="noopener">操作與防呆說明</a>
           <button data-tool="aboutBtn">關於與資料來源</button>
           <a class="kofi" href="https://ko-fi.com/D5P323S7OG" target="_blank" rel="noopener">
-            <img src="https://storage.ko-fi.com/cdn/kofi6.png?v=6" alt="Buy Me a Coffee at ko-fi.com">
+            <img src="https://storage.ko-fi.com/cdn/kofi6.png?v=6" alt="Buy Me a Coffee at ko-fi.com" loading="lazy">
             請我喝杯咖啡</a>
         </div>
       </div>
@@ -6543,8 +6552,8 @@ Wild Wisps	50000</script>
    更新偵測會重新抓取這個頁面、用正規式讀出上面那行的版本字串來比對，
    所以這兩個常數必須放在整份程式的最前面。
    ================================================================== */
-const APP_VERSION='1.15.0';
-const APP_BUILD='2026-09-23';
+const APP_VERSION='1.16.0';
+const APP_BUILD='2026-09-27';
 
 /* ======================================================================
    1. 譯名資料
@@ -6702,16 +6711,24 @@ function catName(id){
    ================================================================== */
 const OPS=['','=','==','!','!=','<','<=','>','>='];
 const STRINGY=new Set(['class','basetype','hasexplicitmod','hasimplicitmod','hasenchantment','hasinfluence',
-  'enchantmentpassivenode','socketgroup','customalertsound','archnemesismod','prophecy','hascruciblepassivetree']);
-const KNOWN=new Set(('show hide continue import class basetype rarity itemlevel dropleveled droplevel quality sockets linkedsockets '+
- 'socketgroup height width hasexplicitmod hasimplicitmod hasenchantment anyenchantment enchantmentpassivenode '+
- 'enchantmentpassivenum stacksize gemlevel gemqualitytype maptier areaLevel arealevel corrupted corruptedmods identified '+
- 'shapermap elderitem shaperitem elder map fracturedItem fractureditem synthesiseditem shapedmap blightedmap uberblightedmap '+
- 'hasinfluence hassearingexarchimplicit haseaterofworldsimplicit basearmour baseevasion baseenergyshield basedefencepercentile '+
- 'baseward replica scourged mirrored transfiguredgem memorystrands zanamemory hascruciblepassivetree alternatequality '+
- 'imbued vestigial foulborn settextcolor setbackgroundcolor setbordercolor setfontsize playalertsound playalertsoundpositional '+
+  'enchantmentpassivenode','socketgroup','customalertsound','customalertsoundoptional','archnemesismod','prophecy','hascruciblepassivetree']);
+/* 關鍵字清單依 pathofexile.com/item-filter/about（官方語法頁，PoE 1 與 2 共用一頁）。
+   新增關鍵字時對著那頁抄，別憑印象；拼錯一個（以前的 elder map）就會把合法檔案誤報成「不認得」。 */
+const KNOWN=new Set(('show hide continue import '+
+ /* 條件 */
+ 'alternatequality anyenchantment archnemesismod arealevel basearmour basedefencepercentile baseenergyshield baseevasion '+
+ 'basetype baseward blightedmap class corrupted corruptedmods droplevel elderitem eldermap enchantmentpassivenode '+
+ 'enchantmentpassivenum foulborn fractureditem gemlevel gemqualitytype hascruciblepassivetree haseaterofworldsimplicit '+
+ 'hasenchantment hasexplicitmod hasimplicitmod hasinfluence hassearingexarchimplicit height identified imbued itemlevel '+
+ 'linkedsockets maptier memorystrands miragemap mirrored quality rarity replica scourged shapedmap shaperitem socketgroup '+
+ 'sockets stacksize synthesiseditem transfiguredgem uberblightedmap vestigial width zanamemory '+
+ /* 動作 */
+ 'settextcolor setbackgroundcolor setbordercolor setfontsize playalertsound playalertsoundpositional '+
  'customalertsound customalertsoundoptional disabledropsound enabledropsound disabledropsoundifalertsound enabledropsoundifalertsound '+
  'minimapicon playeffect').split(' '));
+/* 官方頁標成「PoE2-only」的關鍵字：流亡黯道 1 不認得，單獨提示，免得使用者以為是拼錯 */
+const POE2_ONLY=new Set(['minimal','alwaysshow','exceptional','hasvaaluniquemod','isvaalunique','twicecorrupted',
+  'waystonetier','unidentifieditemtier']);
 
 function splitComment(s){
   let q=false;
@@ -6849,12 +6866,18 @@ function patchRule(b,index,patch){
   touch(b);
   return b.rules[index];
 }
+/* 新規則的縮排跟著這個區塊既有的規則走（NeverSink 用 Tab，多數自製檔用四個空白），
+   不然匯出後同一個區塊會混著兩種縮排 */
+function ruleIndent(b){
+  const r=b.rules.find(x=>!x.unknown&&x.indent);
+  return r?r.indent:(b.indent==='\t'?'\t':'    ');
+}
 function putRule(b,key,vals,op){
   const values=vals.map(v=>({v:String(v),q:false}));
   const k=key.toLowerCase();
   const i=b.rules.findIndex(r=>!r.unknown&&r.key.toLowerCase()===k);
   if(i>=0){ patchRule(b,i,{values,op:op||''}); return; }
-  b.rules=b.rules.concat([{indent:b.indent==='\t'?'\t':'    ',key,op:op||'',values,
+  b.rules=b.rules.concat([{indent:ruleIndent(b),key,op:op||'',values,
     comment:null,unknown:false,dirty:true,raw:null}]);
   touch(b);
 }
@@ -6871,9 +6894,24 @@ function getMinimap(b){ const r=findRule(b,'MinimapIcon'); if(!r||r.values.lengt
   return {size:parseInt(r.values[0].v,10)||0,color:r.values[1].v,shape:r.values[2].v}; }
 function getBeam(b){ const r=findRule(b,'PlayEffect'); if(!r||!r.values.length) return null;
   return {color:r.values[0].v,temp:r.values.some(v=>v.v.toLowerCase()==='temp')}; }
+/* 內建提示音：PlayAlertSound / PlayAlertSoundPositional 的編號與音量。
+   編號 1–16 是遊戲內建音，Sh 開頭是塑者語音（依 pathofexile.com/item-filter/about）；音量省略時官方預設 50 */
+const ALERT_NAMED={ShAlchemy:'點金石',ShBlessed:'祝福石',ShChaos:'混沌石',ShDivine:'神聖石',ShExalted:'崇高石',
+  ShFusing:'鏈結石',ShGeneral:'一般',ShMirror:'卡蘭德的魔鏡',ShRegal:'富豪石',ShVaal:'瓦爾寶珠'};
+const ALERT_OPTIONS=[...Array(16)].map((_,i)=>({v:String(i+1),n:'內建音效 '+(i+1)}))
+  .concat(Object.keys(ALERT_NAMED).map(k=>({v:k,n:'塑者語音：'+ALERT_NAMED[k]})));
+function alertLabel(id){ return ALERT_NAMED[id]?'塑者語音：'+ALERT_NAMED[id]:'內建音效 '+id; }
+function getAlert(b){
+  for(const k of ['PlayAlertSound','PlayAlertSoundPositional']){
+    const r=findRule(b,k); if(!r||!r.values.length) continue;
+    const vol=r.values[1]!=null?parseInt(r.values[1].v,10):50;
+    return {key:k,id:r.values[0].v,vol:Number.isFinite(vol)?vol:50};
+  }
+  return null;
+}
 function getSound(b){
   const c=findRule(b,'CustomAlertSound'); if(c&&c.values.length) return c.values[0].v;
-  const p=findRule(b,'PlayAlertSound'); if(p&&p.values.length) return 'AlertSound '+p.values.map(v=>v.v).join(' ');
+  const a=getAlert(b); if(a) return alertLabel(a.id);
   return null;
 }
 function touch(b){ b.dirty=true; b._t=null; b._cat=null; if(state.doc) state.doc.dirty=true; }
@@ -7160,6 +7198,12 @@ const NAMED={Red:'#d13a33',Green:'#3fb54a',Blue:'#3f6fe0',Brown:'#a3673a',White:
   Cyan:'#3ed0d6',Grey:'#9a958c',Orange:'#ef8a2a',Pink:'#f07cb6',Purple:'#a755d8'};
 const MM_COLORS=Object.keys(NAMED);
 const MM_SHAPES=['Circle','Diamond','Hexagon','Square','Star','Triangle','Cross','Moon','Raindrop','Kite','Pentagon','UpsideDownHouse'];
+/* 值有固定清單的條件（依官方語法頁）：填錯遊戲會拒絕載入整份過濾器 */
+const ENUM_VALUES={rarity:['Normal','Magic','Rare','Unique'],
+  hasinfluence:['Shaper','Elder','Crusader','Hunter','Redeemer','Warlord','None'],
+  gemqualitytype:['Superior','Divergent','Anomalous','Phantasmal']};
+/* 舊版「自訂音效」開關會先寫進這個假路徑；遊戲找不到 CustomAlertSound 的檔案會拒絕載入 */
+const SND_PLACEHOLDER='音效資料夾\\檔名.mp3';
 
 function lint(b){
   const out=[];
@@ -7199,12 +7243,28 @@ function lint(b){
   }
   for(const r of b.rules){
     if(r.unknown) continue;
-    if(!KNOWN.has(r.key.toLowerCase())) out.push({lv:'w',msg:`不認得的關鍵字 ${r.key}`});
-    if(STRINGY.has(r.key.toLowerCase())){
+    const k=r.key.toLowerCase();
+    if(!KNOWN.has(k)) out.push(POE2_ONLY.has(k)
+      ? {lv:'w',msg:`${r.key} 是流亡黯道 2 的關鍵字，流亡黯道 1 不認得`}
+      : {lv:'w',msg:`不認得的關鍵字 ${r.key}`});
+    if(STRINGY.has(k)){
       const seen=new Set();
       for(const v of r.values){ if(seen.has(v.v)){ out.push({lv:'w',msg:`${r.key} 有重複的值「${v.v}」`}); break; } seen.add(v.v); }
     }
+    const allowed=ENUM_VALUES[k];
+    if(allowed){ const bad=r.values.find(v=>!allowed.includes(v.v));
+      if(bad) out.push({lv:'e',msg:`${r.key} 的值「${bad.v}」不合法，只能是 ${allowed.join('、')}`}); }
   }
+  /* 內建提示音：編號 1–16 或塑者語音名稱，音量 0–300 */
+  for(const k of ['PlayAlertSound','PlayAlertSoundPositional']){
+    const r=findRule(b,k); if(!r) continue;
+    const id=r.values[0]?.v, vol=r.values[1]?.v;
+    if(!(/^([1-9]|1[0-6])$/.test(id||'')||ALERT_NAMED[id])) out.push({lv:'e',msg:`${k} 的音效編號「${id??''}」不合法，只能是 1–16 或 ShAlchemy 這類塑者語音名稱`});
+    if(vol!=null&&!(/^\d+$/.test(vol)&&+vol<=300)) out.push({lv:'e',msg:`${k} 的音量「${vol}」不在 0–300 之間`});
+  }
+  const cs=findRule(b,'CustomAlertSound');
+  if(cs&&!(cs.values[0]&&cs.values[0].v.trim())) out.push({lv:'e',msg:'CustomAlertSound 沒有檔名，遊戲載入過濾器時會出錯'});
+  else if(cs&&cs.values[0].v===SND_PLACEHOLDER) out.push({lv:'e',msg:'自訂音效還是預設的假路徑，遊戲找不到檔案會拒絕載入過濾器，請填真正的檔名'});
   return out;
 }
 function lintAll(){
@@ -7277,7 +7337,7 @@ function captureStyleTier(b,t){
    ================================================================== */
 const state={docs:[],doc:null,sel:null,section:null,cat:null,query:'',tab:'props',open:new Set(),
   shown:0,tw:true,nameMode:'official',view:'taxonomy',vis:'all',uniqOnly:false,custom:{},userCats:[],undo:[],redo:[],lastSnap:0,
-  blockUid:0,styleTiers:loadStyleTiers(),presetTier:'t3'};
+  blockUid:0,userCatUid:0,styleTiers:loadStyleTiers(),presetTier:'t3'};
 const $=s=>document.querySelector(s);
 /* 綁定事件的安全版本：元素不存在時只在主控台留訊息，不讓整支程式停住。
    （工具列調整時最容易發生「按鈕刪了、綁定沒刪」，那會讓頁面完全開不起來） */
@@ -7643,7 +7703,9 @@ function renderInspector(){
   const stackBase=stackRule?findStackBase(b):null;
 
   const beamTempOn=beam&&beam.temp;
-  const sndOn=!!snd;
+  const alert=getAlert(b);
+  /* 自訂音效：先開輸入框，填了檔名才寫入規則。以前會先寫一個不存在的路徑，遊戲載入過濾器會直接出錯 */
+  const sndOn=!!snd||state.sndOpen===b.id;
   el.innerHTML=`
   <div class="ins">
 
@@ -7729,12 +7791,23 @@ function renderInspector(){
           </select></div>
       </div>`:''}
 
+      <button class="chk ${alert?'on':''}" id="alertToggle"><i></i>內建提示音</button>
+      ${alert?`<div class="sub">
+        <div class="prow2"><label>音效</label>
+          <select class="psel" id="alertId">${ALERT_OPTIONS.map(o=>`<option value="${o.v}" ${alert.id===o.v?'selected':''}>${o.n}</option>`).join('')}${
+            ALERT_OPTIONS.some(o=>o.v===alert.id)?'':`<option value="${esc(alert.id)}" selected>${esc(alert.id)}（不合法）</option>`}</select></div>
+        <div class="prow2"><label>音量</label>
+          <div class="stepper"><input type="range" id="alertVol" min="0" max="300" step="10" value="${Math.max(0,Math.min(300,alert.vol))}">
+            <em class="unset" id="alertVolN" style="flex:0 0 34px;text-align:right">${alert.vol}</em></div></div>
+        ${alert.key==='PlayAlertSoundPositional'?'<div class="prowhint">這條用的是 PlayAlertSoundPositional，音效會依掉落位置定位</div>':''}
+      </div>`:''}
+
       <button class="chk ${sndOn?'on':''}" id="sndToggle"><i></i>自訂音效</button>
       ${sndOn?`<div class="sub">
         <div class="prow2"><label>檔案</label>
-          <input class="pinp" id="snd" value="${esc(snd)}" placeholder="音效資料夾\\檔名.mp3"></div>
-        ${state.folder?'<div class="prowhint"><button class="linkbtn" id="sndTest">試聽</button>從已連結的資料夾讀取</div>'
-          :'<div class="prowhint">連結資料夾後可以試聽</div>'}
+          <input class="pinp" id="snd" value="${esc(snd)}" placeholder="例如 sounds\\divine.mp3"></div>
+        <div class="prowhint">路徑相對於遊戲的過濾器資料夾${snd?'':'；還沒填檔名前不會寫入規則'}。${
+          state.folder?'<button class="linkbtn" id="sndTest">試聽</button>從已連結的資料夾讀取':'連結資料夾後可以試聽'}</div>
       </div>`:''}
 
       <button class="chk ${noDrop?'on':''}" id="ddsToggle"><i></i>關閉遊戲預設掉落音</button>
@@ -7865,7 +7938,7 @@ bind('#inspector','click',e=>{
     const head=txt[0].match(/^([ \t]*)(Show|Hide)\b(.*)$/);
     if(!head){ toast('第一行必須是 Show 或 Hide，沒有寫入'); return; }
     /* 沒縮排的行補上這個區塊原本用的縮排（NeverSink 是 Tab） */
-    const ind=(b.rules.find(r=>!r.unknown&&r.indent)||{}).indent||(b.indent==='\t'?'\t':'    ');
+    const ind=ruleIndent(b);
     snap([b],'src');
     b.indent=head[1]; b.type=head[2]; b.headComment=splitComment(head[3]).comment;
     b.rules=txt.slice(1).filter(l=>l.trim()!=='').map(l=>{
@@ -7892,11 +7965,14 @@ bind('#inspector','click',e=>{
     snap([b],'edit'); putRule(b,'SetFontSize',[next]); renderInspector(); refreshSelected(); return;
   }
   if(e.target.closest('#sndToggle')){
-    snap([b],'sound');
-    if(findRule(b,'CustomAlertSound')) dropRule(b,'CustomAlertSound');
-    else putRule(b,'CustomAlertSound',['音效資料夾\\檔名.mp3']);
+    if(findRule(b,'CustomAlertSound')){ snap([b],'sound'); dropRule(b,'CustomAlertSound'); state.sndOpen=null; }
+    else state.sndOpen=state.sndOpen===b.id?null:b.id;
     renderInspector(); refreshSelected(); return;
   }
+  if(e.target.closest('#alertToggle')){ snap([b],'sound');
+    const a=getAlert(b);
+    if(a) dropRule(b,a.key); else putRule(b,'PlayAlertSound',[1,300]);
+    renderInspector(); refreshSelected(); return; }
   if(e.target.closest('#sndTest')){ testSound(b); return; }
   if(e.target.closest('#mmToggle')){ snap([b],'mm');
     if(getMinimap(b)) dropRule(b,'MinimapIcon'); else putRule(b,'MinimapIcon',[0,'Yellow','Circle']);
@@ -7929,7 +8005,7 @@ bind('#inspector','input',e=>{
       if(target){
         patchRule(b,b.rules.indexOf(target),{values:[{v:String(n),q:false}],op:isLo?'>=':'<='});
       }else{
-        b.rules=b.rules.concat([{indent:b.indent==='\t'?'\t':'    ',key:'StackSize',
+        b.rules=b.rules.concat([{indent:ruleIndent(b),key:'StackSize',
           op:isLo?'>=':'<=',values:[{v:String(n),q:false}],comment:null,unknown:false,dirty:true,raw:null}]);
         touch(b);
       }
@@ -7951,6 +8027,11 @@ bind('#inspector','input',e=>{
   if(t.id==='snd'){ snap([b],'edit');
     if(t.value.trim()) putRule(b,'CustomAlertSound',[t.value.trim()]);
     else dropRule(b,'CustomAlertSound');
+    refreshSelected(); return; }
+  if(t.id==='alertVol'){ const a=getAlert(b); if(!a) return;
+    const v=Math.max(0,Math.min(300,parseInt(t.value,10)||0));
+    snap([b],'edit'); putRule(b,a.key,[a.id,v]);
+    const n=$('#alertVolN'); if(n) n.textContent=v;
     refreshSelected(); return; }
   const ci=t.closest('.ci');
   if(ci){
@@ -7976,6 +8057,8 @@ bind('#inspector','change',e=>{
     putRule(b,'MinimapIcon',[$('#mmSize').value,$('#mmColor').value,$('#mmShape').value]); refreshSelected(); return; }
   if(t.id==='beamColor'){ const bm=getBeam(b); snap([b],'beam');
     putRule(b,'PlayEffect',bm&&bm.temp?[t.value,'Temp']:[t.value]); refreshSelected(); return; }
+  if(t.id==='alertId'){ const a=getAlert(b); if(!a) return; snap([b],'sound');
+    putRule(b,a.key,[t.value,a.vol]); refreshSelected(); return; }
   if(t.id==='beamTempSel'){ const bm=getBeam(b); if(!bm) return; snap([b],'beam');
     putRule(b,'PlayEffect',t.value==='temp'?[bm.color,'Temp']:[bm.color]); refreshSelected(); return; }
   if(t.id==='borderMode'){
@@ -8032,7 +8115,7 @@ const TOOL_ACTIONS={
   nsBtn:()=>openNeverSink(), diffBtn:()=>openNsDiff(),
   tierBtn:()=>openStylePresetManager(), econBtn:()=>openEconomyTool(),
   safetyBtn:()=>openSafetyManager(), lintBtn:()=>openLint(),
-  folderBtn:()=>openFolderDialog(), copyBtn:()=>copyAll(),
+  folderBtn:()=>openFolderDialog(), copyBtn:()=>copyAll(), saveTwBtn:()=>download(true),
   newBtn:()=>openNewFilter(), pubBtn:()=>openPublish(), aboutBtn:()=>openAbout()
 };
 function closeMenu(){
@@ -8430,7 +8513,7 @@ function openItemRules(v){
     else{
       const n=parseInt(raw,10); if(!Number.isFinite(n)||n<1) return;
       if(target) patchRule(b,b.rules.indexOf(target),{values:[{v:String(n),q:false}],op:isLo?'>=':'<='});
-      else{ b.rules=b.rules.concat([{indent:b.indent==='\t'?'\t':'    ',key:'StackSize',
+      else{ b.rules=b.rules.concat([{indent:ruleIndent(b),key:'StackSize',
         op:isLo?'>=':'<=',values:[{v:String(n),q:false}],comment:null,unknown:false,dirty:true,raw:null}]); touch(b); }
     }
     /* 只更新受影響的「實際攔截」文字，避免輸入中重繪讓游標跳掉 */
@@ -8511,7 +8594,7 @@ function openPublish(){
     }else if(r.dataset.pub==='open'){
       window.open(POE_FILTER_PAGE,'_blank','noopener');
     }else{
-      const blob=new Blob([serializeDoc(state.doc,false)],{type:'text/plain;charset=utf-8'});
+      const blob=new Blob([outputText(state.doc,false)],{type:'text/plain;charset=utf-8'});
       const a=document.createElement('a');
       a.href=URL.createObjectURL(blob); a.download=nm+'.filter'; a.click();
       URL.revokeObjectURL(a.href);
@@ -8691,7 +8774,7 @@ function openEconomyTool(){
             else{
               const s=stackRules(b);
               if(s.lo) patchRule(b,b.rules.indexOf(s.lo),{values:[{v:String(r.plan.need),q:false}],op:'>='});
-              else{ b.rules=b.rules.concat([{indent:b.indent==='\t'?'\t':'    ',key:'StackSize',op:'>=',
+              else{ b.rules=b.rules.concat([{indent:ruleIndent(b),key:'StackSize',op:'>=',
                 values:[{v:String(r.plan.need),q:false}],comment:null,unknown:false,dirty:true,raw:null}]); touch(b); }
             }
             changed++;
@@ -8807,7 +8890,7 @@ function diffRowHTML(item,kind){
 async function openNsDiff(){
   const d=state.doc; if(!d) return;
   const meta=docMeta(d);
-  const guess=NS_LEVELS.find(L=>L.f===meta.TYPE)||NS_LEVELS[2];
+  const guess=NS_LEVELS.find(L=>L.f===meta.TYPE)||NS_LEVELS.find(L=>L.f==='3-STRICT');
   $('#modalTitle').textContent='與 NeverSink 原版比較';
   $('#modalBody').innerHTML=`
     <p style="margin:0 0 10px;color:var(--muted)">會抓 GitHub 上的最新原版來比對。
@@ -9153,7 +9236,7 @@ bind('#addcat','click',()=>{
   $('#cbYes').onclick=()=>{
     const n=$('#ncName').value.trim(), k=$('#ncKeys').value.split(',').map(s=>s.trim()).filter(Boolean);
     if(!n||!k.length){ toast('名稱和關鍵字都要填'); return; }
-    state.userCats.push({id:'u'+state.userCats.length,name:n,keys:k});
+    state.userCats.push({id:'u'+(++state.userCatUid),name:n,keys:k});   /* 用計數器，刪掉再新增不會撞 id */
     for(const b of state.doc.blocks) b._cat=null;
     $('#modal').classList.remove('on'); renderOutline(); renderList(true); toast('已新增分類「'+n+'」');
   };
@@ -9273,6 +9356,7 @@ function addDoc(text,name){
   const d=parseDoc(text,name);
   state.docs.push(d); selectDoc(d);
   $('#gate').classList.add('off'); $('#app').classList.add('on');
+  return d;
 }
 function selectDoc(d){
   /* 復原紀錄跟著各自的檔案走，切換分頁不會清掉 */
@@ -9291,7 +9375,8 @@ function selectDoc(d){
    ================================================================== */
 const NS_BASE="https://raw.githubusercontent.com/NeverSinkDev/NeverSink-Filter/master/";
 const NS_LEVELS=[
-  {f:"1-REGULAR",           n:"一般",       d:"最寬鬆，撿得多。適合新開聯盟或剛進遊戲"},
+  {f:"0-SOFT",              n:"寬鬆",       d:"幾乎全部顯示，只藏最沒價值的東西。想看到所有掉落時用"},
+  {f:"1-REGULAR",           n:"一般",       d:"撿得多。適合新開聯盟或剛進遊戲"},
   {f:"2-SEMI-STRICT",       n:"半嚴格",     d:"藏掉最沒價值的東西，仍保留大部分裝備"},
   {f:"3-STRICT",            n:"嚴格",       d:"最多人用的平衡點，中期地圖推薦"},
   {f:"4-VERY-STRICT",       n:"非常嚴格",   d:"只留有價值的，畫面乾淨"},
@@ -9350,7 +9435,17 @@ function openNeverSink(){
 bind('#gateNS','click',openNeverSink);
 
 function loadFiles(list){
-  [...list].forEach(f=>{ const rd=new FileReader(); rd.onload=()=>addDoc(rd.result,f.name); rd.readAsText(f,'utf-8'); });
+  [...list].forEach(f=>{
+    const rd=new FileReader();
+    rd.onload=()=>{
+      /* 自己解碼，才知道原檔有沒有 BOM；readAsText 會默默吃掉它，匯出就少了那三個位元組 */
+      const u8=new Uint8Array(rd.result);
+      const bom=u8.length>=3&&u8[0]===0xEF&&u8[1]===0xBB&&u8[2]===0xBF;
+      const d=addDoc(new TextDecoder('utf-8').decode(bom?u8.subarray(3):u8),f.name);
+      if(d) d.bom=bom;
+    };
+    rd.readAsArrayBuffer(f);
+  });
 }
 bind('#fileinput','change',e=>{ loadFiles(e.target.files); e.target.value=''; });
 bind('#pick','click',()=>$('#fileinput').click());
@@ -9414,12 +9509,15 @@ const dz=$('#dz');
 const canUseFS = typeof window!=='undefined' && 'showDirectoryPicker' in window &&
                  (location.protocol==='https:'||location.hostname==='localhost');
 
+/* 檔案輸出用：原檔有 BOM 就保留，「逐位元組原樣」連檔頭都成立（剪貼簿不加） */
+function outputText(d,toTW){ return (d.bom?'﻿':'')+serializeDoc(d,toTW); }
+
 /* 檔名策略分兩種：
    寫進遊戲資料夾 → 預設沿用原檔名直接覆蓋，這樣遊戲裡選的那個過濾器不用重選，
                     按遊戲內的重新載入鈕就生效。
    瀏覽器下載     → 加後綴，避免蓋掉下載資料夾裡的原始檔。 */
 function outName(d,toTW,forFolder){
-  if(forFolder) return (state.outName||d.name).replace(/(\.filter)?$/i,'')+'.filter';
+  if(forFolder) return (d.outName||d.name).replace(/(\.filter)?$/i,'')+'.filter';
   return d.name.replace(/(\.filter)?$/i,'')+(toTW?'_繁體':'_edited')+'.filter';
 }
 async function ensureWritePermission(handle){
@@ -9453,14 +9551,14 @@ async function writeToFolder(d,toTW){
   }
   const fh=await state.folder.getFileHandle(name,{create:true});
   const w=await fh.createWritable();
-  await w.write(serializeDoc(d,toTW));
+  await w.write(outputText(d,toTW));
   await w.close();
   d.dirty=false; renderFiles();
   toast(`已寫入 ${name}　回遊戲按物品篩選器旁的 ↻ 重新載入`);
   return true;
 }
 function browserDownload(d,toTW){
-  const blob=new Blob([serializeDoc(d,toTW)],{type:'text/plain;charset=utf-8'});
+  const blob=new Blob([outputText(d,toTW)],{type:'text/plain;charset=utf-8'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download=outName(d,toTW);
@@ -9477,26 +9575,33 @@ async function doDownload(d,toTW){
 async function copyAll(){
   const d=state.doc; if(!d) return;
   try{
-    await navigator.clipboard.writeText(serializeDoc(d,state.tw));
+    await navigator.clipboard.writeText(serializeDoc(d,false));   /* 跟「匯出」一樣原樣輸出，不動註解 */
     toast('全文已複製，可以直接貼進網頁版過濾器編輯器');
   }catch(err){ toast('複製失敗，請改用匯出檔案'); }
 }
-/* 匯出絕對不會自己改動 Filter，只在防呆層有問題時先提醒 */
+/* 匯出絕對不會自己改動 Filter，只在防呆層有問題或全檔檢查有錯誤時先提醒 */
 function download(toTW){
   const d=state.doc; if(!d) return;
   const s=safetyState();
-  if(s.ok){ doDownload(d,toTW).catch(e=>toast('匯出失敗：'+(e.message||e))); return; }
-  const why = !s.b ? '這份 Filter 沒有無條件 Show 兜底規則'
+  /* 只算「錯誤」等級：不合法的顏色、圖示、關鍵字會讓遊戲拒絕載入整份過濾器，中間的無條件規則會吃掉後面所有規則；「注意」不擋 */
+  const nErr=lintAll().reduce((a,x)=>a+x.issues.filter(i=>i.lv==='e').length,0);
+  if(s.ok&&!nErr){ doDownload(d,toTW).catch(e=>toast('匯出失敗：'+(e.message||e))); return; }
+  const why=[];
+  if(!s.ok) why.push('防呆層不完整：'+(!s.b ? '這份 Filter 沒有無條件 Show 兜底規則'
     : s.blockers.length ? `「${displayName(s.blockers[0])}」是無條件規則，會擋在防呆層前面`
-    : '兜底規則缺少特殊色或光柱／圖示／提示音';
+    : '兜底規則缺少特殊色或光柱／圖示／提示音'));
+  if(nErr) why.push(`全檔檢查有 ${nErr} 個錯誤，可能讓遊戲拒絕載入，或讓後面的規則失效`);
   $('#modalTitle').textContent='匯出前提醒';
-  $('#modalBody').innerHTML=`<p style="margin:0 0 10px;color:#e2a89e">防呆層不完整：${esc(why)}。</p>
-    <p style="margin:0;color:var(--muted)">匯出不會自動修改你的 Filter。可以直接匯出，或先到防呆面板決定怎麼處理。</p>`;
+  $('#modalBody').innerHTML=why.map(w=>`<p style="margin:0 0 10px;color:#e2a89e">${esc(w)}。</p>`).join('')+
+    `<p style="margin:0;color:var(--muted)">匯出不會自動修改你的 Filter。可以直接匯出，或先處理再匯出。</p>`;
   $('#modalFoot').innerHTML='<button class="btn" id="cbNo">取消</button>'+
-    '<button class="btn" id="dlSafety">開啟防呆面板</button><button class="btn primary" id="dlGo">仍然匯出</button>';
+    (s.ok?'':'<button class="btn" id="dlSafety">開啟防呆面板</button>')+
+    (nErr?'<button class="btn" id="dlLint">開啟全檔檢查</button>':'')+
+    '<button class="btn primary" id="dlGo">仍然匯出</button>';
   $('#modal').classList.add('on');
   $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
-  $('#dlSafety').onclick=()=>{ $('#modal').classList.remove('on'); openSafetyManager(); };
+  const ds=$('#dlSafety'); if(ds) ds.onclick=()=>{ $('#modal').classList.remove('on'); openSafetyManager(); };
+  const dl=$('#dlLint'); if(dl) dl.onclick=()=>{ $('#modal').classList.remove('on'); openLint(); };
   $('#dlGo').onclick=()=>{ $('#modal').classList.remove('on'); doDownload(d,toTW).catch(e=>toast('匯出失敗：'+(e.message||e))); };
 }
 function openFolderDialog(){
@@ -9527,7 +9632,7 @@ function openFolderDialog(){
     </div>
     <div class="field" style="margin-top:2px">
       <label>寫入的檔名（預設沿用原檔名，直接覆蓋）</label>
-      <input class="inp" id="fsName" value="${esc((state.outName||state.doc.name||'').replace(/(\.filter)?$/i,''))}"
+      <input class="inp" id="fsName" value="${esc((state.doc.outName||state.doc.name||'').replace(/(\.filter)?$/i,''))}"
         placeholder="例如 Neversink-5"><span class="phint">.filter</span>
     </div>
     <div class="hintline" style="margin-bottom:10px">檔名要跟遊戲裡「物品篩選器」下拉選的那個一致才會覆蓋。
@@ -9544,7 +9649,7 @@ function openFolderDialog(){
   $('#cbNo').onclick=()=>$('#modal').classList.remove('on');
   $('#fsGo').onclick=()=>{
     const nm=$('#fsName').value.trim();
-    state.outName=nm?nm+'.filter':null;
+    state.doc.outName=nm?nm+'.filter':null;   /* 寫入檔名跟著這份檔案，不同分頁各自記 */
     $('#modal').classList.remove('on'); linkFolder();
   };
 }

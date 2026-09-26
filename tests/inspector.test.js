@@ -60,9 +60,22 @@ const { boot, fixtures, makeReporter } = require('./lib');
   R.ok('光柱開關', b0 !== ev('!!getBeam(curBlock())'));
 
   ev('renderInspector()');
-  const s0 = ev("!!findRule(curBlock(),'CustomAlertSound')");
+  ev('state.sndOpen=null; renderInspector();');
   click(d.querySelector('#sndToggle'));
-  R.ok('音效開關', s0 !== ev("!!findRule(curBlock(),'CustomAlertSound')"));
+  R.ok('自訂音效先開輸入框、不寫假路徑', !!d.querySelector('#snd') && !ev("!!findRule(curBlock(),'CustomAlertSound')"));
+  setv(d.querySelector('#snd'), 'sounds\\test.mp3');
+  R.ok('填了檔名才寫入規則', ev("(findRule(curBlock(),'CustomAlertSound')||{values:[]}).values[0]?.v") === 'sounds\\test.mp3');
+
+  ev('renderInspector()');
+  const a0 = ev('!!getAlert(curBlock())');
+  click(d.querySelector('#alertToggle'));
+  R.ok('內建提示音開關', a0 !== ev('!!getAlert(curBlock())'));
+  if (!ev('!!getAlert(curBlock())')) click(d.querySelector('#alertToggle'));
+  ev('renderInspector()');
+  setv(d.querySelector('#alertId'), 'ShDivine', 'change');
+  R.ok('內建提示音可選塑者語音', ev('getAlert(curBlock()).id') === 'ShDivine');
+  setv(d.querySelector('#alertVol'), '120');
+  R.ok('內建提示音音量', ev('getAlert(curBlock()).vol') === 120);
 
   ev('renderInspector()');
   R.ok('預覽即時更新', d.querySelectorAll('#floor .gl, #floor .previewlabel').length > 0);

@@ -119,4 +119,29 @@ function cssOrphans() {
   return out;
 }
 
-module.exports = { cssOrphans, ROOT, INDEX, readIndex, scripts, fixtures, headless, boot, makeReporter };
+// 靜態檢查：HTML 與 JS 樣板裡用到的 class，CSS 裡都要有對應規則。
+// 之前整份改寫時把四個對話框的 CSS 弄丟，頁面照常載入、四支測試全綠，只有肉眼看得出來。
+// CSS_HOOKS 是純粹給 JS 抓元素用、本來就沒有樣式的 class。
+const CSS_HOOKS = new Set(['calpha', 'cpick', 'irhi', 'irlo', 'set', 'tierbd', 'tierbg', 'tierfg', 'tiernum']);
+function cssCoverage() {
+  const html = readIndex();
+  const css = (html.match(/<style>([\s\S]*?)<\/style>/) || ['', ''])[1];
+  const markup = (html.match(/<\/style>([\s\S]*?)<script id="namedata"/) || ['', ''])[1];
+  const main = scripts().main;
+  const used = new Set();
+  for (const m of (markup + main).matchAll(/class="([^"$]*)"/g))
+    for (const c of m[1].split(/\s+/)) if (c && !/[{}$]/.test(c)) used.add(c);
+  for (const m of main.matchAll(/classList\.(?:add|toggle|remove|contains)\('([\w-]+)'/g)) used.add(m[1]);
+  const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return [...used].filter(c => !CSS_HOOKS.has(c) && !new RegExp('\\.' + esc(c) + '(?![\\w-])').test(css)).sort();
+}
+
+// 靜態檢查：同名 function 宣告兩次，後面的會默默蓋掉前面的（diffDocs 就這樣壞掉過）
+function duplicateFunctions() {
+  const seen = new Map();
+  for (const m of scripts().main.matchAll(/^\s*(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(/gm))
+    seen.set(m[1], (seen.get(m[1]) || 0) + 1);
+  return [...seen].filter(([, n]) => n > 1).map(([k]) => k);
+}
+
+module.exports = { cssOrphans, cssCoverage, duplicateFunctions, ROOT, INDEX, readIndex, scripts, fixtures, headless, boot, makeReporter };

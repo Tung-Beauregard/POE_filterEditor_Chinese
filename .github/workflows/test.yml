@@ -1,0 +1,18 @@
+# 每次推上 main 或開 PR 都跑 npm test。
+# 本機沒有 Node 的時候，這裡是唯一會跑測試的地方，紅了就代表頁面某個流程壞了。
+name: 測試
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test

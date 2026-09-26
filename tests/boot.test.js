@@ -1,7 +1,7 @@
 // 頁面能不能開起來。這一支要最先跑：
 // 之前發生過「刪掉按鈕但沒刪綁定」導致整頁空白，語法檢查抓不到，只有真的載入才會發現。
 'use strict';
-const { boot, fixtures, makeReporter, cssOrphans } = require('./lib');
+const { boot, fixtures, makeReporter, cssOrphans, cssCoverage, duplicateFunctions } = require('./lib');
 
 (async () => {
   const R = makeReporter('載入與基本流程');
@@ -9,6 +9,10 @@ const { boot, fixtures, makeReporter, cssOrphans } = require('./lib');
 
   const orph = cssOrphans();
   R.ok('CSS 沒有孤兒屬性', orph.length === 0, orph.map(o => '第' + o.line + '行').join(','));
+  const cov = cssCoverage();
+  R.ok('用到的 class 都有 CSS', cov.length === 0, cov.join(','));
+  const dup = duplicateFunctions();
+  R.ok('沒有重複宣告的 function', dup.length === 0, dup.join(','));
   R.ok('載入時零錯誤', errors.length === 0, errors[0] && String(errors[0]).split('\n')[0]);
   R.ok('沒有找不到元素的綁定', !warns.some(x => x.includes('[bind]')), warns.filter(x => x.includes('[bind]')).join(' / '));
   R.ok('起始畫面版本標示由 JS 填入', /^v\d/.test(d.getElementById('gateVer').textContent));

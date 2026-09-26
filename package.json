@@ -8,6 +8,7 @@
     "test:roundtrip": "node tests/roundtrip.test.js",
     "test:inspector": "node tests/inspector.test.js",
     "test:ui": "node tests/ui.test.js",
+    "test:regress": "node tests/regress.test.js",
     "data:check": "python3 tools/update-data.py --check",
     "data:update": "python3 tools/update-data.py"
   },

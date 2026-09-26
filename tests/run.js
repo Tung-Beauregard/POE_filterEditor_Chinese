@@ -2,7 +2,7 @@
 'use strict';
 const { spawnSync } = require('child_process');
 const path = require('path');
-const order = ['boot', 'roundtrip', 'inspector', 'ui'];
+const order = ['boot', 'roundtrip', 'inspector', 'ui', 'regress'];
 let failed = 0;
 for (const name of order) {
   const r = spawnSync(process.execPath, [path.join(__dirname, name + '.test.js')], { stdio: 'inherit', timeout: 120000 });
