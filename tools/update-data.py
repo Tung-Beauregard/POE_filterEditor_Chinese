@@ -96,6 +96,11 @@ def build_names(hant_raw: bytes, base_raw: bytes, keep_old: dict | None = None) 
             continue
         if ns not in NS_ALLOW:
             continue
+        # 凋落地圖（Blighted Map / Blight-ravaged Map）是名稱樣板，不是底材：
+        # 遊戲裡它們的 BaseType 仍是原本的地圖名，過濾器要用 BlightedMap / UberBlightedMap
+        # 條件來抓。收進來會被當成可比對底材，「新建過濾器」就會產生永遠抓不到的規則。
+        if (d.get("area") or {}).get("blighted"):
+            continue
         cat = base_cat.get(en) or NS_CAT.get(ns, "8")
         rows.add("\t".join([en, tw, cat, NS_FILTERABLE.get(ns, "1")]))
     if keep_old:
